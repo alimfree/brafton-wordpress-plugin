@@ -108,7 +108,7 @@ if(!class_exists('Brafton_Article_Template'))
 		public function add_inner_meta_boxes($post)
 		{		
 			// Render the job order metabox
-			include(sprintf("%s/../templates/brafton_article_template_metabox.php", dirname(__FILE__), self::POST_TYPE));			
+			include(sprintf("%s/templates/brafton_article_template_metabox.php", dirname(__FILE__), self::POST_TYPE));			
 		} // END public function add_inner_meta_boxes($post)
 
 	} // END class Brafton_Article

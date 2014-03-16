@@ -4,7 +4,7 @@
 
 if( ! class_exists('Brafton_Taxonomy') )
 {
-
+	
 	class Brafton_Taxonomy {
 	    
 		/**

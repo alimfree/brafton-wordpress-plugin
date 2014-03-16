@@ -1,0 +1,10 @@
+.wrap form {
+	width: 100%;
+}
+
+#braftonxml_sched_API_KEY {
+	width: 295px;
+}
+.wrap  form  table  tbody  tr:nth-child(1) > td:after {
+	content: "  - ex: dada3480-9d3b-4989-876a-663fdbe48be8" ;
+}

@@ -40,6 +40,7 @@ class XMLHandler {
     
 	if( !isset( $this->request ) )
 	    $this->request = new WP_Http; 
+	
     $result = $this->request->request( $url );
 
     $feed_string = $result['body'];

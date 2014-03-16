@@ -17,12 +17,15 @@ if(!class_exists('WP_Brafton_Article_Importer'))
         public function __construct()
         {
             // Initialize Settings
+            require_once(sprintf("%s/src/brafton_options.php", dirname(__FILE__)));
+            $brafton_options = new Brafton_options(); 
             require_once(sprintf("%s/wp_brafton_article_importer_settings.php", dirname(__FILE__)));
-            $WP_Brafton_Article_Importer_Settings = new WP_Brafton_Article_Importer_Settings();
+            $brafton_importer_settings = new WP_Brafton_Article_Importer_Settings( $brafton_options );
             
             // Register custom post types
             require_once(sprintf("%s/src/brafton_article_template.php", dirname(__FILE__)));
-            $Brafton_Article_Template = new Brafton_Article_Template();
+            if( $brafton_options->custom_post_type_enabled() )
+                $Brafton_Article_Template = new Brafton_Article_Template();
         } // END public function __construct
 
         /**
@@ -41,7 +44,11 @@ if(!class_exists('WP_Brafton_Article_Importer'))
         public static function deactivate()
         {
 
-            //remove scheduling hooks and any actions 
+            if( get_option('brafton_purge') == 'options' )
+                $this->brafton_options->purge_options(); 
+
+            if( get_option('brafton_purge_articles') )
+                $this->brafton_options->purge_articles(); 
             // Do nothing
         } // END public static function deactivate
     } // END class WP_Brafton_Article_Importer
@@ -69,5 +76,15 @@ if(class_exists('WP_Brafton_Article_Importer'))
 
         $plugin = plugin_basename(__FILE__); 
         add_filter("plugin_action_links_$plugin", 'plugin_settings_link');
+
     }
+
+  //Load the admin page Stylesheet. 
+    function wp_brafton_article_importer_settings_style() {
+        $siteurl = get_option('siteurl');
+        $url = $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/css/settings.css';
+        echo "<link rel='stylesheet' type='text/css' href='$url' />\n";
+    }
+    add_action('admin_head', 'wp_brafton_article_importer_settings_style');
+
 }

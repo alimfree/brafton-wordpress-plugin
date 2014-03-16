@@ -197,5 +197,14 @@
 			if( ! $post_id )
 				return; 
 		}
+
+		/**
+		 * @usedby WP_Brafton_Article_Importer
+		 * Completely removes all instances of Brafton Articles from WP. 
+		 */
+        public function purge_articles()
+        {
+        	
+        }
 	}
 ?>
