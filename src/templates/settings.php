@@ -5,6 +5,7 @@
  ?>
 
 <div class="wrap">
+    <div class="brafton-options">
     <h2> <?php echo $brafton_options->get_product(); ?>  Importer</h2>
     <form method="post" action="options.php"> 
         <?php @settings_fields('WP_Brafton_Article_Importer_group'); ?>
@@ -14,4 +15,5 @@
 
         <?php @submit_button(); ?>
     </form>
-</div>
+    </div><!--- .brafton-options -->
+</div><!-- .wrap -->

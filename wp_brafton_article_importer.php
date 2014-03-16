@@ -25,7 +25,7 @@ if(!class_exists('WP_Brafton_Article_Importer'))
             // Register custom post types
             require_once(sprintf("%s/src/brafton_article_template.php", dirname(__FILE__)));
             if( $brafton_options->custom_post_type_enabled() )
-                $Brafton_Article_Template = new Brafton_Article_Template();
+                $Brafton_Article_Template = new Brafton_Article_Template( $brafton_options );
         } // END public function __construct
 
         /**

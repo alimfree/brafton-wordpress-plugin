@@ -53,8 +53,8 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
             register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_videoPublic');
             register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_videoSecret');
             register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_videoFeedNum');
-            register_setting('WP_Brafton_article_Importer_group', 'brafton_custom_post_type');
-            register_setting('WP_Brafton_article_Importer_group', 'brafton_purge');
+            register_setting('WP_Brafton_Article_Importer_group', 'brafton_custom_post_type');
+            register_setting('WP_Brafton_Article_Importer_group', 'brafton_purge');
 
 
             
@@ -77,7 +77,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
             );
             add_settings_field(
                 'WP_Brafton_Article_Importer_braftonxml_domain', 
-                'API Domain', 
+                'Product', 
                 array(&$this, 'render_radio'), 
                 'WP_Brafton_Article_Importer', 
                 'WP_Brafton_Article_Importer_section',
@@ -91,25 +91,26 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
                 )
             );
             add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_article_post_type', 
+                'WP_Brafton_Article_Importer_brafton_custom_post_type', 
                 $this->brafton_options->get_product() . ' Custom Post Type', 
-                array(&$this, 'settings_field_dropdown'), 
+                array(&$this, 'render_radio'), 
                 'WP_Brafton_Article_Importer', 
                 'WP_Brafton_Article_Importer_section', 
                 array(
-                    'field' => 'brafton_article_post_type', 
+                    'name' => 'brafton_custom_post_type', 
                     'options' => array( 'off' => ' Off',
-                                        'on' => ' On')
+                                        'on' => ' On'), 
+                    'default' => 'on'
                     )
                 );
             add_settings_field(
                 'WP_Brafton_Article_Importer_brafton_default_author', 
                 'Post Author', 
-                array(&$this, 'settings_field_dropdown'), 
+                array(&$this, 'settings_author_dropdown'), 
                 'WP_Brafton_Article_Importer', 
                 'WP_Brafton_Article_Importer_section',
                 array(
-                    'field' => 'brafton_default_author'
+                    'name' => 'brafton_default_author'
                 )
             );
             add_settings_field(
@@ -195,15 +196,17 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
             );
              add_settings_field(
                 'WP_Brafton_Article_Importer_brafton_purge', 
-                'Delete All', 
+                'When Deactivating Plugin', 
                 array(&$this, 'render_radio'), 
                 'WP_Brafton_Article_Importer', 
                 'WP_Brafton_Article_Importer_section',
                 array(
                     'name' => 'brafton_purge',
-                    'options' => array( 'options' => ' Saved Options',
-                                        'posts' => ' ' . $this->brafton_options->get_product() . ' Articles', )
-
+                    'options' => array( 'none' => ' Stop Importing Content', 
+                                        'posts' => ' Delete All ' . $this->brafton_options->get_product() . ' Articles', 
+                                        'all' => ' Purge this plugin entirely!'
+                                        ), 
+                    'default' => 'none'
                 )
             );
             // Possibly do additional admin_init tasks
@@ -213,7 +216,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
         {
             // Think of this as help text for the section.
             if( $this->brafton_options->has_api_key() )
-                echo 'Thank you for Partnering with ' . $this->brafton_options->get_product() .' ';
+                echo 'Thank you for Partnering with ' . $this->brafton_options->link_to_product() .' ';
             else
                 echo 'Please Enter Your Importer Settings. ';
 
@@ -233,15 +236,13 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
             echo sprintf('<input type="text" name="%s" id="%s" value="%s" />', $field, $field, $value);
         } // END public function settings_field_input_text($args)
 
-        public function settings_field_dropdown( $element )
+        public function settings_author_dropdown( $element )
         {
-            $field = $element['field'];
-            $value = get_option( $element['field'] ); 
+            $field = $element['name'];
+            $value = get_option( $element['name'] ); 
             
             $output = '<select name= "' . esc_attr( $field ) . '" >'; 
-            
-            if ( $element['field'] == 'brafton_default_author')
-            {
+  
                 $options = $this->author_options(); 
             
                
@@ -259,26 +260,6 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
                 }
                 $output .=  '</select>';
 
-            }
-            else
-            {
-                $options = $element['options'];
-
-                foreach ( $options as $key => $o )
-                {
-                   
-                    $output .= '<option value="' .  esc_attr( $key ) . '"'; 
-                    if( $value == $key )
-                        $output .=  ' selected >'; 
-                    else
-                        $output .= '>';
-
-                    $output .=  esc_attr( $key ) . '</option>';
-                    
-                }
-                $output .=  '</select>';
-
-            }
             echo sprintf( $output );
         }
 
@@ -286,6 +267,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
          * @uses Brafton_Options to retrieve users with authorship privileges 
          */
         private function author_options(){
+
 
                $blog_authors = $this->brafton_options->get_blog_authors(); 
 
@@ -357,7 +339,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
             // Add a page to manage this plugin's settings
         	add_options_page(
         	    'WP Brafton Article Importer Settings', 
-        	     $this->brafton_options->get_product() . ' Article Importer', 
+        	     $this->brafton_options->get_product() . ' Importer', 
         	    'manage_options', 
         	    'WP_Brafton_Article_Importer', 
         	    array(&$this, 'plugin_settings_page')

@@ -2,6 +2,7 @@
 
 	class Brafton_Options
 	{
+
 		 /**
 	         * Checks which company client is partnered with. 
 	         * Castleford, ContentLEAD, or Brafton
@@ -60,7 +61,6 @@
 	        public function validate_api_key()
 	        {
 	        	$option = get_option('braftonxml_sched_API_KEY');
-
 	        	//what kind of hashing algorithm do we use for our API keys
 	        }
 
@@ -113,12 +113,25 @@
 		        } 
 	        }
 
-	        /**
-	         * Purges Options and Brafton Content
-	         */
-	        public function purge_brafton_plugin(){
+	    	public function link_to_product()
+	    	{
+	    		$product = $this->get_product(); 
+	    		switch( $product )
+	    		{
+	    			case 'Brafton' : 
+	    				$url = 'http://brafton.com'; 
+	    				break; 
+	    			case 'ContentLEAD': 
+	    				$url = 'http://contentlead.com';
+	    				break; 
+	    			case 'Castleford': 
+	    				$url = 'http://castleford.com.au';
+	    				break; 
+	    		}
+	    		$output = '<a href="' . $url . '">' . $product . '</a>'; 
 
-	        }
+	    		return $output; 	
+	    	}
 	}
 
 

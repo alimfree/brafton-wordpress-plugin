@@ -15,8 +15,9 @@ if(!class_exists('Brafton_Article_Template'))
     	/**
     	 * The Constructor
     	 */
-    	public function __construct()
+    	public function __construct( Brafton_Options $brafton_options )
     	{
+                $this->brafton_options = $brafton_options;
     		// register actions
     		add_action('init', array(&$this, 'init'));
     		add_action('admin_init', array(&$this, 'admin_init'));
@@ -36,11 +37,12 @@ if(!class_exists('Brafton_Article_Template'))
     	 * Create the post type
     	 */
     	public function create_brafton_post_type()
-    	{
-    		register_post_type(self::POST_TYPE,
+    	{  
+
+     		register_post_type(self::POST_TYPE,
     			array(
     				'labels' => array(
-    					'name' => 'Brafton Articles',
+    					'name' => $this->brafton_options->get_product() . ' Articles',
     					'singular_name' => __(ucwords(str_replace("_", " ", self::POST_TYPE)))
     				),
     				'public' => true,
