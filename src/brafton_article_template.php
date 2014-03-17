@@ -51,6 +51,7 @@ if(!class_exists('Brafton_Article_Template'))
     				'supports' => array(
     					'title', 'author' , 'editor', 'excerpt', 'thumbnail', 'revisions',
     				),
+                    'show_in_menu' => 'admin.php?page=brafton_parent_menu'
     			)
     		);
     	}
