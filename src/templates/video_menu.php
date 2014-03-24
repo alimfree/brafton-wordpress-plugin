@@ -5,23 +5,23 @@
  ?>
 
 <div class="wrap">
-    <div class="brafton-settings">
+    <div class="importer-dashboard">
     <h2> <?php echo $brafton_options->get_product(); ?>  Importer</h2>
     <form method="post" action="options.php"> 
 
         <div class="admin">
             <?php @settings_fields('brafton_admin_group'); ?>
             <?php @do_settings_fields('brafton_admin_group'); ?>
-        </div>
-
-
-        <?php @settings_fields('brafton_admin_group'); ?>
-        <?php @do_settings_fields('brafton_admin_group'); ?>
-
-        <?php do_settings_sections('WP_Brafton_Article_Importer'); ?>
-
         
-        <?php @submit_button(); ?>
+
+            <?php @settings_fields('brafton_admin_group'); ?>
+            <?php @do_settings_fields('brafton_admin_group'); ?>
+
+            <?php do_settings_sections('WP_Brafton_Article_Importer'); ?>
+
+
+            <?php @submit_button(); ?>
+        </div>
     </form>
     </div><!--- .brafton-options -->
 </div><!-- .wrap -->

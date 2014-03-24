@@ -17,7 +17,7 @@
             <?php @settings_fields('brafton_admin_group'); ?>
             <?php @do_settings_fields('brafton_admin_group'); ?>
 
-            <?php do_settings_sections('brafton_admin'); ?>
+            <?php do_settings_sections('brafton_admin_options_section'); ?>
 
 
             <?php @submit_button(); ?>

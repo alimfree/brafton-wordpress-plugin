@@ -14,5 +14,5 @@
         
         
         <?php @submit_button(); ?>
-    </div><!--- .importer-dashboard -->
+    </div><!--- .brafton-options -->
 </div><!-- .wrap -->

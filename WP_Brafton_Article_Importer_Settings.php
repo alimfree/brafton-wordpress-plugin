@@ -61,14 +61,21 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
         	    'WP_Brafton_Article_Importer_section', 
         	    'Importer Settings', 
         	    array(&$this, 'settings_page_description'), 
-        	    'brafton_admin'
+        	    'brafton_admin_section'
         	);
+
+            add_settings_section(
+                'brafton_admin_options_section', 
+                'Admin Settings', 
+                array($this, 'display_admin_menu'), 
+                'brafton_admin_menu'
+                );
             add_settings_field(
                 'WP_Brafton_Article_Importer_braftonxml_domain', 
                 'Product', 
-                array(&$this, 'render_radio'), 
-                'WP_Brafton_Article_Importer', 
-                'WP_Brafton_Article_Importer_section',
+                array(&$this, 'render_radio'),
+                 'brafton_admin_menu', 
+                'brafton_admin_options_section',
                 array(
                     'name' => 'braftonxml_domain', 
                     'options' => array( 'api.brafton.com/' => ' Brafton', 
@@ -82,8 +89,8 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
                 'WP_Brafton_Article_Importer_braftonxml_sched_API_KEY', 
                 'API Key', 
                 array(&$this, 'settings_field_input_text'), 
-                'WP_Brafton_Article_Importer', 
-                'WP_Brafton_Article_Importer_section',
+                'brafton_admin_menu', 
+                'brafton_admin_options_section',
                 array(
                     'field' => 'braftonxml_sched_API_KEY'
                 )
@@ -342,17 +349,10 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
                 'Brafton', 
                 $this->brafton_options->get_product(),  
                 'manage_options', 
-                'brafton_parent_menu' 
+                'brafton_parent_menu', 
                 array(&$this, 'display_brafton_dashboard')
                 ); 
-            // Add statistics to manage this plugin's settings
-        	add_options_page(
-        	    'Brafton Article Importer Settings', 
-        	   ' Dashboard', 
-        	    'manage_options', 
-        	    'brafton_parent_menu', 
-        	    array(&$this, 'display_brafton_dashboard')
-        	);
+
             //add sub menu's to plugin's settings page
             add_submenu_page(
                 'brafton_parent_menu', 

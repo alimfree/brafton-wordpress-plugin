@@ -5,7 +5,7 @@
  ?>
 
 <div class="wrap">
-    <div class="brafton-settings">
+    <div class="importer-dashboard">
     <h2> <?php echo $brafton_options->get_product(); ?>  Importer</h2>
     <form method="post" action="options.php"> 
 
