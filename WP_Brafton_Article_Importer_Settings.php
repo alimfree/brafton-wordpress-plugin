@@ -33,9 +33,6 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
          */
         public function admin_init()
         {
-
-
-
         	// register your plugin's settings
         	register_setting('WP_Brafton_Article_Importer_group', 'brafton_default_author');
         	register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_sched_API_KEY');
@@ -55,9 +52,9 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
             register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_videoFeedNum');
             register_setting('WP_Brafton_Article_Importer_group', 'brafton_custom_post_type');
             register_setting('WP_Brafton_Article_Importer_group', 'brafton_purge');
+            register_setting('WP_Brafton_Article_Importer_group', 'brafton_parent_categories');
+            register_setting('WP_Brafton_Article_Importer_group', 'brafton_custom_taxonomy');
 
-
-            
             // add your settings section
         	add_settings_section(
         	    'WP_Brafton_Article_Importer_section', 
@@ -90,6 +87,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
                     'default' => 'api.brafton.com/'
                 )
             );
+           
             add_settings_field(
                 'WP_Brafton_Article_Importer_brafton_custom_post_type', 
                 $this->brafton_options->get_product() . ' Custom Post Type', 
@@ -126,6 +124,34 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
                 )
             );
             add_settings_field(
+                'WP_Brafton_Article_Importer_brafton_parent_categories', 
+                'Hierarchical Categories ', 
+                array(&$this, 'render_radio'), 
+                'WP_Brafton_Article_Importer', 
+                'WP_Brafton_Article_Importer_section',
+                array(
+                    'name' => 'brafton_parent_categories', 
+                    'options' => array( 'on' => ' On', 
+                                        'off'=> ' Off' 
+                        ),
+                    'default' => 'off'
+                )
+            ); 
+            add_settings_field(
+                'WP_Brafton_Article_Importer_brafton_custom_taxonomy', 
+                'Custom Taxonomy ', 
+                array(&$this, 'render_radio'), 
+                'WP_Brafton_Article_Importer', 
+                'WP_Brafton_Article_Importer_section',
+                array(
+                    'name' => 'brafton_custom_taxonomy', 
+                    'options' => array( 'on' => ' On', 
+                                        'off'=> ' Off' 
+                        ),
+                    'default' => 'off'
+                )
+            );  
+            add_settings_field(
                 'WP_Brafton_Article_Importer_braftonxml_sched_tags', 
                 'Tags', 
                 array(&$this, 'render_radio'), 
@@ -154,7 +180,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
             );
             add_settings_field(
                 'WP_Brafton_Article_Importer_braftonxml_publishdate', 
-                'Set published date to: ', 
+                'Post Date: ', 
                 array(&$this, 'render_radio'), 
                 'WP_Brafton_Article_Importer', 
                 'WP_Brafton_Article_Importer_section',
@@ -169,7 +195,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
             );
             add_settings_field(
                 'WP_Brafton_Article_Importer_braftonxml_overwrite', 
-                'Overwrite Articles with Feed Updates', 
+                'Overwrite', 
                 array(&$this, 'render_radio'), 
                 'WP_Brafton_Article_Importer', 
                 'WP_Brafton_Article_Importer_section',
@@ -220,6 +246,14 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
             else
                 echo 'Please Enter Your Importer Settings. ';
 
+
+        }
+
+        /**
+         * Renders an upload field
+         */
+        public function settings_xml_upload()
+        {
 
         }
         

@@ -1,6 +1,16 @@
 <?php
 	class Brafton_Article_Helper {
 
+		public $article_id_array;
+
+		function __construct()
+		{
+			$this->article_id_array = get_option('brafton_articles_array'); 
+
+			if( ! $this->article_id_array )
+				$this->article_id_array = array();
+		} 
+
 		// Require Client Libraries 
 		include_once '../vendors/SampleAPIClientLibrary/ApiHandler.php';
 
@@ -25,25 +35,17 @@
 		 * @return mixed false or $post_exists['post_id', 'post_status']
 		 * @param int brafton_id       
 		 */
-		private function article_exists( $brafton_id, WP_Query $article_query = NULL )
+		private function exists( $brafton_id )
 		{
-			$args = array( 
-							'meta_key' => 'brafton_id', 
-							'meta_value' => $brafton_id, 
-							'post_type' => 'Brafton-Article',
-				);			
-			$article_query = $article_query ? : new WP_Query( $args );
-
-			if ( $article_query->have_posts() ){
-				the_post();
-				$post_id = the_ID();
-
-				$post_status = get_post_status( $post_id );
-				$post_exists = compact('post_id', 'post_status'); 
-				return $post_exists; 
-			}
 			
+			$articles = $this->article_id_array;
+			foreach( $articles as $a )
+			{
+				if( $a['brafton_id'] == $brafton_id )
+					return $a['post_id']
+			} 
 			return false;  
+
 		}
 		/**
 		 * Updates existing articles to reflect changes made to articles in client's feed 
@@ -117,7 +119,7 @@
 		 */
 		public function get_post_status()
 		{	
-			$post_status = get_option("braftonxml_sched_status", "publish");
+			$post_status = get_option("braftonxml_sched_status");
 			return $post_status; 
 		}
 
@@ -180,15 +182,15 @@
 			
 			$article_array['post_type'] = 'Brafton-Article'; 
 			//Checks if post exists
-			$post_exists = $this->article_exists( $article_array['brafton_id'] ); 
-			$post_id = $post_exists['post_id']; 
+			$post_exists = $this->exists( $article_array['brafton_id'] ); 
+			
 
-			if ( ! $posts_id ] )
+			if ( ! $posts_exists ] )
 				$post_id = wp_insert_post( $article_array ); 
 			else
 			{
 				//check if overwrite is set to on
-				if ( /*overwrite is on */ )
+				if ( get_option('braftonxml_overwrite') == 'on' )
 					$this->update_post( $article_array, $post_exists ); 
 			}
 
@@ -205,6 +207,30 @@
         public function purge_articles()
         {
         	
+        }
+
+        /**
+         * 
+         * accepts two dimencional array of brafton_id and post_id's
+         * 
+         */
+        public function set_articles_option( $new_article_ids )
+        {
+
+        	if( $this->articles_id_array )
+        	{
+        		array_unshift( $this->articles_id_array, $new_article_ids ); 
+        		update_option('brafton_articles_array', $this->article_id_array );
+        	}
+        	else
+        		update_option('brafton_articles_array'  $new_article_ids)
+        		
+        }
+
+        public function get_articles_option( )
+        {
+        	$articles_option = get_option( 'brafton_articles_array');
+        	return $articles_option; 
         }
 	}
 ?>

@@ -132,6 +132,26 @@
 
 	    		return $output; 	
 	    	}
+	    	
+	    	/**
+	         * Renders an upload field
+	         */
+	        public function settings_xml_upload($args)
+	        {
+	            $name = $args['name'];
+	            $label = $args['label'];
+	            echo sprintf('<p>%s</p><input type="file" name="%s" />', $label, $name);
+	        }
+
+	        public function get_article_link()
+	        {
+	        	$feed = get_option('braftonxml_sched_API_KEY');
+	        	$product = get_option('braftonxml_domain');
+	        	$post_id = get_the_ID();
+	        	$feed_url = 'http://'. $product . $feed .'/news/' . $post_id;
+
+	        	return $feed_url; 
+	        }
 	}
 
 

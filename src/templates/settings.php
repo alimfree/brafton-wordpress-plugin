@@ -12,7 +12,7 @@
         <?php @do_settings_fields('WP_Brafton_Article_Importer_group'); ?>
 
         <?php do_settings_sections('WP_Brafton_Article_Importer'); ?>
-
+        <?php echo $brafton_options->settings_xml_upload(array('label' => 'Upload a specific xml Archive file', 'name' => 'achives' ) ); ?>
         <?php @submit_button(); ?>
     </form>
     </div><!--- .brafton-options -->

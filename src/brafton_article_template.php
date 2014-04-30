@@ -49,8 +49,9 @@ if(!class_exists('Brafton_Article_Template'))
     				'has_archive' => true,
     				'description' => __("This is a sample post type meant only to illustrate a preferred structure of plugin development"),
     				'supports' => array(
-    					'title', 'author' , 'editor', 'excerpt', 'thumbnail', 'revisions',
+    					'title', 'author' , 'editor', 'excerpt', 'thumbnail', 'revisions', 'post_formats',
     				),
+                    #'register_meta_box_cb' => array(&$this, 'add_meta_boxes')
     			)
     		);
     	}
@@ -98,9 +99,10 @@ if(!class_exists('Brafton_Article_Template'))
     		// Add this metabox to every selected post
     		add_meta_box( 
     			sprintf('WP_Brafton_Article_Importer_%s_section', self::POST_TYPE),
-    			sprintf('%s Information', ucwords(str_replace("_", " ", self::POST_TYPE))),
+    			sprintf('%s Article Information', ucwords(str_replace("_", " ", $this->brafton_options->get_product() ))),
     			array(&$this, 'add_inner_meta_boxes'),
-    			self::POST_TYPE
+    			self::POST_TYPE, 
+                'side'
     	    );					
     	} // END public function add_meta_boxes()
 

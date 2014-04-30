@@ -9,3 +9,37 @@
 	content: "  - ex: dada3480-9d3b-4989-876a-663fdbe48be8" ;
 }
 
+
+.metabox_label_column label {
+	font-size: 12px;
+}
+
+tr:nth-child(3) td .radio-option:nth-of-type(2):hover:after {
+	content: " - Distingish existing content from imported content using a different post type.";
+	font-size: 11px;
+	display: inline;
+}
+
+tr:nth-child(6) td .radio-option:nth-of-type(1):hover:after {
+	content: " - maintain parent child category relationships for imported content.";
+	font-size: 11px;
+	display: inline;
+}
+
+tr:nth-child(7) td .radio-option:nth-of-type(1):hover:after {
+	content: " - use a custom taxonomy for imported articles. Helps distinguish imported content from existing Content";
+	font-size: 11px;
+	display: inline;
+}
+
+tr:nth-child(9) td .radio-option:nth-of-type(2):hover:after {
+	content: " - do you really want to manually approve posts? We will not store changes you make directly to posts.";
+	font-size: 11px;
+	display: inline;
+}
+
+tr:nth-child(11) td .radio-option:nth-of-type(1):hover:after {
+	content: " - Used to make changes to previously imported articles. Any descrepencies between existing content and feed content will be overwritten by feed content.";
+	font-size: 11px;
+	display: inline;
+}
