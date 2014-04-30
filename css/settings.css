@@ -33,13 +33,13 @@ tr:nth-child(7) td .radio-option:nth-of-type(1):hover:after {
 }
 
 tr:nth-child(9) td .radio-option:nth-of-type(2):hover:after {
-	content: " - do you really want to manually approve posts? We will not store changes you make directly to posts.";
+	content: " - do you really want to manually approve posts? We will not store changes you make directly to posts which may cause discrepncies between previously imported content and your feed.";
 	font-size: 11px;
 	display: inline;
 }
 
 tr:nth-child(11) td .radio-option:nth-of-type(1):hover:after {
-	content: " - Used to make changes to previously imported articles. Any descrepencies between existing content and feed content will be overwritten by feed content.";
+	content: " - Used to make changes to previously imported articles. Any discrepencies between imported content and feed content will be overwritten by feed content.";
 	font-size: 11px;
 	display: inline;
 }

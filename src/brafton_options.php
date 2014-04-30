@@ -128,7 +128,7 @@
 	    				$url = 'http://castleford.com.au';
 	    				break; 
 	    		}
-	    		$output = '<a href="' . $url . '">' . $product . '</a>'; 
+	    		$output = sprintf('<a href="%s">%s</a>', $url, $product ); 
 
 	    		return $output; 	
 	    	}
@@ -148,7 +148,9 @@
 	        	$feed = get_option('braftonxml_sched_API_KEY');
 	        	$product = get_option('braftonxml_domain');
 	        	$post_id = get_the_ID();
-	        	$feed_url = 'http://'. $product . $feed .'/news/' . $post_id;
+
+	        	$brafton_id = get_post_meta($post_id, 'brafton_id', true);
+	        	$feed_url = sprintf('http://%s%s/news/%s', $product, $feed, $brafton_id);
 
 	        	return $feed_url; 
 	        }

@@ -1,16 +1,6 @@
 <?php
 	class Brafton_Article_Helper {
 
-		public $article_id_array;
-
-		function __construct()
-		{
-			$this->article_id_array = get_option('brafton_articles_array'); 
-
-			if( ! $this->article_id_array )
-				$this->article_id_array = array();
-		} 
-
 		// Require Client Libraries 
 		include_once '../vendors/SampleAPIClientLibrary/ApiHandler.php';
 
@@ -37,15 +27,15 @@
 		 */
 		private function exists( $brafton_id )
 		{
-			
-			$articles = $this->article_id_array;
-			foreach( $articles as $a )
-			{
-				if( $a['brafton_id'] == $brafton_id )
-					return $a['post_id']
-			} 
-			return false;  
+			if( get_option('brafton_custom_post_type', true ) = 'on');
+				$post_type = 'Brafton_Article'; 
+			else
+				$post_type = 'post';
 
+			$args = array('post_type' => $post_type, array( 'meta_key' => 'brafton_id', 'meta_value' => $brafton_id ) );
+
+			$results = new WP_Query( $args );
+			return $results; 
 		}
 		/**
 		 * Updates existing articles to reflect changes made to articles in client's feed 
