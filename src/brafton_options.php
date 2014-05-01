@@ -3,17 +3,65 @@
 
 	class Brafton_Options
 	{
+        public $brafton_default_author;
+        public $braftonxml_sched_API_KEY;
+        public $braftonxml_domain;
+        public $braftonxml_sched_tags;
+        public $braftonxml_sched_status;
+        public $brafton_tags_option;
+        public $brafton_categories;
+        public $brafton_categories_options;
+        public $brafton_photo;
+        public $brafton_importer_status;
+        public $braftonxml_overwrite;
+        public $braftonxml_publishdate;
+        public $braftonxml_video;
+        public $braftonxml_videoPublic;
+        public $braftonxml_videoSecret;
+        public $braftonxml_videoFeedNum;
+        public $brafton_custom_post_type;
+        public $brafton_purge;
+        public $brafton_parent_categories;
+        public $brafton_custom_taxonomy;
+        public $braftonxml_sched_triggercount;
+        public $brafton_import_articles;
+        public $brafton_errors;
+        public $brafton_options;
 
+		function __construct(){
+			$options = get_object_vars( $this );
+				#var_dump( $options );
+
+			$brafton_options = array();
+			foreach( $options as $option => $value )
+			{
+				#var_dump( $option );
+				$value =  get_option( $option );
+				#var_dump( $value );
+	        	$brafton_options[$option] = $value;
+	        	#var_dump( $this->option );
+			}
+			$this->brafton_options = $brafton_options;  
+		}
 		 /**
 	         * Checks which company client is partnered with. 
 	         * Castleford, ContentLEAD, or Brafton
 	         * @return string $product
 	         */
+
+		 	/**
+		 	 * Helps avoid dozen database queries on the options table.
+		 	 * $option_name
+		 	 */
+		 	public function get_option( $option_name ){
+		 		 return $this->brafton_options[$option_name];
+		 	}
+
 	        public function brafton_get_product()
 	        {
-	            $option = get_option('braftonxml_domain');
+	            $product = get_option('braftonxml_domain');
 
-	            switch( $option ){
+	            switch( $product ){
 	                case 'api.brafton.com/':
 	                    return 'Brafton';
 	                    break;  
@@ -70,6 +118,11 @@
 
 	    	}
 
+	    	public function custom_post()
+	    	{
+				$custom = $get_option('brafton_custom_post_type', true );
+				return $custom;
+	    	}
 		    /**
 	         *  Checks if Brafton Post type option is enabled in Importer settings.
 	         * @return bool 
@@ -231,7 +284,7 @@
             
                 foreach ($element['options'] as $key => $option)
                 {
-                    $output .= '<div class="radio-option ' . str_replace( '_', '-', $element['name'] ) . '>"><label><input type="radio" name="'. esc_attr($element['name']) .'" value="'. esc_attr($key) . '"';
+                    $output .= '<div class="radio-option ' . str_replace( '_', '-', $element['name'] ) . '"><label><input type="radio" name="'. esc_attr($element['name']) .'" value="'. esc_attr($key) . '"';
 
                     if ( $value == $option ){
                       $output .=   checked($key, $value, true) . ' checked' . ' /><span>' . esc_html($option) . '</span></label></div>';

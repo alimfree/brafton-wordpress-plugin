@@ -84,6 +84,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
                 array(&$this, 'settings_section_brafton_developer'), 
                 'WP_Brafton_Article_Importer'
             );
+
             // Possibly do additional admin_init tasks
         } // END public static function activate
 
@@ -317,7 +318,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
         public function scripts() {
             wp_print_scripts( 'jquery-ui-tabs' );
         }
-        
+       
         /**
          * add a menu
          */		
@@ -331,11 +332,11 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
         	    'WP_Brafton_Article_Importer', 
         	    array(&$this, 'plugin_settings_page')
         	);
-            
+
             add_action( 'admin_print_scripts-' . $admin_page, array( &$this, 'scripts' ) );
 
         } // END public function add_menu()
-       
+
         /**
          * Menu Callback
          */		

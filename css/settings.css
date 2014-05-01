@@ -10,43 +10,57 @@
 	width: 295px;
 }
 .api-key:after {
-	content: "  - ex: dada3480-9d3b-4989-876a-663fdbe48be8" ;
+	content: " - ex: dada3480-9d3b-4989-876a-663fdbe48be8" ;
+	display: block;
 }
-
 
 .metabox_label_column label {
 	font-size: 12px;
 }
 
-tr:nth-child(3) td .radio-option:nth-of-type(2):hover:after {
+td .radio-option.brafton-custom-post-type:nth-of-type(2):hover:after {
 	content: " - Distingish existing content from imported content using a different post type.";
 	font-size: 11px;
 	display: inline;
 }
 
-tr:nth-child(6) td .radio-option:nth-of-type(1):hover:after {
+td .radio-option.brafton-parent-categories:nth-of-type(1):hover:after {
 	content: " - maintain parent child category relationships for imported content.";
 	font-size: 11px;
 	display: inline;
 }
 
-tr:nth-child(7) td .radio-option:nth-of-type(1):hover:after {
-	content: " - use a custom taxonomy for imported articles. Helps distinguish imported content from existing Content";
+td .radio-option.brafton-custom-taxonomy:nth-of-type(1):hover:after {
+	content: " - Use a custom taxonomy for imported articles. Helps distinguish imported content from existing Content";
 	font-size: 11px;
 	display: inline;
 }
 
-.braftonxml-sched-status:nth-of-type(2):hover:after {
-	color: red;
-}
-.braftonxml-sched-status:nth-of-type(2):hover:after {
-	content: " - do you really want to manually approve posts? We will not store changes you make directly to posts which may cause discrepncies between previously imported content and your feed.";
+td .radio-option.brafton-import-articles:nth-of-type(2):hover:after {
+	content: " - Stop importing new articles";
 	font-size: 11px;
 	display: inline;
 }
 
-tr:nth-child(11) td .radio-option:nth-of-type(1):hover:after {
+td .radio-option.braftonxml-video:nth-of-type(2):hover:after {
+	content: " - Stop importing new videos";
+	font-size: 11px;
+	display: inline;
+}
+.braftonxml-sched-status:nth-of-type(2):hover:after {
+	content: " - Do you really want to manually approve posts? We will not store changes you make directly to posts which may cause discrepncies between previously imported content and your feed.";
+	font-size: 11px;
+	display: inline;
+}
+
+td .radio-option.braftonxml-overwrite:nth-of-type(1):hover:after {
 	content: " - Used to make changes to previously imported articles. Any discrepencies between imported content and feed content will be overwritten by feed content.";
+	font-size: 11px;
+	display: inline;
+}
+
+td .radio-option.brafton-errors:nth-of-type(1):hover:after {
+	content: " - Log plugin errors in database as option field named brafton-errors.";
 	font-size: 11px;
 	display: inline;
 }

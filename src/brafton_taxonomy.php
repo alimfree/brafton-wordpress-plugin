@@ -15,7 +15,7 @@
 		function get_terms( $terms, $taxonomy )
 		{
 			$term_array = array(); 
-			foreach $terms as $t {
+			foreach( $terms as $t ){
 
 				$term = get_term_by( 'name', sanitize_text_field($t), $taxonomy );
 				
@@ -32,7 +32,7 @@
 		/**
 		 * 
 		 */
-		function get_custom_term( brafton_id, $customTerm )
+		function get_custom_term( $brafton_id, $customTerm )
 		{
 			#todo: 
 		}

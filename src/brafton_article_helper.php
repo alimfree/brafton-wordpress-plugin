@@ -1,15 +1,15 @@
 <?php
+	include_once ( plugin_dir_path( __FILE__ ) . '../vendors/SampleAPIClientLibrary/ApiHandler.php');
 	class Brafton_Article_Helper {
 		public $post_type;
-		
-		function __construct(){
-			if( get_option('brafton_custom_post_type', true ) = 'on');
+		// Require Client Libraries 
+		function __construct( $brafton_options ){
+			if( get_option('brafton_custom_post_type', true ) == 'on')
 				$this->post_type = 'Brafton_Article'; 
 			else
 				$this->post_type = 'post';
 		}
-		// Require Client Libraries 
-		include_once '../vendors/SampleAPIClientLibrary/ApiHandler.php';
+		
 
 		/**
 		 * Formats post content 
@@ -68,7 +68,7 @@
 			//Makes sure to update articles still in drafts
 			if ( $article_array['publish_status']  == 'draft' ) //make sure publish status is a string
 			{
-				$args['edit_date']  => true; 
+				$args['edit_date']  = true; 
 			}
 
 			$post_id = wp_update_post( $args ); 
@@ -185,7 +185,7 @@
 			$post_exists = $this->exists( $article_array['brafton_id'] ); 
 			
 
-			if ( ! $posts_exists ] )
+			if ( ! $posts_exists )
 				$post_id = wp_insert_post( $article_array ); 
 			else
 			{
@@ -223,7 +223,7 @@
         		update_option('brafton_articles_array', $this->article_id_array );
         	}
         	else
-        		update_option('brafton_articles_array'  $new_article_ids)
+        		update_option('brafton_articles_array', $new_article_ids);
         		
         }
 

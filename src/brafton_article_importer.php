@@ -4,7 +4,7 @@
 
 if ( !class_exists( 'Article_Importer' ) )
 {	
-	include_once '../vendors/SampleAPIClientLibrary/ApiHandler.php';
+	include_once ( plugin_dir_path( __FILE__ ) . '../vendors/SampleAPIClientLibrary/ApiHandler.php');
 	include_once 'brafton_article_helper.php';
 	include_once 'brafton_taxonomy.php';
 	include_once 'brafton_image_handler.php';
@@ -41,7 +41,7 @@ if ( !class_exists( 'Article_Importer' ) )
 			$article_id_array = array();
 			foreach( $article_array as $a ){
 				//Get article meta data from feed
-				$brafton_id = $->getID(); 
+				$brafton_id = $a->getID(); 
 				$date = get_publish_date( $a ); 
 				$post_title = $a->getHeadline();
 				$content = $a->getText(); 
@@ -75,13 +75,13 @@ if ( !class_exists( 'Article_Importer' ) )
 					$post_id = $this->brafton_article->insert_article($article);
 				}
 				else
-					$this->brafton_article->update_post( $article, $post_id )
+					$this->brafton_article->update_post( $article, $post_id );
 				
 				//update post to include thumbnail image
 				$this->brafton_image_handler->insert_image( $photos, $post_id, $has_video ); 
 			}
 
-			$this->brafton_article->set_articles_option( $this->article_id_array );
+			$this->brafton_article->set_articles_option( $article_id_array );
 		}
 
 	}

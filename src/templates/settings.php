@@ -7,7 +7,6 @@
 <div class="wrap">
     <div class="brafton-options">
     <h2> <?php echo $brafton_options->brafton_get_product(); ?>  Importer</h2>
-
     <?php 
    
 
