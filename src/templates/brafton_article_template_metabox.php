@@ -25,4 +25,7 @@
     <tr valign="top">
             <p>Find this article on the feed: <a href= '<?php echo $brafton_options->get_article_link(); ?>'>Article Link</a></p>
     </tr>
+    <tr valign="top">
+        <p>Please respond to approval email with any edits you make to this article. We cannot gaurantee backups of your content if it's out of sync with your feed</p>
+    </tr>
 </table>

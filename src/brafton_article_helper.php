@@ -1,6 +1,13 @@
 <?php
 	class Brafton_Article_Helper {
-
+		public $post_type;
+		
+		function __construct(){
+			if( get_option('brafton_custom_post_type', true ) = 'on');
+				$this->post_type = 'Brafton_Article'; 
+			else
+				$this->post_type = 'post';
+		}
 		// Require Client Libraries 
 		include_once '../vendors/SampleAPIClientLibrary/ApiHandler.php';
 
@@ -19,23 +26,26 @@
 		}
 
 		/**
-		 * Checks if article already exists in WordPress database. Returns array including
-		 * $post_id and $post_status if article with given $brafton_id is found. Returns
-		 * false if nothing is found.
-		 * @return mixed false or $post_exists['post_id', 'post_status']
+		 * Checks if article already exists in WordPress database. 
+		 * @return Int $post_id
 		 * @param int brafton_id       
 		 */
 		private function exists( $brafton_id )
 		{
-			if( get_option('brafton_custom_post_type', true ) = 'on');
-				$post_type = 'Brafton_Article'; 
-			else
-				$post_type = 'post';
 
-			$args = array('post_type' => $post_type, array( 'meta_key' => 'brafton_id', 'meta_value' => $brafton_id ) );
+			$args = array('post_type' => $this->post_type, array( 'meta_key' => 'brafton_id', 'meta_value' => $brafton_id ) );
 
-			$results = new WP_Query( $args );
-			return $results; 
+			$find = new WP_Query( $args );
+
+			if( $find->have_posts() ) {
+				while( $find->have_posts() ) {
+				    $find->the_post();
+				    $post_id = the_ID();
+				} // end while
+			} // end if
+			wp_reset_postdata();
+
+			return $post_id; 
 		}
 		/**
 		 * Updates existing articles to reflect changes made to articles in client's feed 
@@ -47,8 +57,8 @@
 		private function update_post( $article_array,  $post_exists )
 		{
 			$args =  array(
-							'post_type' => 'Brafton-Article',
-							'post_content' => $article_array['post_content'],
+							'post_type' => $this->post_type,
+							'p3st_content' => $article_array['post_content'],
 							'post_date' => $artilce_array['post_date'],
 							'post_title' => $artilce_array['post_title'],
 							'post_excerpt' => $artilce_array['post_excerpt'],
@@ -170,7 +180,7 @@
 		 */
 		public function insert_article($article_array){
 			
-			$article_array['post_type'] = 'Brafton-Article'; 
+			$article_array['post_type'] = $this->post_type; 
 			//Checks if post exists
 			$post_exists = $this->exists( $article_array['brafton_id'] ); 
 			

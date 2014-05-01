@@ -6,6 +6,8 @@ if ( !class_exists( 'Article_Importer' ) )
 {	
 	include_once '../vendors/SampleAPIClientLibrary/ApiHandler.php';
 	include_once 'brafton_article_helper.php';
+	include_once 'brafton_taxonomy.php';
+	include_once 'brafton_image_handler.php';
 	/**
 	 * @package WP Brafton Article Importer 
 	 *
@@ -34,7 +36,7 @@ if ( !class_exists( 'Article_Importer' ) )
 		 */
 		public function import_articles(){
 
-			$articles_array = $this->get_articles(); //look in article_helper for method definition. array of NewsItem objects
+			$articles_array = $this->brafton_article->get_articles(); //look in article_helper for method definition. array of NewsItem objects
 
 			$article_id_array = array();
 			foreach( $article_array as $a ){

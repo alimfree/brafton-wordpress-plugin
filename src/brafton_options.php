@@ -154,6 +154,17 @@
 
 	        	return $feed_url; 
 	        }
+
+	        public function get_sections()
+	        {
+	        	$sections = array(
+	        		'brafton-article-section' => 'Article Settings', 
+	        		'brafton-video-section' => 'Video Settings', 
+	        		'brafton-advanced-section' => 'Advanced Settings', 
+	        		'brafton-developer-section' => 'Developer Settings'
+	        		); 
+		        return $sections;
+	        }
 	}
 
 

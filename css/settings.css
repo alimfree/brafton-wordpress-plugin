@@ -1,3 +1,7 @@
+.wp-admin #wpfooter {
+	display: none;
+}
+
 .wrap form {
 	width: 100%;
 }
@@ -32,7 +36,10 @@ tr:nth-child(7) td .radio-option:nth-of-type(1):hover:after {
 	display: inline;
 }
 
-tr:nth-child(9) td .radio-option:nth-of-type(2):hover:after {
+.braftonxml-sched-status:nth-of-type(2):hover:after {
+	color: red;
+}
+.braftonxml-sched-status:nth-of-type(2):hover:after {
 	content: " - do you really want to manually approve posts? We will not store changes you make directly to posts which may cause discrepncies between previously imported content and your feed.";
 	font-size: 11px;
 	display: inline;
@@ -42,4 +49,69 @@ tr:nth-child(11) td .radio-option:nth-of-type(1):hover:after {
 	content: " - Used to make changes to previously imported articles. Any discrepencies between imported content and feed content will be overwritten by feed content.";
 	font-size: 11px;
 	display: inline;
+}
+
+.ui-tabs-nav {
+	border-bottom: 1px solid #ccc;
+	height: 27px;
+	margin: 20px 0;
+	padding: 0;
+}
+
+.ui-tabs-nav li {
+	display: block;
+	float: left;
+	margin: 0;
+}
+
+.ui-tabs-nav li a {
+	padding: 4px 20px 6px;
+	font-weight: bold;
+}
+
+.ui-tabs-nav li a {
+	border-style: solid;
+	border-color: #CCC #CCC #F9F9F9;
+	border-width: 1px 1px 0;
+	color: #C1C1C1;
+	text-shadow: rgba(255, 255, 255, 1) 0 1px 0;
+	display: inline-block;
+	padding: 4px 14px 6px;
+	text-decoration: none;
+	margin: 0 6px -1px 0;
+	-moz-border-radius: 5px 5px 0 0;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
+	-khtml-border-top-left-radius: 5px;
+	-khtml-border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+
+.ui-tabs-nav li.ui-tabs-selected a,
+.ui-tabs-nav li.ui-state-active a {
+	border-width: 1px;
+	color: #464646;
+}
+
+.ui-tabs-panel {
+	clear: both;
+}
+
+.ui-tabs-panel h3 {
+	font: italic normal normal 24px/29px Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+	margin: 0;
+	padding: 0 0 5px;
+	line-height: 35px;
+	text-shadow: 0 1px 0 #fff;
+}
+
+.ui-tabs-panel h4 {
+	font-size: 15px;
+	font-weight: bold;
+	margin: 1em 0;
+}
+
+.wrap h3, .wrap table {
+	display: none;
 }
