@@ -1,4 +1,7 @@
 <?php
+ini_set('display_startup_errors',1);
+ini_set('display_errors',1);
+error_reporting(-1);
 /*
 Plugin Name: WP Brafton Article Importer
 Plugin URI: http://www.brafton.com/support/wordpress
@@ -9,8 +12,14 @@ Author URL: http://www.brafton.com
 
 if(!class_exists('WP_Brafton_Article_Importer'))
 {
+    if (!defined('BRAFTON_PLUGIN_VERSION_KEY'))
+                define('BRAFTON_PLUGIN_VERSION_KEY', 'myplugin_version');
+
+    if (!defined('MYPLUGIN_VERSION_NUM'))
+                define('BRAFTON_PLUGIN_VERSION_NUM', '1.0.0');
+
     class WP_Brafton_Article_Importer
-    {
+    {   
         /**
          * Construct the plugin object
          */
@@ -26,6 +35,10 @@ if(!class_exists('WP_Brafton_Article_Importer'))
             require_once(sprintf("%s/src/brafton_article_template.php", dirname(__FILE__)));
             if( $brafton_options->custom_post_type_enabled() )
                 $Brafton_Article_Template = new Brafton_Article_Template( $brafton_options );
+            
+            add_option(BRAFTON_PLUGIN_VERSION_KEY, BRAFTON_PLUGIN_VERSION_NUM);
+
+
         } // END public function __construct
 
         /**
@@ -33,6 +46,7 @@ if(!class_exists('WP_Brafton_Article_Importer'))
          */
         public static function activate()
         {
+           
 
             //add actions and filters here: 
             // Do nothing
@@ -79,30 +93,35 @@ if(class_exists('WP_Brafton_Article_Importer'))
 
         $plugin = plugin_basename(__FILE__); 
         add_filter("plugin_action_links_$plugin", 'plugin_settings_link');
+        
+        //Allow us to manually run importer when settings are saved.
+        add_action( 'update_option_brafton_import_articles', 'run_importer', 10, 2 );
 
     }
     /**
      * Run the importer
      */
-    // function run_import(){
-    //     $brafton_cats = new Brafton_Taxonomy();
-    //     $brafton_tags = new Brafton_Taxonomy();
-    //     $brafton_image = new Brafton_Image_Handler();
-    //     $brafton_article = new Brafton_Article_Helper();
+    function run_import($oldvalue, $_newvalue){
+        if( $_newvalue == 'on' ){
+            $brafton_cats = new Brafton_Taxonomy();
+            $brafton_tags = new Brafton_Taxonomy();
+            $brafton_image = new Brafton_Image_Handler();
+            $brafton_article = new Brafton_Article_Helper();
 
-    //     $brafton_article_importer = new Brafton_Article_Importer(
-    //         $brafton_image, 
-    //         $brafton_cats, 
-    //         $brafton_tags, 
-    //         $brafton_article
-    //         );
+            $brafton_article_importer = new Brafton_Article_Importer(
+                $brafton_image, 
+                $brafton_cats, 
+                $brafton_tags, 
+                $brafton_article
+                );
 
-    //     $brafton_article_importer->import_articles();
-    //     update_option("braftonxml_sched_triggercount", get_option("braftonxml_sched_triggercount") + 1, 0);
-    //     $wp_version = get_bloginfo('version');
+            $brafton_article_importer->import_articles();
+            update_option("braftonxml_sched_triggercount", get_option("braftonxml_sched_triggercount") + 1, 0);
+            $wp_version = get_bloginfo('version');
+        }
+        #run duplicate killer if version is not appropriate
+    }
 
-    //     #run duplicate killer if version is not appropriate
-    // }
   //Load the admin page Stylesheet. 
     function wp_brafton_article_importer_settings_style() {
         $siteurl = get_option('siteurl');

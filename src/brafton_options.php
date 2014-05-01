@@ -1,4 +1,5 @@
 <?php 
+	require_once(sprintf("%s/brafton_errors.php", dirname(__FILE__)));
 
 	class Brafton_Options
 	{
@@ -8,7 +9,7 @@
 	         * Castleford, ContentLEAD, or Brafton
 	         * @return string $product
 	         */
-	        public function get_product()
+	        public function brafton_get_product()
 	        {
 	            $option = get_option('braftonxml_domain');
 
@@ -31,7 +32,7 @@
 	         *  @uses http://codex.wordpress.org/Function_Reference/get_users
 	         *  @return array [int]
 	         */
-	        public function get_blog_authors()
+	        public function brafton_get_blog_authors()
 	        {
 	            $users = array(); 
 	            $args = array(  'blog_id' => $GLOBALS['blog_id'], 
@@ -49,7 +50,7 @@
 	            return $users; 
 	        }
 
-	        public function has_api_key(){
+	        public function brafton_has_api_key(){
 		        $option = get_option('braftonxml_sched_API_KEY');
 
 		        if( $option == '' ) //better to check if api key is valid
@@ -115,7 +116,7 @@
 
 	    	public function link_to_product()
 	    	{
-	    		$product = $this->get_product(); 
+	    		$product = $this->brafton_get_product(); 
 	    		switch( $product )
 	    		{
 	    			case 'Brafton' : 
@@ -140,7 +141,7 @@
 	        {
 	            $name = $args['name'];
 	            $label = $args['label'];
-	            echo sprintf('<p>%s</p><input type="file" name="%s" />', $label, $name);
+	            echo sprintf('<div class="archive-upload"><p>%s</p><input type="file" name="%s" /></div>', $label, $name);
 	        }
 
 	        public function get_article_link()
@@ -165,6 +166,114 @@
 	        		); 
 		        return $sections;
 	        }
+	                /**
+         * This function provides text inputs for settings fields
+         */
+        public function settings_field_input_text($args)
+        {
+            // Get the field name from the $args array
+            $field = $args['field'];
+            // Get the value of this setting
+            $value = get_option($field);
+            // echo a proper input type="text"
+            echo sprintf('<div class="%s"><input type="text" name="%s" id="%s" value="%s" /></div>', $args['name'], $field, $field, $value);
+        } // END public function settings_field_input_text($args)
+
+        public function settings_author_dropdown( $element )
+        {
+            $field = $element['name'];
+            $value = get_option( $element['name'] ); 
+            
+            $output = '<select name= "' . esc_attr( $field ) . '" >'; 
+  
+                $options = $this->author_options(); 
+            
+               
+                foreach ( $options as $o )
+                {
+                   
+                    $output .= '<option value="' .  esc_attr( $o['id'] ) . '"'; 
+                    if( $value == $o['id'] )
+                        $output .=  ' selected >'; 
+                    else
+                        $output .= '>';
+
+                    $output .=  esc_attr( $o['name'] ) . '</option>';
+                    
+                }
+                $output .=  '</select>';
+
+            echo sprintf( $output );
+        }
+
+        /**
+         * @uses Brafton_Options to retrieve users with authorship privileges 
+         */
+        private function author_options(){
+
+
+               $blog_authors = $this->brafton_get_blog_authors(); 
+
+               return $blog_authors; 
+        }
+
+        public function render_radio($element)
+        {
+            $output = '';
+            $value = get_option( $element['name'] ); 
+
+            //echo $value;
+
+            if ( $value == '' && isset( $element['default'] ) ){
+                $value = $element['default'];
+                update_option( $element['name'], $element['default'] );
+            }
+            
+                foreach ($element['options'] as $key => $option)
+                {
+                    $output .= '<div class="radio-option ' . str_replace( '_', '-', $element['name'] ) . '>"><label><input type="radio" name="'. esc_attr($element['name']) .'" value="'. esc_attr($key) . '"';
+
+                    if ( $value == $option ){
+                      $output .=   checked($key, $value, true) . ' checked' . ' /><span>' . esc_html($option) . '</span></label></div>';
+                    }
+                    $output .=   checked($key, $value, false) . ' /><span>' . esc_html($option) . '</span></label></div>';
+                }   
+            
+                    
+            echo sprintf( $output );
+        }
+
+        public function render_select($element)
+        {
+            $element = array_merge(array('value' => null), $element);
+            
+            $output = '<select name="'. esc_attr($element['name']) .'"' . (isset($element['class']) ? ' class="'. esc_attr($element['class']) .'"' : '') . '>';
+            
+            foreach ( (array) $element['options'] as $key => $option) 
+            {
+                if (is_array($option)) {
+                    $output .= '<optgroup label="' . esc_attr($key) . '">' . $this->_render_options($option) . '</optgroup>';
+                }
+                else {
+                    $output .= $this->_render_options(array($key => $option), $element['value']);
+                }
+                
+            }
+            
+            return $output . '</select>';
+        }
+
+        // helper for: render_select()
+        private function _render_options($options, $selected = '') 
+        {   
+            $output = '';
+            
+            foreach ($options as $key => $option) {
+                $output .= '<option value="'. esc_attr($key) .'"'. selected((string) $selected, $key, false) .'>' . esc_html($option) . '</option>';
+            }
+            
+            return $output;
+        }
 	}
 
 

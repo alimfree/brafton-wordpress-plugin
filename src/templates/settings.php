@@ -6,16 +6,13 @@
 
 <div class="wrap">
     <div class="brafton-options">
-    <h2> <?php echo $brafton_options->get_product(); ?>  Importer</h2>
+    <h2> <?php echo $brafton_options->brafton_get_product(); ?>  Importer</h2>
 
     <?php 
-    if( $brafton_options->has_api_key() )
-        echo 'Thank you for Partnering with ' . $brafton_options->link_to_product() .' ';
-    else
-        echo 'Please Enter Your Importer Settings. ';
+   
 
     if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true )
-            echo '<div class="updated fade"><p>' . __( sprintf('%s options updated.', $brafton_options->get_product() ) ) . '</p></div>'; ?>
+            echo '<div class="updated fade"><p>' . __( sprintf('%s options updated.', $brafton_options->brafton_get_product() ) ) . '</p></div>'; ?>
 
     <form method="post" action="options.php"> 
         <?php @settings_fields('WP_Brafton_Article_Importer_group'); ?>
@@ -34,12 +31,11 @@
                  #@do_settings_fields('WP_Brafton_Article_Importer_group'); ?>
 
                 <?php    do_settings_sections('WP_Brafton_Article_Importer'); ?>
-                <?php  # echo $brafton_options->settings_xml_upload(array('label' => 'Upload a specific xml Archive file', 'name' => 'achives' ) ); ?>
+                <?php  #  ?>
         </div><!-- end .ul-tabs-->
-        <?php  # @submit_button(); 
-        echo '</div>
-        <p class="submit"><input name="Submit" type="submit" class="button-primary" value="' . __( 'Save Changes' ) . '" /></p>' ?>
-
+        <?php   @submit_button(); ?>
+        <?php if( $brafton_options->brafton_has_api_key() )
+            echo '<div class="footer">Thank you for Partnering with ' . $brafton_options->link_to_product() .' </div>'; ?>
     </form>
     </div><!--- .brafton-options -->
 </div><!-- .wrap -->

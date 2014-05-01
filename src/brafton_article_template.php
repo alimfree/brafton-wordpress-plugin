@@ -42,7 +42,7 @@ if(!class_exists('Brafton_Article_Template'))
      		register_post_type(self::POST_TYPE,
     			array(
     				'labels' => array(
-    					'name' => $this->brafton_options->get_product() . ' Articles',
+    					'name' => $this->brafton_options->brafton_get_product() . ' Articles',
     					'singular_name' => __(ucwords(str_replace("_", " ", self::POST_TYPE)))
     				),
     				'public' => true,
@@ -99,7 +99,7 @@ if(!class_exists('Brafton_Article_Template'))
     		// Add this metabox to every selected post
     		add_meta_box( 
     			sprintf('WP_Brafton_Article_Importer_%s_section', self::POST_TYPE),
-    			sprintf('%s Article Information', ucwords(str_replace("_", " ", $this->brafton_options->get_product() ))),
+    			sprintf('%s Article Information', ucwords(str_replace("_", " ", $this->brafton_options->brafton_get_product() ))),
     			array(&$this, 'add_inner_meta_boxes'),
     			self::POST_TYPE, 
                 'side'
