@@ -336,7 +336,9 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
             add_action( 'admin_print_scripts-' . $admin_page, array( &$this, 'scripts' ) );
 
         } // END public function add_menu()
+       
 
+        
         /**
          * Menu Callback
          */		

@@ -1,7 +1,7 @@
 <?php
     // Initialize Settings
     require_once( sprintf(realpath(dirname(__FILE__) . '/..') .'/brafton_options.php'));
-    $brafton_options = new Brafton_Options(); 
+    $brafton_options = Brafton_options::get_instance(); 
  ?>
 
 <table> 

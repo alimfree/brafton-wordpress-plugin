@@ -1,14 +1,14 @@
 <?php
 	// Initialize Settings
     require_once( sprintf(realpath(dirname(__FILE__) . '/..') .'/brafton_options.php'));
-    $brafton_options = new Brafton_Options(); 
+    $brafton_options = Brafton_options::get_instance(); 
  ?>
 
 <div class="wrap">
     <div class="brafton-options">
     <h2> <?php echo $brafton_options->brafton_get_product(); ?>  Importer</h2>
+
     <?php 
-   
 
     if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true )
             echo '<div class="updated fade"><p>' . __( sprintf('%s options updated.', $brafton_options->brafton_get_product() ) ) . '</p></div>'; ?>
@@ -32,10 +32,15 @@
                 <?php    do_settings_sections('WP_Brafton_Article_Importer'); ?>
                 <?php  #  ?>
         </div><!-- end .ul-tabs-->
-        <?php   @submit_button(); ?>
-        <?php if( $brafton_options->brafton_has_api_key() )
-            echo '<div class="footer">Thank you for Partnering with ' . $brafton_options->link_to_product() .' </div>'; ?>
+        <?php  # @submit_button(); 
+        echo '</div>
+        <p class="submit"><input name="Submit" type="submit" class="button-primary" value="' . __( 'Save Changes' ) . '" /></p>' ?>
+        <?php
+        if( $brafton_options->brafton_has_api_key() )
+            echo '<div class="footer">Thank you for Partnering with ' . $brafton_options->link_to_product() .' </div>';
+        ?>
     </form>
+   
     </div><!--- .brafton-options -->
 </div><!-- .wrap -->
  

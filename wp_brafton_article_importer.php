@@ -32,7 +32,7 @@ if(!class_exists('WP_Brafton_Article_Importer'))
         {
             // Initialize Settings
             require_once(sprintf("%s/src/brafton_options.php", dirname(__FILE__)));
-            $brafton_options = new Brafton_options(); 
+            $brafton_options = Brafton_options::get_instance();
             require_once(sprintf("%s/wp_brafton_article_importer_settings.php", dirname(__FILE__)));
             $brafton_importer_settings = new WP_Brafton_Article_Importer_Settings( $brafton_options );
             

@@ -1,6 +1,9 @@
 <?php 
 	require_once(sprintf("%s/brafton_errors.php", dirname(__FILE__)));
 
+	/**
+	 * Singleton Class for retrieving options from the wordpress database.
+	 */
 	class Brafton_Options
 	{
         public $brafton_default_author;
@@ -28,7 +31,10 @@
         public $brafton_errors;
         public $brafton_options;
 
-		function __construct(){
+        private static $instance = null;
+
+        //Let's hinder direct instantiation by cloning. 
+		private final function __construct(){
 			$options = get_object_vars( $this );
 				#var_dump( $options );
 
@@ -43,6 +49,19 @@
 			}
 			$this->brafton_options = $brafton_options;  
 		}
+
+		private final function __clone() { }
+    	public final function __sleep() {
+       		throw new Exception('Serializing of Singletons is not allowed');
+    	}
+    	/**
+    	 * Access this object with this method.
+    	 */
+    	public static function get_instance() {
+        	if (self::$instance === null) 
+        		self::$instance = new self();
+        	return self::$instance;
+    	}
 		 /**
 	         * Checks which company client is partnered with. 
 	         * Castleford, ContentLEAD, or Brafton
