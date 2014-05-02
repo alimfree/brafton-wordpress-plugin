@@ -23,6 +23,7 @@ if(!class_exists('WP_Brafton_Article_Importer'))
     include_once 'src/brafton_taxonomy.php';
     include_once 'src/brafton_image_handler.php';
     include_once 'src/brafton_article_importer.php';
+    include_once 'src/brafton_errors.php';
     class WP_Brafton_Article_Importer
     {   
         /**
@@ -112,12 +113,14 @@ if(class_exists('WP_Brafton_Article_Importer'))
                 $brafton_tags = new Brafton_Taxonomy();
                 $brafton_image = new Brafton_Image_Handler();
                 $brafton_article = new Brafton_Article_Helper();
+                $brafton_errors = Brafton_errors::get_instance();
 
                 $brafton_article_importer = new Brafton_Article_Importer(
                     $brafton_image, 
                     $brafton_cats, 
                     $brafton_tags, 
-                    $brafton_article
+                    $brafton_article,
+                    $brafton_errors
                     );
 
                 $brafton_article_importer->import_articles();

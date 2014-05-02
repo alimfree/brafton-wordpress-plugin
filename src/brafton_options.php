@@ -30,6 +30,7 @@
         public $brafton_import_articles;
         public $brafton_errors;
         public $brafton_options;
+        public $brafton_error_log;
 
         private static $instance = null;
 

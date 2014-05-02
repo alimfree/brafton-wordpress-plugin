@@ -8,6 +8,7 @@ if ( !class_exists( 'Article_Importer' ) )
 	include_once 'brafton_article_helper.php';
 	include_once 'brafton_taxonomy.php';
 	include_once 'brafton_image_handler.php';
+	include_once 'brafton_errors.php';
 	/**
 	 * @package WP Brafton Article Importer 
 	 *
@@ -15,11 +16,12 @@ if ( !class_exists( 'Article_Importer' ) )
 	class Brafton_Article_Importer {
 
 		//Initialize 
-		function __construct ( Brafton_Image_Handler $brafton_image = Null, Brafton_Taxonomy $brafton_cats, Brafton_Taxonomy $brafton_tags, Brafton_Article_Helper $brafton_article ){
+		function __construct ( Brafton_Image_Handler $brafton_image = Null, Brafton_Taxonomy $brafton_cats, Brafton_Taxonomy $brafton_tags, Brafton_Article_Helper $brafton_article, Brafton_Errors $brafton_errors ){
 			$this->brafton_image_handler = $brafton_image;
 			$this->brafton_cats = $brafton_cats;
 			$this->brafton_tags = $brafton_tags; 
 			$this->brafton_article = $brafton_article; 
+			$this->brafton_errors = $brafton_errors;
 		}
 
 		/**
