@@ -32,9 +32,7 @@
                 <?php    do_settings_sections('WP_Brafton_Article_Importer'); ?>
                 <?php  #  ?>
         </div><!-- end .ul-tabs-->
-        <?php  # @submit_button(); 
-        echo '</div>
-        <p class="submit"><input name="Submit" type="submit" class="button-primary" value="' . __( 'Save Changes' ) . '" /></p>' ?>
+        <?php   @submit_button(); ?>
         <?php
         if( $brafton_options->brafton_has_api_key() )
             echo '<div class="footer">Thank you for Partnering with ' . $brafton_options->link_to_product() .' </div>';

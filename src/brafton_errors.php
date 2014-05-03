@@ -1,14 +1,27 @@
 <?php
-
+/**
+ * This class handles brafton wordpress plugin error handling. Any reported errors 
+ * are stored as a serialized array in wp database in. 
+ */
 class Brafton_Errors {
 
+	/**
+	 * Array of errors 
+	 */ 
 	public $brafton_errors_option;
+	/**
+	 * Array Plugin Settings Options
+	 */
+	public $brafton_options;
+	/**
+	 * Brafton_Errors Object used to declare class once
+	 */ 
 	private static $instance = null;
 
-	private final function __construct( Brafton_Options $brafton_options )
+	private final function __construct()
 	{
 		$this->brafton_options = Brafton_Options::get_instance();	
-		$brafton_errors = array( 'Type' => 'Message');
+		$brafton_errors = array( 'type' =>'', 'message' => '', 'priority' => '' );
 		add_option('brafton_errors_log', $brafton_errors );
 	}
 
@@ -32,13 +45,13 @@ class Brafton_Errors {
 	 */
 	public function log($message ) {
 
-		$this->brafton_errors_option =  $this->brafton_options->get_option('brafton_error_log');
+		$this->brafton_errors_option =  $this->brafton_options->get_option(ERRORS_OPTION);
 
- 		if ( $this->brafton_options->get_option('brafton_errors') == 'on' ) {
+ 		if ( $this->brafton_options->get_option(ENABLE_ERRORS) == 'on' ) {
 			// $message expected to be an array including error type and msg
         	if (is_array($message) || is_object($message)) {
         		$brafton_errors_option[$this->type] = $message;
-        	   	update_option( 'brafton_error_log', serialize( $this->brafton_errors_option ) );
+        	   	update_option( ERRORS_OPTION, serialize( $this->brafton_errors_option ) );
        		} 
        		else {
        			//send the error message to web server defined error handling routine
@@ -46,13 +59,15 @@ class Brafton_Errors {
         	}
     	}
 	}
-
-	public function display() {
-		$this->brafton_errors_option = get_option('brafton_errors');
-		foreach( $this->brafton_errors_option as $error => $value)
-		{
-			#todo
-		}
-	}
+	/**
+	 * Displays admin notices for important errors
+	 */
+	// public function admin_notice_errors() {
+	// 	$this->brafton_errors_option = get_option(ENABLE_ERRORS);
+	// 	foreach( $this->brafton_errors_option as $error => $value)
+	// 	{
+	// 		#todo
+	// 	}
+	// }
 }
 ?>

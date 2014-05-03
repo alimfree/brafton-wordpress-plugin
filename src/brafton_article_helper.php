@@ -208,29 +208,5 @@
         {
         	
         }
-
-        /**
-         * 
-         * accepts two dimencional array of brafton_id and post_id's
-         * 
-         */
-        public function set_articles_option( $new_article_ids )
-        {
-
-        	if( $this->articles_id_array )
-        	{
-        		array_unshift( $this->articles_id_array, $new_article_ids ); 
-        		update_option('brafton_articles_array', $this->article_id_array );
-        	}
-        	else
-        		update_option('brafton_articles_array', $new_article_ids);
-        		
-        }
-
-        public function get_articles_option( )
-        {
-        	$articles_option = get_option( 'brafton_articles_array');
-        	return $articles_option; 
-        }
 	}
 ?>

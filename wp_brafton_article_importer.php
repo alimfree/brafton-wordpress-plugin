@@ -32,6 +32,8 @@ if(!class_exists('WP_Brafton_Article_Importer'))
         public function __construct()
         {
             // Initialize Settings
+
+            require_once(sprintf("%s/src/brafton_errors.php", dirname(__FILE__)));
             require_once(sprintf("%s/src/brafton_options.php", dirname(__FILE__)));
             $brafton_options = Brafton_options::get_instance();
             require_once(sprintf("%s/wp_brafton_article_importer_settings.php", dirname(__FILE__)));
@@ -106,9 +108,8 @@ if(class_exists('WP_Brafton_Article_Importer'))
          * Run the importer
          */
         function run_import(){
-
-            // if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true ) 
-            // {
+            if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true ) 
+            {
                 $brafton_cats = new Brafton_Taxonomy();
                 $brafton_tags = new Brafton_Taxonomy();
                 $brafton_image = new Brafton_Image_Handler();
@@ -122,11 +123,11 @@ if(class_exists('WP_Brafton_Article_Importer'))
                     $brafton_article,
                     $brafton_errors
                     );
-
+                echo 'got here';
                 $brafton_article_importer->import_articles();
                 update_option("braftonxml_sched_triggercount", get_option("braftonxml_sched_triggercount") + 1, 0);
                 $wp_version = get_bloginfo('version');
-            // }
+            }
         }
    
         

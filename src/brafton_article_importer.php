@@ -15,13 +15,24 @@ if ( !class_exists( 'Article_Importer' ) )
 	 */
 	class Brafton_Article_Importer {
 
+		 public $brafton_articles;
+		 public $brafton_images;
 		//Initialize 
 		function __construct ( Brafton_Image_Handler $brafton_image = Null, Brafton_Taxonomy $brafton_cats, Brafton_Taxonomy $brafton_tags, Brafton_Article_Helper $brafton_article, Brafton_Errors $brafton_errors ){
-			$this->brafton_image_handler = $brafton_image;
+			//let's get feed data for previously imported articles
+			$this->brafton_articles = get_option('brafton_articles');
+			
+			if( 'on' == $this->brafton_options->get_option('brafton_photo') )
+			{	//grab image data for previously imported images
+				$this->brafton_images = get_option('brafton_images');
+				//and load the image class.
+				$this->brafton_image_handler = $brafton_image;
+			}
 			$this->brafton_cats = $brafton_cats;
 			$this->brafton_tags = $brafton_tags; 
 			$this->brafton_article = $brafton_article; 
 			$this->brafton_errors = $brafton_errors;
+
 		}
 
 		/**
@@ -82,8 +93,8 @@ if ( !class_exists( 'Article_Importer' ) )
 				//update post to include thumbnail image
 				$this->brafton_image_handler->insert_image( $photos, $post_id, $has_video ); 
 			}
-
-			$this->brafton_article->set_articles_option( $article_id_array );
+			//update article_array
+			$this->brafton_feed->update_options( $article_id_array );
 		}
 
 	}

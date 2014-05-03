@@ -5,56 +5,63 @@
 	 * Singleton Class for retrieving options from the wordpress database.
 	 */
 	class Brafton_Options
-	{
-        public $brafton_default_author;
-        public $braftonxml_sched_API_KEY;
-        public $braftonxml_domain;
-        public $braftonxml_sched_tags;
-        public $braftonxml_sched_status;
-        public $brafton_tags_option;
-        public $brafton_categories;
-        public $brafton_categories_options;
-        public $brafton_photo;
-        public $brafton_importer_status;
-        public $braftonxml_overwrite;
-        public $braftonxml_publishdate;
-        public $braftonxml_video;
-        public $braftonxml_videoPublic;
-        public $braftonxml_videoSecret;
-        public $braftonxml_videoFeedNum;
-        public $brafton_custom_post_type;
-        public $brafton_purge;
-        public $brafton_parent_categories;
-        public $brafton_custom_taxonomy;
-        public $braftonxml_sched_triggercount;
-        public $brafton_import_articles;
-        public $brafton_errors;
-        public $brafton_options;
-        public $brafton_error_log;
-
+	{	
+      	const ENABLE_ARTICLES_OPTION = 'brafton_import_articles';
+        const ENABLE_VIDEO_OPTION = 'braftonxml_video'; 
+        const ENABLE_IMAGES_OPTION = 'brafton_photo';
+        const AUTHOR_OPTION = 'brafton_default_author';
+        const FEED_OPTION = 'braftonxml_sched_API_KEY';
+        const DOMAIN_OPTION = 'braftonxml_domain';
+        const CUSTOM_TAGS_OPTION = 'braftonxml_sched_tags';
+        const SCHEDULED_STATUS_OPTION = 'braftonxml_sched_status';
+        const TAGS_OPTION = 'brafton_tags_option';
+        const CATEGORIES_OPTION = 'brafton_categories';
+        const OVERWRITE_OPTION = 'braftonxml_overwrite';
+        const POST_DATE_OPTION = 'braftonxml_publishdate';
+        const VIDEO_OPTION = 'braftonxml_video';
+        const VIDEO_FEED_OPTION = 'braftonxml_videoSecret';
+        const VIDEO_FEED_NUM_OPTION = 'braftonxml_videoFeedNum';
+        const CUSTOM_POST_OPTION = 'brafton_custom_post_type';
+        const DISABLE_OPTION = 'brafton_purge';
+        const PARENT_CATEGORIES_OPTION = 'brafton_parent_categories';
+        const CUSTOM_TAXONOMY_OPTION = 'brafton_custom_taxonomy';
+        const IMPORT_COUNT_OPTION = 'braftonxml_sched_triggercount';
+        const ENABLE_ERRORS_OPTION = 'brafton_errors'; 
+        const ERRORS_OPTION = "brafton_error_log";
+		//Store brafton options
+        //Array of plugin errors log
+        public $errors; 
+        //Brafton_Options Object 
         private static $instance = null;
 
-        //Let's hinder direct instantiation by cloning. 
-		private final function __construct(){
-			$options = get_object_vars( $this );
-				#var_dump( $options );
-
+        //Let's hinder direct instantiation by cloning.  
+		private final function __construct( ){
+			$options  = $this->get_defined_constants();
+			$test = $this->get_option('ENABLE_ARTICLES_OPTION');
+			#$this->errors = Brafton_Errors::get_instance();
 			$brafton_options = array();
-			foreach( $options as $option => $value )
+			foreach( $options as $key => $option )
 			{
-				#var_dump( $option );
-				$value =  get_option( $option );
 				#var_dump( $value );
-	        	$brafton_options[$option] = $value;
-	        	#var_dump( $this->option );
+				$option_value =  get_option( $option );
+				#var_dump( $value );
+	        	$brafton_options[$option] = $option_value;
+	        	#var_dump($brafton_options);
 			}
 			$this->brafton_options = $brafton_options;  
+
 		}
 
 		private final function __clone() { }
     	public final function __sleep() {
        		throw new Exception('Serializing of Singletons is not allowed');
     	}
+
+    	public function get_defined_constants() {
+    		$class = new ReflectionClass(__CLASS__);
+    		return $class->getConstants();
+    	}
+
     	/**
     	 * Access this object with this method.
     	 */
@@ -63,20 +70,34 @@
         		self::$instance = new self();
         	return self::$instance;
     	}
-		 /**
+
+
+		 	/**
+		 	 * Returns option_name as it appears in the wp options table. Accepts brafton_option class 
+		 	 * constant as string.
+		 	 * as string.
+		 	 * @param String $option_const 
+		 	 */
+		 	public function get_option( $option_const ){
+		 		return constant('self::'. $option_const);
+		 	}
+		 	/**
+		 	 * Registers settings for plugin options page.
+		 	 */
+		 	public function register_options()
+		 	{
+		 		$options = $this->brafton_options;
+
+		 		foreach( $options as $key => $value )
+		 		{
+		 			register_setting('WP_Brafton_Article_Importer_group', $key );
+		 		}
+		 	}
+		 	/**
 	         * Checks which company client is partnered with. 
 	         * Castleford, ContentLEAD, or Brafton
 	         * @return string $product
-	         */
-
-		 	/**
-		 	 * Helps avoid dozen database queries on the options table.
-		 	 * $option_name
-		 	 */
-		 	public function get_option( $option_name ){
-		 		 return $this->brafton_options[$option_name];
-		 	}
-
+	         */		
 	        public function brafton_get_product()
 	        {
 	            $product = get_option('braftonxml_domain');
@@ -162,29 +183,7 @@
 	         */
 	        public function purge_options()
 	        {
-		        $purge = get_option('brafton_purge');
-
-		        if ( $purge = 'options')
-		        {
-		   	       	unregister_setting('WP_Brafton_Article_Importer_group', 'brafton_default_author');
-		        	unregister_setting('WP_Brafton_Article_Importer_group', 'braftonxml_sched_API_KEY');
-		            unregister_setting('WP_Brafton_Article_Importer_group', 'braftonxml_domain');
-		            unregister_setting('WP_Brafton_Article_Importer_group', 'braftonxml_sched_tags');
-		            unregister_setting('WP_Brafton_Article_Importer_group', 'braftonxml_sched_status');
-		            unregister_setting('WP_Brafton_Article_Importer_group', 'brafton_tags_option');
-		            unregister_setting('WP_Brafton_Article_Importer_group', 'brafton_categories');
-		            unregister_setting('WP_Brafton_Article_Importer_group', 'brafton_categories_options');
-		            unregister_setting('WP_Brafton_Article_Importer_group', 'brafton_photo');
-		            unregister_setting('WP_Brafton_Article_Importer_group', 'brafton_importer_status');
-		            unregister_setting('WP_Brafton_Article_Importer_group', 'braftonxml_overwrite');
-		        	unregister_setting('WP_Brafton_Article_Importer_group', 'braftonxml_publishdate');
-		            unregister_setting('WP_Brafton_Article_Importer_group', 'braftonxml_video');
-		            unregister_setting('WP_Brafton_Article_Importer_group', 'braftonxml_videoPublic');
-		            unregister_setting('WP_Brafton_Article_Importer_group', 'braftonxml_videoSecret');
-		            unregister_setting('WP_Brafton_Article_Importer_group', 'braftonxml_videoFeedNum');
-		            unregister_setting('WP_Brafton_article_Importer_group', 'brafton_custom_post_type');
-		            unregister_setting('WP_Brafton_article_Importer_group', 'brafton_purge');
-		        } 
+	        	#todo 
 	        }
 
 	    	public function link_to_product()

@@ -34,29 +34,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
         public function admin_init()
         {
         	// register your plugin's settings
-        	register_setting('WP_Brafton_Article_Importer_group', 'brafton_default_author');
-        	register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_sched_API_KEY');
-            register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_domain');
-            register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_sched_tags');
-            register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_sched_status');
-            register_setting('WP_Brafton_Article_Importer_group', 'brafton_tags_option');
-            register_setting('WP_Brafton_Article_Importer_group', 'brafton_categories');
-            register_setting('WP_Brafton_Article_Importer_group', 'brafton_categories_options');
-            register_setting('WP_Brafton_Article_Importer_group', 'brafton_photo');
-            register_setting('WP_Brafton_Article_Importer_group', 'brafton_importer_status');
-            register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_overwrite');
-        	register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_publishdate');
-            register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_video');
-            register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_videoPublic');
-            register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_videoSecret');
-            register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_videoFeedNum');
-            register_setting('WP_Brafton_Article_Importer_group', 'brafton_custom_post_type');
-            register_setting('WP_Brafton_Article_Importer_group', 'brafton_purge');
-            register_setting('WP_Brafton_Article_Importer_group', 'brafton_parent_categories');
-            register_setting('WP_Brafton_Article_Importer_group', 'brafton_custom_taxonomy');
-            register_setting('WP_Brafton_Article_Importer_group', 'braftonxml_sched_triggercount');
-            register_setting('WP_Brafton_Article_Importer_group', 'brafton_import_articles');
-            register_setting('WP_Brafton_Article_Importer_group', 'brafton_errors');
+            $this->brafton_options->register_options();
 
             // add your settings section
         	add_settings_section(
