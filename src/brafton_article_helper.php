@@ -18,7 +18,7 @@
 		 */
 		public function format_post_content($post_content)
 		{
-			$post_content = preg_replace('|<(/?[A-Z]+)|e', "'<' . strtolower('$1')", $this->content);
+			$post_content = preg_replace('|<(/?[A-Z]+)|e', "'<' . strtolower('$1')", $post_content);
 			$post_content = str_replace('<br>', '<br />', $post_content);
 			$post_content = str_replace('<hr>', '<hr />', $post_content);
 
@@ -115,14 +115,6 @@
 			return $post_author; 
 		}
 
-		/**
-		 * Format post content.
-		 */
-		public function get_post_content(){
-			$post_content = preg_replace('|<(/?[A-Z]+)|e', "'<' . strtolower('$1')", $post_content);
-			$post_content = str_replace('<br>', '<br />', $post_content);
-			$post_content = str_replace('<hr>', '<hr />', $post_content);
-		}
 		/**
 		 * Retrieve default post status from brafton setttings
 		 * @return String $post_status

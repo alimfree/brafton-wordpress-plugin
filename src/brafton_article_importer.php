@@ -59,7 +59,6 @@ if ( !class_exists( 'Article_Importer' ) )
 
 			$article_id_array = array();
 			foreach( $article_array as $a ){
-				var_dump($a);
 				//Get article meta data from feed
 				$brafton_id = $a->getID(); 
 				$post_date = $this->brafton_article->get_publish_date( $a ); 

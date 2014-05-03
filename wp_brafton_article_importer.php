@@ -52,7 +52,6 @@ if(!class_exists('WP_Brafton_Article_Importer'))
             #$msg = serialize($message);
 
             #update_option(BRAFTON_ERROR_LOG, $message );
-            var_dump( get_option(BRAFTON_ERROR_LOG));
 
         } // END public function __construct
 
