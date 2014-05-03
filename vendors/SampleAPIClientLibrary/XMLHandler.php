@@ -6,42 +6,30 @@
  * class XMLHandler is a helper class to parse the XML feed data
  * @package SamplePHPApi
  */
-
-//load wp_http class   
-	if( !class_exists( 'WP_Http' ) )
-	  	include_once( ABSPATH . WPINC . '/class-http.php' ); 
-	  
 class XMLHandler {
 	/** @var Document */
 	private $doc;
 
-	/** @var WP_HTTP */
-  	static $request;
-
-
+  	static $ch;
 	
-	/**
+
+		/**
 	 * @param String $url
 	 * @return XMLHandler
 	 */
-	function __construct($url, DOMDocument $domdoc = NULL, WP_Http $web_request = NULL ){
-	 if( $domdoc )
-	 	$this->doc = $domdoc; 
-
-	 if( $web_request )
-	 	$this->request = $web_request; 
-
+	function __construct($url){
 	 if(!preg_match('/^http:\/\//', $url)){
       $url = 'file://' . $url;
     }
 
-    if( !isset( $this->doc ) )
-		$this->doc = new DOMDocument();
+	$this->doc = new DOMDocument();
     
-	if( !isset( $this->request ) )
-	    $this->request = new WP_Http; 
-	
-    $result = $this->request->request( $url );
+    //load wp_http class   
+	if( !class_exists( 'WP_Http' ) )
+	  	include_once( ABSPATH . WPINC . '/class-http.php' );
+
+    $request = new WP_Http; 
+    $result = $request->request( $url );
 
     $feed_string = $result['body'];
 

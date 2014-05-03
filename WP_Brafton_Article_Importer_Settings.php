@@ -228,7 +228,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
                 'WP_Brafton_Article_Importer',
                 'brafton_developer_section',
                 array('label' => 'Upload a specific xml Archive file', 
-                    'name' => 'achives' 
+                    'name' => 'brafton-achive' 
                     )
             ); 
         }
@@ -310,7 +310,6 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
         	    'WP_Brafton_Article_Importer', 
         	    array(&$this, 'plugin_settings_page')
         	);
-
             add_action( 'admin_print_scripts-' . $admin_page, array( &$this, 'scripts' ) );
 
         } // END public function add_menu()

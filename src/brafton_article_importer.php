@@ -15,14 +15,14 @@ if ( !class_exists( 'Article_Importer' ) )
 	 */
 	class Brafton_Article_Importer {
 
-		 public $brafton_articles;
+		 public $brafton_article;
 		 public $brafton_images;
 		//Initialize 
-		function __construct ( Brafton_Image_Handler $brafton_image = Null, Brafton_Taxonomy $brafton_cats, Brafton_Taxonomy $brafton_tags, Brafton_Article_Helper $brafton_article, Brafton_Errors $brafton_errors ){
+		function __construct ( Brafton_Image_Handler $brafton_image = Null, Brafton_Taxonomy $brafton_cats, Brafton_Taxonomy $brafton_tags, Brafton_Article_Helper $brafton_article ){
 			//let's get feed data for previously imported articles
 			$this->brafton_articles = get_option('brafton_articles');
 			
-			if( 'on' == $this->brafton_options->get_option('brafton_photo') )
+			if( 'on' == get_option(BRAFTON_ENABLE_IMAGES) )
 			{	//grab image data for previously imported images
 				$this->brafton_images = get_option('brafton_images');
 				//and load the image class.
@@ -31,8 +31,6 @@ if ( !class_exists( 'Article_Importer' ) )
 			$this->brafton_cats = $brafton_cats;
 			$this->brafton_tags = $brafton_tags; 
 			$this->brafton_article = $brafton_article; 
-			$this->brafton_errors = $brafton_errors;
-
 		}
 
 		/**
@@ -49,15 +47,24 @@ if ( !class_exists( 'Article_Importer' ) )
 		 */
 		public function import_articles(){
 
-			$articles_array = $this->brafton_article->get_articles(); //look in article_helper for method definition. array of NewsItem objects
+			$article_array = $this->brafton_article->get_articles(); //look in article_helper for method definition. array of NewsItem objects
+
+            brafton_log( 
+	            		array(
+	            			'type' => 'Brafton Article', 
+	            			'priority' => 0, 
+	            			'message' => 'this is fun'
+	            			)
+	            	);
 
 			$article_id_array = array();
 			foreach( $article_array as $a ){
+				var_dump($a);
 				//Get article meta data from feed
 				$brafton_id = $a->getID(); 
-				$date = get_publish_date( $a ); 
+				$post_date = $this->brafton_article->get_publish_date( $a ); 
 				$post_title = $a->getHeadline();
-				$content = $a->getText(); 
+				$post_content = $a->getText(); 
 				$photos = $a->getPhotos(); 
 				$post_excerpt = $a->getExtract(); 
 				$keywords = $a->getKeywords();
@@ -67,7 +74,7 @@ if ( !class_exists( 'Article_Importer' ) )
 				//Get more article meta data
 				$post_author = $this->brafton_article->get_post_author(); 
 				$post_status = $this->brafton_article->get_post_status();
-				$post_content = $this->get_post_content($content); 
+				$post_content = $this->brafton_article->format_post_content($post_content); 
 				
 
 				//prepare article tag id array

@@ -3,7 +3,7 @@
 	class Brafton_Article_Helper {
 		public $post_type;
 		// Require Client Libraries 
-		function __construct( $brafton_options ){
+		function __construct( Brafton_Options $brafton_options ){
 			if( get_option('brafton_custom_post_type', true ) == 'on')
 				$this->post_type = 'Brafton_Article'; 
 			else
@@ -16,7 +16,7 @@
 		 * @param String $content
 		 * @return String $post_content
 		 */
-		private function format_post_content($content)
+		public function format_post_content($post_content)
 		{
 			$post_content = preg_replace('|<(/?[A-Z]+)|e', "'<' . strtolower('$1')", $this->content);
 			$post_content = str_replace('<br>', '<br />', $post_content);
@@ -84,23 +84,25 @@
 		{
 			$feed_settings = $this->get_feed_settings(); 
 			//Archive upload check 
-			if ($_FILES['archive']['tmp_name']) //todo add archive file upload settings
+			if (isset($_FILES['brafton-archive']['tmp_name'])) //todo add archive file upload settings
 			{
 				echo "Archive Option Selected<br/>";
 				$articles = NewsItem::getNewsList( $_FILES['archive']['tmp_name'], "html" );
 			} 
 			else 
 			{
-				if ( preg_match( "/\.xml$/", $feed_settings['api_key'] ) )
+				if ( preg_match( "/\.xml$/", $feed_settings['api_key'] ) ){
 					$articles = NewsItem::getNewsList( $feed_settings['api_key'], 'news' );
+				}
 				else
 				{
-					$ApiHandler = $ApiHandler ? : new ApiHandler( $feed_settings['api_key'], $feed_settings['api_url'] );
+					$url = 'http://' . $feed_settings['api_url'];
+					$ApiHandler = $ApiHandler ? : new ApiHandler( $feed_settings['api_key'], $url );
 					$articles = $ApiHandler->getNewsHTML(); 		
 				}
 			}
 
-			return $articles_array; 
+			return $articles; 
 		}
 
 		/**
@@ -113,6 +115,14 @@
 			return $post_author; 
 		}
 
+		/**
+		 * Format post content.
+		 */
+		public function get_post_content(){
+			$post_content = preg_replace('|<(/?[A-Z]+)|e', "'<' . strtolower('$1')", $post_content);
+			$post_content = str_replace('<br>', '<br />', $post_content);
+			$post_content = str_replace('<hr>', '<hr />', $post_content);
+		}
 		/**
 		 * Retrieve default post status from brafton setttings
 		 * @return String $post_status
@@ -129,7 +139,7 @@
 		 */
 		public function get_publish_date($article_array) {
 			
-			switch ( get_option( 'braftonxml_publishdate' ) )
+			switch ( get_option( BRAFTON_POST_DATE ) )
 			{
 				case 'modified':
 					$date = $article_array->getLastModifiedDate();
@@ -158,9 +168,9 @@
 		 */
 		public function get_feed_settings( $has_video = NULL ){
 			if( ! isset( $has_video) ) {
-				$feedSettings = array(
-					"url" => get_option("braftonxml_sched_url"),
-					"API_Key" => get_option("braftonxml_sched_API_KEY"),
+				$feed_settings = array(
+					"api_url" => get_option(BRAFTON_DOMAIN),
+					"api_key" => get_option(BRAFTON_FEED),
 				);	
 			}
 			else

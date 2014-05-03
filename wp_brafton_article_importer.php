@@ -13,7 +13,7 @@ Author URL: http://www.brafton.com
 if(!class_exists('WP_Brafton_Article_Importer'))
 {
     if (!defined('BRAFTON_PLUGIN_VERSION_KEY'))
-                define('BRAFTON_PLUGIN_VERSION_KEY', 'myplugin_version');
+                define('BRAFTON_PLUGIN_VERSION_KEY', 'brafton_importer_version');
 
     if (!defined('MYPLUGIN_VERSION_NUM'))
                 define('BRAFTON_PLUGIN_VERSION_NUM', '1.0.0');
@@ -26,6 +26,7 @@ if(!class_exists('WP_Brafton_Article_Importer'))
     include_once 'src/brafton_errors.php';
     class WP_Brafton_Article_Importer
     {   
+        public $brafton_options; 
         /**
          * Construct the plugin object
          */
@@ -45,6 +46,13 @@ if(!class_exists('WP_Brafton_Article_Importer'))
                 $Brafton_Article_Template = new Brafton_Article_Template( $brafton_options );
             
             add_option(BRAFTON_PLUGIN_VERSION_KEY, BRAFTON_PLUGIN_VERSION_NUM);
+
+            #$errors = new Brafton_Errors();
+            $message = array('type' => 'Brafton Importer', 'priority' => 0, 'message' => 'this is fun');
+            #$msg = serialize($message);
+
+            #update_option(BRAFTON_ERROR_LOG, $message );
+            var_dump( get_option(BRAFTON_ERROR_LOG));
 
         } // END public function __construct
 
@@ -102,7 +110,7 @@ if(class_exists('WP_Brafton_Article_Importer'))
         add_filter("plugin_action_links_$plugin", 'plugin_settings_link');
         
         //Allow us to manually run importer when settings are saved.
-        add_action('load-WP_Brafton_Article_Importer', 'run-import');
+        add_action('load-toplevel_page_WP_Brafton_Article_Importer', 'run_import');
 
         /**
          * Run the importer
@@ -110,20 +118,18 @@ if(class_exists('WP_Brafton_Article_Importer'))
         function run_import(){
             if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true ) 
             {
+                $brafton_options = Brafton_options::get_instance();
                 $brafton_cats = new Brafton_Taxonomy();
                 $brafton_tags = new Brafton_Taxonomy();
                 $brafton_image = new Brafton_Image_Handler();
-                $brafton_article = new Brafton_Article_Helper();
-                $brafton_errors = Brafton_errors::get_instance();
+                $brafton_article = new Brafton_Article_Helper($brafton_options);
 
                 $brafton_article_importer = new Brafton_Article_Importer(
                     $brafton_image, 
                     $brafton_cats, 
                     $brafton_tags, 
-                    $brafton_article,
-                    $brafton_errors
+                    $brafton_article
                     );
-                echo 'got here';
                 $brafton_article_importer->import_articles();
                 update_option("braftonxml_sched_triggercount", get_option("braftonxml_sched_triggercount") + 1, 0);
                 $wp_version = get_bloginfo('version');
