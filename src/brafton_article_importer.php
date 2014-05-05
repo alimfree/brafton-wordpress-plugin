@@ -31,8 +31,8 @@ if ( !class_exists( 'Article_Importer' ) )
 			$this->brafton_tags = $brafton_tags; 
 			$this->brafton_article = $brafton_article; 
 
-			$log['priority'] = 1; 
-			brafton_initialize_log( 'brafton_article_log', $log );
+			#$log['priority'] = 1; 
+			brafton_initialize_log( 'brafton_article_log' );
 
 			//let's get feed data for previously imported articles
 			$this->brafton_articles_log = get_option('brafton_articles_log');
