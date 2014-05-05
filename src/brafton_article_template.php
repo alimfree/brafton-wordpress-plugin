@@ -42,16 +42,20 @@ if(!class_exists('Brafton_Article_Template'))
      		register_post_type(self::POST_TYPE,
     			array(
     				'labels' => array(
-    					'name' => $this->brafton_options->get_product() . ' Articles',
+    					'name' => $this->brafton_options->brafton_get_product() . ' Articles',
     					'singular_name' => __(ucwords(str_replace("_", " ", self::POST_TYPE)))
     				),
     				'public' => true,
     				'has_archive' => true,
     				'description' => __("This is a sample post type meant only to illustrate a preferred structure of plugin development"),
     				'supports' => array(
-    					'title', 'author' , 'editor', 'excerpt', 'thumbnail', 'revisions',
+    					'title', 'author' , 'editor', 'excerpt', 'thumbnail', 'revisions', 'post_formats',
     				),
+<<<<<<< HEAD
                     'show_in_menu' => 'admin.php?page=brafton_parent_menu'
+=======
+                    #'register_meta_box_cb' => array(&$this, 'add_meta_boxes')
+>>>>>>> tabs
     			)
     		);
     	}
@@ -68,7 +72,7 @@ if(!class_exists('Brafton_Article_Template'))
                 return;
             }
             
-    		if($_POST['post_type'] == self::POST_TYPE && current_user_can('edit_post', $post_id))
+    		if( isset($_POST['post_type']) == self::POST_TYPE && current_user_can('edit_post', $post_id))
     		{
     			foreach($this->_meta as $field_name)
     			{
@@ -99,9 +103,10 @@ if(!class_exists('Brafton_Article_Template'))
     		// Add this metabox to every selected post
     		add_meta_box( 
     			sprintf('WP_Brafton_Article_Importer_%s_section', self::POST_TYPE),
-    			sprintf('%s Information', ucwords(str_replace("_", " ", self::POST_TYPE))),
+    			sprintf('%s Article Information', ucwords(str_replace("_", " ", $this->brafton_options->brafton_get_product() ))),
     			array(&$this, 'add_inner_meta_boxes'),
-    			self::POST_TYPE
+    			self::POST_TYPE, 
+                'side'
     	    );					
     	} // END public function add_meta_boxes()
 

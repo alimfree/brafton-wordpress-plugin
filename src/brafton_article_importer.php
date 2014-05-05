@@ -4,18 +4,38 @@
 
 if ( !class_exists( 'Article_Importer' ) )
 {	
-	include_once '../vendors/SampleAPIClientLibrary/ApiHandler.php';
+	include_once ( plugin_dir_path( __FILE__ ) . '../vendors/SampleAPIClientLibrary/ApiHandler.php');
 	include_once 'brafton_article_helper.php';
+	include_once 'brafton_taxonomy.php';
+	include_once 'brafton_image_handler.php';
+	include_once 'brafton_errors.php';
 	/**
 	 * @package WP Brafton Article Importer 
 	 *
 	 */
 	class Brafton_Article_Importer {
 
+		 public $brafton_article_log;
+		 public $brafton_article;
+		 public $brafton_images;
 		//Initialize 
-		function __construct ( Brafton_Image_Handler $brafton_image = Null, Brafton_Taxonomy $brafton_taxonomy ){
-			$this->brafton_image_handler = $brafton_image;
-			$this->brafton_taxonomy = $brafton_taxonomy; 
+		function __construct ( Brafton_Image_Handler $brafton_image = Null, Brafton_Taxonomy $brafton_cats, Brafton_Taxonomy $brafton_tags, Brafton_Article_Helper $brafton_article ){
+			
+			
+			if( 'on' == get_option(BRAFTON_ENABLE_IMAGES) )
+			{	//grab image data for previously imported images
+				$this->brafton_images = get_option('brafton_images');
+				//and load the image class.
+				$this->brafton_image_handler = $brafton_image;
+			}
+			$this->brafton_cats = $brafton_cats;
+			$this->brafton_tags = $brafton_tags; 
+			$this->brafton_article = $brafton_article; 
+
+			$log['priority'] = 1; 
+			brafton_initialize_log( 'brafton_article_log' );
+
+			
 		}
 
 		/**
@@ -31,40 +51,43 @@ if ( !class_exists( 'Article_Importer' ) )
 		 * Imports content from client's xml feed's uri into WordPress. 
 		 */
 		public function import_articles(){
-
-			$articles_array = $this->get_articles(); //look in article_helper for method definition. array of NewsItem objects
-
-
+			//Retrieve articles from feed
+			$article_array = $this->brafton_article->get_articles(); 
+			//Retrieve article import log
+			$this->brafton_articles_log = get_option('brafton_articles_log');
+          
+			$article_id_array = array();
 			foreach( $article_array as $a ){
 				//Get article meta data from feed
-				$brafton_id = $->getID(); 
-				$date = get_publish_date( $a ); 
+				$brafton_id = $a->getID(); 
+				$post_date = $this->brafton_article->get_publish_date( $a ); 
 				$post_title = $a->getHeadline();
-				$content = $a->getText(); 
+				$post_content = $a->getText(); 
 				$photos = $a->getPhotos(); 
 				$post_excerpt = $a->getExtract(); 
 				$keywords = $a->getKeywords();
-				$categories = $a->getCategories(); 
+				$cats = $a->getCategories(); 
 				$tags = $a->getTags();
 
 				//Get more article meta data
-				$post_author = $this->get_post_author(); 
-				$post_status = $this->get_post_status();
-				$post_content = $this->get_post_content($content); 
+				$post_author = $this->brafton_article->get_post_author(); 
+				$post_status = $this->brafton_article->get_post_status();
+				$post_content = $this->brafton_article->format_post_content($post_content); 
 				
 
 				//prepare article tag id array
-				$tag_input = $this->brafton_taxonomy->get_post_tags( $tags, $post_id );
+				$input_tags = $this->brafton_tags->get_terms( $tags, 'tag' );
 
 				//prepare article category id array
-				$post_category = $this->brafton_taxonomy->get_post_categories( $categories, $post_id );  
+				$post_category = $this->brafton_cats->get_terms( $cats, 'category' );  
 
 				//prepare single article meta data array
 				$article = compact('post_author', 'post_date', 'post_content', 'post_title', 'post_status', 'post_excerpt', 'post_categories', 'tag_input'); 
 
 				//insert article to WordPress database
-				$post_id = $this->insert_article($article);
-
+				$post_id = $this->brafton_article->insert_article($article);
+			
+				
 				//update post to include thumbnail image
 				$this->brafton_image_handler->insert_image( $photos, $post_id, $has_video ); 
 			}

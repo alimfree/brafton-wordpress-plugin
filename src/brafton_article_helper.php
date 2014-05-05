@@ -1,17 +1,24 @@
 <?php
+	include_once ( plugin_dir_path( __FILE__ ) . '../vendors/SampleAPIClientLibrary/ApiHandler.php');
 	class Brafton_Article_Helper {
-
+		public $post_type;
 		// Require Client Libraries 
-		include_once '../vendors/SampleAPIClientLibrary/ApiHandler.php';
+		function __construct( Brafton_Options $brafton_options ){
+			if( get_option('brafton_custom_post_type', true ) == 'on')
+				$this->post_type = 'Brafton_Article'; 
+			else
+				$this->post_type = 'post';
+		}
+		
 
 		/**
 		 * Formats post content 
 		 * @param String $content
 		 * @return String $post_content
 		 */
-		private function format_post_content($content)
+		public function format_post_content($post_content)
 		{
-			$post_content = preg_replace('|<(/?[A-Z]+)|e', "'<' . strtolower('$1')", $this->content);
+			$post_content = preg_replace('|<(/?[A-Z]+)|e', "'<' . strtolower('$1')", $post_content);
 			$post_content = str_replace('<br>', '<br />', $post_content);
 			$post_content = str_replace('<hr>', '<hr />', $post_content);
 
@@ -19,31 +26,25 @@
 		}
 
 		/**
-		 * Checks if article already exists in WordPress database. Returns array including
-		 * $post_id and $post_status if article with given $brafton_id is found. Returns
-		 * false if nothing is found.
-		 * @return mixed false or $post_exists['post_id', 'post_status']
+		 * Checks if article already exists in WordPress database. 
+		 * @return Int $post_id
 		 * @param int brafton_id       
 		 */
-		private function article_exists( $brafton_id, WP_Query $article_query = NULL )
+		public function exists( $brafton_id ) //should be private
 		{
-			$args = array( 
-							'meta_key' => 'brafton_id', 
-							'meta_value' => $brafton_id, 
-							'post_type' => 'Brafton-Article',
-				);			
-			$article_query = $article_query ? : new WP_Query( $args );
+			$args = array('post_type' => $this->post_type, array( 'meta_key' => 'brafton_id', 'meta_value' => $brafton_id ) );
 
-			if ( $article_query->have_posts() ){
-				the_post();
-				$post_id = the_ID();
+			$find = new WP_Query( $args );
 
-				$post_status = get_post_status( $post_id );
-				$post_exists = compact('post_id', 'post_status'); 
-				return $post_exists; 
-			}
-			
-			return false;  
+			if( $find->have_posts() ) {
+				while( $find->have_posts() ) {
+				    $find->the_post();
+				    $post_id = the_ID();
+				} // end while
+			} // end if
+			wp_reset_postdata();
+
+			return $post_id; 
 		}
 		/**
 		 * Updates existing articles to reflect changes made to articles in client's feed 
@@ -55,7 +56,7 @@
 		private function update_post( $article_array,  $post_exists )
 		{
 			$args =  array(
-							'post_type' => 'Brafton-Article',
+							'post_type' => $this->post_type,
 							'post_content' => $article_array['post_content'],
 							'post_date' => $artilce_array['post_date'],
 							'post_title' => $artilce_array['post_title'],
@@ -66,7 +67,7 @@
 			//Makes sure to update articles still in drafts
 			if ( $article_array['publish_status']  == 'draft' ) //make sure publish status is a string
 			{
-				$args['edit_date']  => true; 
+				$args['edit_date']  = true; 
 			}
 
 			$post_id = wp_update_post( $args ); 
@@ -78,27 +79,29 @@
 		 * Grab Articles either from a specified Archive file or from Client Feed
 		 * @return Array $article_array['post_author', 'post_date', 'post_content', 'post_title', 'post_status', 'post_excerpt', 'post_categories', 'tag_input']
 		 */
-		public function get_articles( ApiHandler $ApiHandler = NULL )
+		public function get_articles( )
 		{
 			$feed_settings = $this->get_feed_settings(); 
 			//Archive upload check 
-			if ($_FILES['archive']['tmp_name']) //todo add archive file upload settings
+			if (isset($_FILES['brafton-archive']['tmp_name'])) //todo add archive file upload settings
 			{
 				echo "Archive Option Selected<br/>";
 				$articles = NewsItem::getNewsList( $_FILES['archive']['tmp_name'], "html" );
 			} 
 			else 
 			{
-				if ( preg_match( "/\.xml$/", $feed_settings['api_key'] ) )
+				if ( preg_match( "/\.xml$/", $feed_settings['api_key'] ) ){
 					$articles = NewsItem::getNewsList( $feed_settings['api_key'], 'news' );
+				}
 				else
 				{
-					$ApiHandler = $ApiHandler ? : new ApiHandler( $feed_settings['api_key'], $feed_settings['api_url'] );
+					$url = 'http://' . $feed_settings['api_url'];
+					$ApiHandler = $ApiHandler ? : new ApiHandler( $feed_settings['api_key'], $url );
 					$articles = $ApiHandler->getNewsHTML(); 		
 				}
 			}
 
-			return $articles_array; 
+			return $articles; 
 		}
 
 		/**
@@ -117,7 +120,7 @@
 		 */
 		public function get_post_status()
 		{	
-			$post_status = get_option("braftonxml_sched_status", "publish");
+			$post_status = get_option("braftonxml_sched_status");
 			return $post_status; 
 		}
 
@@ -127,7 +130,7 @@
 		 */
 		public function get_publish_date($article_array) {
 			
-			switch ( get_option( 'braftonxml_publishdate' ) )
+			switch ( get_option( BRAFTON_POST_DATE ) )
 			{
 				case 'modified':
 					$date = $article_array->getLastModifiedDate();
@@ -156,9 +159,9 @@
 		 */
 		public function get_feed_settings( $has_video = NULL ){
 			if( ! isset( $has_video) ) {
-				$feedSettings = array(
-					"url" => get_option("braftonxml_sched_url"),
-					"API_Key" => get_option("braftonxml_sched_API_KEY"),
+				$feed_settings = array(
+					"api_url" => get_option(BRAFTON_DOMAIN),
+					"api_key" => get_option(BRAFTON_FEED),
 				);	
 			}
 			else
@@ -178,17 +181,29 @@
 		 */
 		public function insert_article($article_array){
 			
-			$article_array['post_type'] = 'Brafton-Article'; 
+			$article_array['post_type'] = $this->post_type; 
 			//Checks if post exists
-			$post_exists = $this->article_exists( $article_array['brafton_id'] ); 
-			$post_id = $post_exists['post_id']; 
+			$post_exists = $this->exists( $article_array['brafton_id'] ); 
+			
 
-			if ( ! $posts_id ] )
+			if ( ! $posts_exists )
+			{
 				$post_id = wp_insert_post( $article_array ); 
+				brafton_log( 
+					array(
+						'option' => 'brafton_article_log',
+						'priority' => 1, 
+						'message' => array( 
+										'brafton_id' => $article_array['brafton_id'], 
+										'post_id' => $post_id 
+									)
+					)
+				);
+			}
 			else
 			{
 				//check if overwrite is set to on
-				if ( /*overwrite is on */ )
+				if ( get_option('braftonxml_overwrite') == 'on' )
 					$this->update_post( $article_array, $post_exists ); 
 			}
 

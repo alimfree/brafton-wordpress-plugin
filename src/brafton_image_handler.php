@@ -123,7 +123,7 @@
 	/**
 	 * Download images  and stores to the WordPress Database
 	 */
-	class downloader {
+	class Downloader {
 		/**
 		 * Downloads and stores image as post thumbnail 
 		 * Reference: http://codex.wordpress.org/Function_Reference/media_handle_sideload
