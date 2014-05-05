@@ -16,6 +16,7 @@ if ( !class_exists( 'Article_Importer' ) )
 	class Brafton_Article_Importer {
 
 		 public $brafton_article_log;
+		 public $brafton_article;
 		 public $brafton_images;
 		//Initialize 
 		function __construct ( Brafton_Image_Handler $brafton_image = Null, Brafton_Taxonomy $brafton_cats, Brafton_Taxonomy $brafton_tags, Brafton_Article_Helper $brafton_article ){
@@ -31,11 +32,10 @@ if ( !class_exists( 'Article_Importer' ) )
 			$this->brafton_tags = $brafton_tags; 
 			$this->brafton_article = $brafton_article; 
 
-			#$log['priority'] = 1; 
+			$log['priority'] = 1; 
 			brafton_initialize_log( 'brafton_article_log' );
 
-			//let's get feed data for previously imported articles
-			$this->brafton_articles_log = get_option('brafton_articles_log');
+			
 		}
 
 		/**
@@ -51,17 +51,11 @@ if ( !class_exists( 'Article_Importer' ) )
 		 * Imports content from client's xml feed's uri into WordPress. 
 		 */
 		public function import_articles(){
-
-			$article_array = $this->brafton_article->get_articles(); //look in article_helper for method definition. array of NewsItem objects
-
-            brafton_log( 
-	            		array(
-	            			'option' => 'brafton_article_log',
-	            			'priority' => $this->brafton_article_log['priority'], 
-	            			'message' => 'this is fun'
-	            			)
-	            	);
-
+			//Retrieve articles from feed
+			$article_array = $this->brafton_article->get_articles(); 
+			//Retrieve article import log
+			$this->brafton_articles_log = get_option('brafton_articles_log');
+          
 			$article_id_array = array();
 			foreach( $article_array as $a ){
 				//Get article meta data from feed
@@ -91,21 +85,12 @@ if ( !class_exists( 'Article_Importer' ) )
 				$article = compact('post_author', 'post_date', 'post_content', 'post_title', 'post_status', 'post_excerpt', 'post_categories', 'tag_input'); 
 
 				//insert article to WordPress database
-				$post_id = $this->brafton_article->exists( $brafton_id );
-				if( ! $post_id ){
-					array_unshift( $this->article_id_array, array( 	'brafton_id' => $brafton_id, 
-												'post_id' => $post_id ) );	
-					
-					$post_id = $this->brafton_article->insert_article($article);
-				}
-				else
-					$this->brafton_article->update_post( $article, $post_id );
+				$post_id = $this->brafton_article->insert_article($article);
+			
 				
 				//update post to include thumbnail image
 				$this->brafton_image_handler->insert_image( $photos, $post_id, $has_video ); 
 			}
-			//update article_array
-			$this->brafton_feed->update_options( $article_id_array );
 		}
 
 	}

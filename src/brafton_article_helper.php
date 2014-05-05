@@ -30,9 +30,8 @@
 		 * @return Int $post_id
 		 * @param int brafton_id       
 		 */
-		private function exists( $brafton_id )
+		public function exists( $brafton_id ) //should be private
 		{
-
 			$args = array('post_type' => $this->post_type, array( 'meta_key' => 'brafton_id', 'meta_value' => $brafton_id ) );
 
 			$find = new WP_Query( $args );
@@ -58,7 +57,7 @@
 		{
 			$args =  array(
 							'post_type' => $this->post_type,
-							'p3st_content' => $article_array['post_content'],
+							'post_content' => $article_array['post_content'],
 							'post_date' => $artilce_array['post_date'],
 							'post_title' => $artilce_array['post_title'],
 							'post_excerpt' => $artilce_array['post_excerpt'],
@@ -80,7 +79,7 @@
 		 * Grab Articles either from a specified Archive file or from Client Feed
 		 * @return Array $article_array['post_author', 'post_date', 'post_content', 'post_title', 'post_status', 'post_excerpt', 'post_categories', 'tag_input']
 		 */
-		public function get_articles( ApiHandler $ApiHandler = NULL )
+		public function get_articles( )
 		{
 			$feed_settings = $this->get_feed_settings(); 
 			//Archive upload check 
@@ -188,7 +187,19 @@
 			
 
 			if ( ! $posts_exists )
+			{
 				$post_id = wp_insert_post( $article_array ); 
+				brafton_log( 
+					array(
+						'option' => 'brafton_article_log',
+						'priority' => 1, 
+						'message' => array( 
+										'brafton_id' => $article_array['brafton_id'], 
+										'post_id' => $post_id 
+									)
+					)
+				);
+			}
 			else
 			{
 				//check if overwrite is set to on

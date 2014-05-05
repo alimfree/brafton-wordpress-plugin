@@ -18,7 +18,7 @@
 		{
 			$term_array = array(); 
 			foreach( $terms as $t ){
-				$term = get_term_by( 'name', sanitize_text_field( $t->getName() ), $taxonomy );
+					$term = get_term_by( 'name', sanitize_text_field( $t->getName() ), $taxonomy );
 				
 				if( ! $term == false )
 					$term_id = $term->term_id;
