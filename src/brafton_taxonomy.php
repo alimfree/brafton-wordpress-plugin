@@ -7,7 +7,9 @@
 	class Brafton_Taxonomy {
 	
 		/**
-		 * @param $brafton_id 
+		 * Adds given tags, categories, or custom taxonomies to wordpress database.   
+		 * @param $taxonomy
+		 * @param $terms 
 		 * Retrieves array of either category tag, or brafton_term id's to be included in article array
 		 * @return $term_id[int] 
 		 * 
@@ -16,8 +18,7 @@
 		{
 			$term_array = array(); 
 			foreach( $terms as $t ){
-
-				$term = get_term_by( 'name', sanitize_text_field($t), $taxonomy );
+				$term = get_term_by( 'name', sanitize_text_field( $t->getName() ), $taxonomy );
 				
 				if( ! $term == false )
 					$term_id = $term->term_id;
@@ -32,7 +33,7 @@
 		/**
 		 * 
 		 */
-		function get_custom_term( $brafton_id, $customTerm )
+		function get_custom_term( $customTerm )
 		{
 			#todo: 
 		}
