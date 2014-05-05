@@ -25,12 +25,8 @@
                    echo '<li><a href="#' . $section_slug . '">' . $section . '</a></li>'; ?>
 
             </ul><!-- end .ul-tabs-nav -->
-                <?php do_settings_sections( $_GET['page'] );
+                <?php do_settings_sections( $_GET['page'] ); ?>
 
-                 #@do_settings_fields('WP_Brafton_Article_Importer_group'); ?>
-
-                <?php    do_settings_sections('WP_Brafton_Article_Importer'); ?>
-                <?php  #  ?>
         </div><!-- end .ul-tabs-->
         <?php   @submit_button(); ?>
         <?php

@@ -1,7 +1,7 @@
 <?php 
 	require_once(sprintf("%s/brafton_errors.php", dirname(__FILE__)));
 
-	// Defining constants to store plugin settings option names.
+	// Settings page options.
 	define( 'BRAFTON_ERROR_LOG', 'brafton_error_log', true );
 	define( 'BRAFTON_ENABLE_ERRORS', 'brafton_errors', true );
 	define( 'BRAFTON_ENABLE_ARTICLES', 'brafton_import_articles', true ); 
@@ -23,34 +23,18 @@
 	define( 'BRAFTON_DISABLE', 'brafton_purge', true ); 
 	define( 'BRAFTON_PARENT_CATEGORIES', 'brafton_parent_categories', true ); 
 	define( 'BRAFTON_CUSTOM_TAXONOMY', 'brafton_custom_taxonomy', true ); 
-	define( 'BRAFTON_IMPORT_COUNT', 'braftonxml_sched_triggercount', true ); 
+	define( 'BRAFTON_IMPORT_COUNT', 'braftonxml_sched_triggercount', true );
+
+    // Content logs
+    define( 'BRAFTON_ARTICLE_LOG', 'brafton_article_log', true ); 
+    define( 'BRAFTON_TAXONOMY_LOG', 'brafton_taxonomy_log', true ); 
+    define( 'BRAFTON_VIDEO_LOG', 'brafton_video_log', true );
+    define( 'BRAFTON_IMAGES_LOG', 'brafton_images_log', true ); 
 	/**
 	 * Singleton Class for retrieving options from the wordpress database.
 	 */
 	class Brafton_Options
 	{	
-      	// const ENABLE_ARTICLES_OPTION = 'brafton_import_articles';
-       //  const ENABLE_VIDEO_OPTION = 'braftonxml_video'; 
-       //  const ENABLE_IMAGES_OPTION = 'brafton_photo';
-       //  const AUTHOR_OPTION = 'brafton_default_author';
-       //  const FEED_OPTION = 'braftonxml_sched_API_KEY';
-       //  const DOMAIN_OPTION = 'braftonxml_domain';
-       //  const CUSTOM_TAGS_OPTION = 'braftonxml_sched_tags';
-       //  const SCHEDULED_STATUS_OPTION = 'braftonxml_sched_status';
-       //  const TAGS_OPTION = 'brafton_tags_option';
-       //  const CATEGORIES_OPTION = 'brafton_categories';
-       //  const OVERWRITE_OPTION = 'braftonxml_overwrite';
-       //  const POST_DATE_OPTION = 'braftonxml_publishdate';
-       //  const VIDEO_OPTION = 'braftonxml_video';
-       //  const VIDEO_FEED_OPTION = 'braftonxml_videoSecret';
-       //  const VIDEO_FEED_NUM_OPTION = 'braftonxml_videoFeedNum';
-       //  const CUSTOM_POST_OPTION = 'brafton_custom_post_type';
-       //  const DISABLE_OPTION = 'brafton_purge';
-       //  const PARENT_CATEGORIES_OPTION = 'brafton_parent_categories';
-       //  const CUSTOM_TAXONOMY_OPTION = 'brafton_custom_taxonomy';
-       //  const IMPORT_COUNT_OPTION = 'braftonxml_sched_triggercount';
-       //  const ENABLE_ERRORS_OPTION = 'brafton_errors'; 
-        #const ERRORS_OPTION = "brafton_error_log";
 		//Store brafton options
 		public $brafton_options;
         //Array of plugin errors log
@@ -65,6 +49,9 @@
 			foreach( $options as $key => $option )
 			{
 				$option_value =  get_option( $option );
+
+				if( $option == 'brafton_error_log' )
+					brafton_initialize_log('brafton_error_log' );
 	        	$brafton_options[$option] = $option_value;
 			}
 			$this->brafton_options = $brafton_options;  
@@ -96,163 +83,163 @@
         		self::$instance = new self();
         	return self::$instance;
     	}
-		 	/**
-		 	 * Registers settings for plugin options page.
-		 	 */
-		 	public function register_options()
-		 	{
-		 		$options = $this->brafton_options;
+	 	/**
+	 	 * Registers settings for plugin options page.
+	 	 */
+	 	public function register_options()
+	 	{
+	 		$options = $this->brafton_options;
 
-		 		foreach( $options as $key => $value )
-		 		{
-		 			register_setting('WP_Brafton_Article_Importer_group', $key );
-		 		}
-		 	}
-		 	/**
-	         * Checks which company client is partnered with. 
-	         * Castleford, ContentLEAD, or Brafton
-	         * @return string $product
-	         */		
-	        public function brafton_get_product()
-	        {
-	            $product = get_option('braftonxml_domain');
+	 		foreach( $options as $key => $value )
+	 		{
+	 			register_setting('WP_Brafton_Article_Importer_group', $key );
+	 		}
+	 	}
+	 	/**
+         * Checks which company client is partnered with. 
+         * Castleford, ContentLEAD, or Brafton
+         * @return string $product
+         */		
+        public function brafton_get_product()
+        {
+            $product = get_option('braftonxml_domain');
 
-	            switch( $product ){
-	                case 'api.brafton.com/':
-	                    return 'Brafton';
-	                    break;  
-	                case 'api.contentlead.com/':
-	                    return 'ContentLEAD';
-	                    break; 
-	                case 'api.castleford.com.au/':
-	                    return 'Castleford'; 
-	                    break; 
-	            }
-	        }
+            switch( $product ){
+                case 'api.brafton.com/':
+                    return 'Brafton';
+                    break;  
+                case 'api.contentlead.com/':
+                    return 'ContentLEAD';
+                    break; 
+                case 'api.castleford.com.au/':
+                    return 'Castleford'; 
+                    break; 
+            }
+        }
 
-	        /**
-	         *  
-	         *  Retrieves an array of author ids with user level greater than 0 from WordPress Database. 
-	         *  @uses http://codex.wordpress.org/Function_Reference/get_users
-	         *  @return array [int]
-	         */
-	        public function brafton_get_blog_authors()
-	        {
-	            $users = array(); 
-	            $args = array(  'blog_id' => $GLOBALS['blog_id'], 
-	                            'orderby' => 'display_name',
-	                            'who' => 'authors',
-	                );
+        /**
+         *  
+         *  Retrieves an array of author ids with user level greater than 0 from WordPress Database. 
+         *  @uses http://codex.wordpress.org/Function_Reference/get_users
+         *  @return array [int]
+         */
+        public function brafton_get_blog_authors()
+        {
+            $users = array(); 
+            $args = array(  'blog_id' => $GLOBALS['blog_id'], 
+                            'orderby' => 'display_name',
+                            'who' => 'authors',
+                );
 
-	            $blogusers = get_users( $args );
-	            $user_attributes = array();
-	            foreach ($blogusers as $user) {
-	                $user_attributes['id'] = $user->ID;
-	                $user_attributes['name'] = $user->display_name;
-	                $users[] = $user_attributes; 
-	            }
-	            return $users; 
-	        }
+            $blogusers = get_users( $args );
+            $user_attributes = array();
+            foreach ($blogusers as $user) {
+                $user_attributes['id'] = $user->ID;
+                $user_attributes['name'] = $user->display_name;
+                $users[] = $user_attributes; 
+            }
+            return $users; 
+        }
 
-	        public function brafton_has_api_key(){
-		        $option = get_option('braftonxml_sched_API_KEY');
+        public function brafton_has_api_key(){
+	        $option = get_option('braftonxml_sched_API_KEY');
 
-		        if( $option == '' ) //better to check if api key is valid
-		        	return false; 
+	        if( $option == '' ) //better to check if api key is valid
+	        	return false; 
 
-		        return true; 
-	        }
+	        return true; 
+        }
 
-	        public function validate_api_key()
-	        {
-	        	$option = get_option('braftonxml_sched_API_KEY');
-	        	//what kind of hashing algorithm do we use for our API keys
-	        }
+        public function validate_api_key()
+        {
+        	$option = get_option('braftonxml_sched_API_KEY');
+        	//what kind of hashing algorithm do we use for our API keys
+        }
 
-	    	public function last_import_run()
-	    	{
+    	public function last_import_run()
+    	{
 
-	    	}
+    	}
 
-	    	public function custom_post()
-	    	{
-				$custom = $get_option('brafton_custom_post_type', true );
-				return $custom;
-	    	}
-		    /**
-	         *  Checks if Brafton Post type option is enabled in Importer settings.
-	         * @return bool 
-	         */
-	        public  function custom_post_type_enabled()
-	        {
-	            $option = get_option('brafton_custom_post_type');
+    	public function custom_post()
+    	{
+			$custom = $get_option('brafton_custom_post_type', true );
+			return $custom;
+    	}
+	    /**
+         *  Checks if Brafton Post type option is enabled in Importer settings.
+         * @return bool 
+         */
+        public  function custom_post_type_enabled()
+        {
+            $option = get_option('brafton_custom_post_type');
 
-	            if( $option == "on")
-	                return true;
+            if( $option == "on")
+                return true;
 
-	            return false; 
-	        }
+            return false; 
+        }
 
-	        /**
-	         * Purges Options
-	         */
-	        public function purge_options()
-	        {
-	        	#todo 
-	        }
+        /**
+         * Purges Options
+         */
+        public function purge_options()
+        {
+        	#todo 
+        }
 
-	    	public function link_to_product()
-	    	{
-	    		$product = $this->brafton_get_product(); 
-	    		switch( $product )
-	    		{
-	    			case 'Brafton' : 
-	    				$url = 'http://brafton.com'; 
-	    				break; 
-	    			case 'ContentLEAD': 
-	    				$url = 'http://contentlead.com';
-	    				break; 
-	    			case 'Castleford': 
-	    				$url = 'http://castleford.com.au';
-	    				break; 
-	    		}
-	    		$output = sprintf('<a href="%s">%s</a>', $url, $product ); 
+    	public function link_to_product()
+    	{
+    		$product = $this->brafton_get_product(); 
+    		switch( $product )
+    		{
+    			case 'Brafton' : 
+    				$url = 'http://brafton.com'; 
+    				break; 
+    			case 'ContentLEAD': 
+    				$url = 'http://contentlead.com';
+    				break; 
+    			case 'Castleford': 
+    				$url = 'http://castleford.com.au';
+    				break; 
+    		}
+    		$output = sprintf('<a href="%s">%s</a>', $url, $product ); 
 
-	    		return $output; 	
-	    	}
-	    	
-	    	/**
-	         * Renders an upload field
-	         */
-	        public function settings_xml_upload($args)
-	        {
-	            $name = $args['name'];
-	            $label = $args['label'];
-	            echo sprintf('<div class="archive-upload"><p>%s</p><input type="file" name="%s" /></div>', $label, $name);
-	        }
+    		return $output; 	
+    	}
+    	
+    	/**
+         * Renders an upload field
+         */
+        public function settings_xml_upload($args)
+        {
+            $name = $args['name'];
+            $label = $args['label'];
+            echo sprintf('<div class="archive-upload"><p>%s</p><input type="file" name="%s" /></div>', $label, $name);
+        }
 
-	        public function get_article_link()
-	        {
-	        	$feed = get_option('braftonxml_sched_API_KEY');
-	        	$product = get_option('braftonxml_domain');
-	        	$post_id = get_the_ID();
+        public function get_article_link()
+        {
+        	$feed = get_option('braftonxml_sched_API_KEY');
+        	$product = get_option('braftonxml_domain');
+        	$post_id = get_the_ID();
 
-	        	$brafton_id = get_post_meta($post_id, 'brafton_id', true);
-	        	$feed_url = sprintf('http://%s%s/news/%s', $product, $feed, $brafton_id);
+        	$brafton_id = get_post_meta($post_id, 'brafton_id', true);
+        	$feed_url = sprintf('http://%s%s/news/%s', $product, $feed, $brafton_id);
 
-	        	return $feed_url; 
-	        }
+        	return $feed_url; 
+        }
 
-	        public function get_sections()
-	        {
-	        	$sections = array(
-	        		'brafton-article-section' => 'Article Settings', 
-	        		'brafton-video-section' => 'Video Settings', 
-	        		'brafton-advanced-section' => 'Advanced Settings', 
-	        		'brafton-developer-section' => 'Developer Settings'
-	        		); 
-		        return $sections;
-	        }
+        public function get_sections()
+        {
+        	$sections = array(
+        		'brafton-article-section' => 'Article Settings', 
+        		'brafton-video-section' => 'Video Settings', 
+        		'brafton-advanced-section' => 'Advanced Settings', 
+        		'brafton-developer-section' => 'Developer Settings'
+        		); 
+	        return $sections;
+        }
 	                /**
          * This function provides text inputs for settings fields
          */

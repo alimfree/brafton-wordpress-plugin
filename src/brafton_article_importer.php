@@ -15,12 +15,11 @@ if ( !class_exists( 'Article_Importer' ) )
 	 */
 	class Brafton_Article_Importer {
 
-		 public $brafton_article;
+		 public $brafton_article_log;
 		 public $brafton_images;
 		//Initialize 
 		function __construct ( Brafton_Image_Handler $brafton_image = Null, Brafton_Taxonomy $brafton_cats, Brafton_Taxonomy $brafton_tags, Brafton_Article_Helper $brafton_article ){
-			//let's get feed data for previously imported articles
-			$this->brafton_articles = get_option('brafton_articles');
+			
 			
 			if( 'on' == get_option(BRAFTON_ENABLE_IMAGES) )
 			{	//grab image data for previously imported images
@@ -31,6 +30,12 @@ if ( !class_exists( 'Article_Importer' ) )
 			$this->brafton_cats = $brafton_cats;
 			$this->brafton_tags = $brafton_tags; 
 			$this->brafton_article = $brafton_article; 
+
+			$log['priority'] = 1; 
+			brafton_initialize_log( 'brafton_article_log', $log );
+
+			//let's get feed data for previously imported articles
+			$this->brafton_articles_log = get_option('brafton_articles_log');
 		}
 
 		/**
@@ -51,8 +56,8 @@ if ( !class_exists( 'Article_Importer' ) )
 
             brafton_log( 
 	            		array(
-	            			'type' => 'Brafton Article', 
-	            			'priority' => 0, 
+	            			'option' => 'brafton_article_log',
+	            			'priority' => $this->brafton_article_log['priority'], 
 	            			'message' => 'this is fun'
 	            			)
 	            	);
