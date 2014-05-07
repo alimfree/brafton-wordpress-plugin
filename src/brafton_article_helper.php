@@ -26,8 +26,9 @@
 		}
 
 		/**
-		 * Checks if article already exists in WordPress database. 
-		 * @return Int $post_id
+		 * Checks if article already exists in WordPress database. Returns post_id or false if 
+		 * no posts are found.
+		 * @return Mixed $post_id
 		 * @param int brafton_id       
 		 */
 		public function exists( $brafton_id ) //should be private
@@ -36,6 +37,7 @@
 
 			$find = new WP_Query( $args );
 
+			$post_id = false; 
 			if( $find->have_posts() ) {
 				while( $find->have_posts() ) {
 				    $find->the_post();
@@ -96,7 +98,7 @@
 				else
 				{
 					$url = 'http://' . $feed_settings['api_url'];
-					$ApiHandler = $ApiHandler ? : new ApiHandler( $feed_settings['api_key'], $url );
+					$ApiHandler = new ApiHandler( $feed_settings['api_key'], $url );
 					$articles = $ApiHandler->getNewsHTML(); 		
 				}
 			}
@@ -185,10 +187,14 @@
 			//Checks if post exists
 			$post_exists = $this->exists( $article_array['brafton_id'] ); 
 			
-
-			if ( ! $posts_exists )
+			if ( ! $post_exists )
 			{
 				$post_id = wp_insert_post( $article_array ); 
+
+				if( is_wp_error($post_id) )
+					var_dump( $post_id->get_error_message );
+
+				var_dump( $post_id );
 				brafton_log( 
 					array(
 						'option' => 'brafton_article_log',

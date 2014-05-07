@@ -31,6 +31,7 @@ if ( !class_exists( 'Article_Importer' ) )
 			$this->brafton_cats = $brafton_cats;
 			$this->brafton_tags = $brafton_tags; 
 			$this->brafton_article = $brafton_article; 
+			$this->brafton_image = $brafton_image;
 
 			$log['priority'] = 1; 
 			brafton_initialize_log( 'brafton_article_log' );
@@ -52,7 +53,7 @@ if ( !class_exists( 'Article_Importer' ) )
 		 */
 		public function import_articles(){
 			//Retrieve articles from feed
-			$article_array = $this->brafton_article->get_articles(); 
+			$article_array = $this->brafton_article->get_articles();
 			//Retrieve article import log
 			$this->brafton_articles_log = get_option('brafton_articles_log');
           
@@ -82,14 +83,15 @@ if ( !class_exists( 'Article_Importer' ) )
 				$post_category = $this->brafton_cats->get_terms( $cats, 'category' );  
 
 				//prepare single article meta data array
-				$article = compact('post_author', 'post_date', 'post_content', 'post_title', 'post_status', 'post_excerpt', 'post_categories', 'tag_input'); 
+				$article = compact('brafton_id', 'post_author', 'post_date', 'post_content', 'post_title', 'post_status', 'post_excerpt', 'post_categories', 'tag_input'); 
 
 				//insert article to WordPress database
 				$post_id = $this->brafton_article->insert_article($article);
 			
-				
+				var_dump($post_id);
 				//update post to include thumbnail image
-				$this->brafton_image_handler->insert_image( $photos, $post_id, $has_video ); 
+				if ( BRAFTON_ENABLE_IMAGES == "on" )
+					$this->brafton_image->insert_image( $photos, $post_id, $has_video, $downloader ); 
 			}
 		}
 

@@ -7,7 +7,7 @@
 	include_once( plugin_dir_path( __FILE__ ) . '..\vendors\RCClientLibrary\AdferoArticles\AdferoClient.php');
 	include_once( plugin_dir_path( __FILE__ ) . '..\vendors\RCClientLibrary\AdferoPhotos\AdferoPhotoClient.php');
 
-	class Brafton_Image_Handler extends Downloader {
+	class Brafton_Image_Handler extends Brafton_Downloader {
 
 		
 
@@ -45,7 +45,7 @@
 		 * $photos parameter must either be an AdferoArticlePhotosClient 
 		 * object or a string for video articles and regular articles respectively. 
 		 */
-		public function insert_image( $photos, $post_id, $has_video = NULL, Downloader $downloader = Null )
+		public function insert_image( $photos, $post_id, $has_video = NULL )
 		{
 
 			if( $has_video )
@@ -57,8 +57,7 @@
 				$attachment_id = $this->update_image( $images_array, $post_id ); 
 			
 			else
-				$downloader = $downloader ? : new Downloader();
-				$attachment_id = $downloader->download_image( $images_array, $post_id ); 
+				$attachment_id = $this->download_image( $images_array, $post_id ); 
 
 			return $attachment_id;
 		}	
@@ -123,7 +122,7 @@
 	/**
 	 * Download images  and stores to the WordPress Database
 	 */
-	class Downloader {
+	class Brafton_Downloader {
 		/**
 		 * Downloads and stores image as post thumbnail 
 		 * Reference: http://codex.wordpress.org/Function_Reference/media_handle_sideload
