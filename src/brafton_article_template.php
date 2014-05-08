@@ -6,7 +6,7 @@ if(!class_exists('Brafton_Article_Template'))
 	 */
 	class Brafton_Article_Template
 	{
-		const POST_TYPE	= "Brafton-Article";
+		const POST_TYPE	= "brafton-article";
 		private $_meta	= array(
 			'brafton_id',
 			'photo_id',
@@ -47,11 +47,11 @@ if(!class_exists('Brafton_Article_Template'))
     				),
     				'public' => true,
     				'has_archive' => true,
+                    'taxonomies' => array('category'),
     				'description' => __("This is a sample post type meant only to illustrate a preferred structure of plugin development"),
     				'supports' => array(
-    					'title', 'author' , 'editor', 'excerpt', 'thumbnail', 'revisions', 'post_formats',
+    					   'title', 'author' , 'editor', 'excerpt', 'thumbnail', 'revisions', 'post_formats',
     				),
-                    #'register_meta_box_cb' => array(&$this, 'add_meta_boxes')
     			)
     		);
     	}

@@ -19,9 +19,12 @@ if ( !class_exists( 'Article_Importer' ) )
 		 public $brafton_article;
 		 public $brafton_images;
 		//Initialize 
-		function __construct ( Brafton_Image_Handler $brafton_image = Null, Brafton_Taxonomy $brafton_cats, Brafton_Taxonomy $brafton_tags, Brafton_Article_Helper $brafton_article ){
-			
-			
+		function __construct ( 
+						Brafton_Image_Handler $brafton_image = Null, 
+						Brafton_Taxonomy $brafton_cats, 
+						Brafton_Taxonomy $brafton_tags, 
+						Brafton_Article_Helper $brafton_article )
+		{
 			if( 'on' == get_option(BRAFTON_ENABLE_IMAGES) )
 			{	//grab image data for previously imported images
 				$this->brafton_images = get_option('brafton_images');
@@ -55,7 +58,7 @@ if ( !class_exists( 'Article_Importer' ) )
 			//Retrieve articles from feed
 			$article_array = $this->brafton_article->get_articles();
 			//Retrieve article import log
-			$this->brafton_articles_log = get_option('brafton_articles_log');
+			$this->brafton_articles_log = get_option( 'brafton_articles_log' );
           
 			$article_id_array = array();
 			foreach( $article_array as $a ){
@@ -73,11 +76,9 @@ if ( !class_exists( 'Article_Importer' ) )
 				//Get more article meta data
 				$post_author = $this->brafton_article->get_post_author(); 
 				$post_status = $this->brafton_article->get_post_status();
-				$post_content = $this->brafton_article->format_post_content($post_content); 
-				
 
 				//prepare article tag id array
-				$input_tags = $this->brafton_tags->get_terms( $tags, 'tag' );
+				#$input_tags = $this->brafton_tags->get_terms( $tags, 'tag' );
 
 				//prepare article category id array
 				$post_category = $this->brafton_cats->get_terms( $cats, 'category' );  
@@ -88,7 +89,6 @@ if ( !class_exists( 'Article_Importer' ) )
 				//insert article to WordPress database
 				$post_id = $this->brafton_article->insert_article($article);
 			
-				var_dump($post_id);
 				//update post to include thumbnail image
 				if ( BRAFTON_ENABLE_IMAGES == "on" )
 					$this->brafton_image->insert_image( $photos, $post_id, $has_video, $downloader ); 

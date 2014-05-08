@@ -5,24 +5,9 @@
 		// Require Client Libraries 
 		function __construct( Brafton_Options $brafton_options ){
 			if( get_option('brafton_custom_post_type', true ) == 'on')
-				$this->post_type = 'Brafton_Article'; 
+				$this->post_type = 'brafton_article'; 
 			else
 				$this->post_type = 'post';
-		}
-		
-
-		/**
-		 * Formats post content 
-		 * @param String $content
-		 * @return String $post_content
-		 */
-		public function format_post_content($post_content)
-		{
-			$post_content = preg_replace('|<(/?[A-Z]+)|e', "'<' . strtolower('$1')", $post_content);
-			$post_content = str_replace('<br>', '<br />', $post_content);
-			$post_content = str_replace('<hr>', '<hr />', $post_content);
-
-			return $post_content;
 		}
 
 		/**
@@ -179,11 +164,23 @@
 		/**
 		 * Insert article into database
 		 * @return int post_id
-		 * @param Array $article_array['post_author', 'post_date', 'post_content', 'post_title', 'post_status', 'post_excerpt', 'post_categories', 'tag_input']
+		 * @param Array $article_array = array (
+		 * 								'post_author', 
+		 * 								'post_date', 
+		 * 								'post_content', 
+		 * 								'post_title', 
+		 * 								'post_status', 
+		 * 								'post_excerpt', 
+		 * 								'post_categories', 
+		 * 								'tag_input', 
+		 * 								'brafton_id'
+		 * 							);
 		 */
 		public function insert_article($article_array){
 			
 			$article_array['post_type'] = $this->post_type; 
+			$article_array['post_content'] = sanitize_text_field( $article_array['post_content'] );
+			var_dump( $article_array['post_content'] ); 
 			//Checks if post exists
 			$post_exists = $this->exists( $article_array['brafton_id'] ); 
 			
@@ -192,9 +189,7 @@
 				$post_id = wp_insert_post( $article_array ); 
 
 				if( is_wp_error($post_id) )
-					var_dump( $post_id->get_error_message );
 
-				var_dump( $post_id );
 				brafton_log( 
 					array(
 						'option' => 'brafton_article_log',
@@ -213,10 +208,7 @@
 					$this->update_post( $article_array, $post_exists ); 
 			}
 
-			if ( ! is_wp_error( $post_id ) )
-				return $post_id;
-			if( ! $post_id )
-				return; 
+				return $post_id; 
 		}
 
 		/**

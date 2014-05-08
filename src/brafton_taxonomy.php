@@ -17,15 +17,14 @@
 		function get_terms( $terms, $taxonomy )
 		{
 			$term_array = array(); 
-			var_dump( $taxonomy );
-			var_dump( $terms );
 			foreach( $terms as $t ){
 					$term = get_term_by( 'name', sanitize_text_field( $t->getName() ), $taxonomy );
-					var_dump($t->getName());
+				//If term already exists	
 				if( ! $term == false )
 					$term_id = $term->term_id;
+				//Insert new term
 				else
-					$term_id = wp_insert_term( $t, $taxonomy);
+					$term_id = wp_insert_term( sanitize_text_field( $t->getName() ), $taxonomy);
 
 				$term_array[] = $term_id;
 			} 
