@@ -126,9 +126,9 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
                 'brafton_article_section',
                  array(
                     'name' => 'braftonxml_sched_status', 
-                    'options' => array('published' => ' Published',
+                    'options' => array('publish' => ' Publish',
                                        'draft' => ' Draft'),
-                    'default' => 'published'
+                    'default' => 'publish'
                 )
             );
         }

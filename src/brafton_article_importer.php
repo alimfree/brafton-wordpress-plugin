@@ -59,7 +59,6 @@ if ( !class_exists( 'Article_Importer' ) )
 			$article_array = $this->brafton_article->get_articles();
 			//Retrieve article import log
 			$this->brafton_articles_log = get_option( 'brafton_articles_log' );
-          
 			$article_id_array = array();
 			foreach( $article_array as $a ){
 				//Get article meta data from feed
@@ -77,6 +76,8 @@ if ( !class_exists( 'Article_Importer' ) )
 				$post_author = $this->brafton_article->get_post_author(); 
 				$post_status = $this->brafton_article->get_post_status();
 
+				$post_status = get_option( 'braftonxml_sched_status' );
+
 				//prepare article tag id array
 				#$input_tags = $this->brafton_tags->get_terms( $tags, 'tag' );
 
@@ -84,7 +85,17 @@ if ( !class_exists( 'Article_Importer' ) )
 				$post_category = $this->brafton_cats->get_terms( $cats, 'category' );  
 
 				//prepare single article meta data array
-				$article = compact('brafton_id', 'post_author', 'post_date', 'post_content', 'post_title', 'post_status', 'post_excerpt', 'post_categories', 'tag_input'); 
+				$article = compact(
+							'brafton_id', 
+							'post_author', 
+							'post_date', 
+							'post_content', 
+							'post_title', 
+							'post_status', 
+							'post_excerpt', 
+							'post_category'
+							/* 'tags_input' */
+						); 
 
 				//insert article to WordPress database
 				$post_id = $this->brafton_article->insert_article($article);

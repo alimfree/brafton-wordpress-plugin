@@ -18,7 +18,16 @@
 		 */
 		public function exists( $brafton_id ) //should be private
 		{
-			$args = array('post_type' => $this->post_type, array( 'meta_key' => 'brafton_id', 'meta_value' => $brafton_id ) );
+
+			$args = array(
+					'post_type' => $this->post_type, 
+					'meta_query' => array( 
+						array( 
+							'key' => 'brafton_id', 
+							'value' => $brafton_id 
+						) 
+					) 
+			);
 
 			$find = new WP_Query( $args );
 
@@ -26,7 +35,7 @@
 			if( $find->have_posts() ) {
 				while( $find->have_posts() ) {
 				    $find->the_post();
-				    $post_id = the_ID();
+				    $post_id = get_the_ID();
 				} // end while
 			} // end if
 			wp_reset_postdata();
@@ -42,22 +51,14 @@
 		 */
 		private function update_post( $article_array,  $post_exists )
 		{
-			$args =  array(
-							'post_type' => $this->post_type,
-							'post_content' => $article_array['post_content'],
-							'post_date' => $artilce_array['post_date'],
-							'post_title' => $artilce_array['post_title'],
-							'post_excerpt' => $artilce_array['post_excerpt'],
-							'post_status' => $artilce_array['post_status'],
-							'post_category' => $article_array['post_categories'],
-				);
+			$article_array['ID'] = $post_exists;
 			//Makes sure to update articles still in drafts
-			if ( $article_array['publish_status']  == 'draft' ) //make sure publish status is a string
+			if ( $article_array['post_status']  == 'draft' ) //make sure publish status is a string
 			{
-				$args['edit_date']  = true; 
+				$article_array['edit_date']  = true; 
 			}
 
-			$post_id = wp_update_post( $args ); 
+			$post_id = wp_update_post( $article_array ); 
 			return $post_id;
 
 		}
@@ -84,7 +85,7 @@
 				{
 					$url = 'http://' . $feed_settings['api_url'];
 					$ApiHandler = new ApiHandler( $feed_settings['api_key'], $url );
-					$articles = $ApiHandler->getNewsHTML(); 		
+					$articles = $ApiHandler->getNewsHTML(); 	
 				}
 			}
 
@@ -180,14 +181,15 @@
 			
 			$article_array['post_type'] = $this->post_type; 
 			$article_array['post_content'] = sanitize_text_field( $article_array['post_content'] );
-			var_dump( $article_array['post_content'] ); 
-			//Checks if post exists
-			$post_exists = $this->exists( $article_array['brafton_id'] ); 
-			
-			if ( ! $post_exists )
-			{
-				$post_id = wp_insert_post( $article_array ); 
 
+			//Checks if post exists
+			$post_exists = $this->exists( $article_array['brafton_id'] );
+			$brafton_id = $article_array['brafton_id']; 
+			unset( $article_array['brafton_id'] );
+			//if article does not exist
+			if ( $post_exists  == false )
+			{	//add the article to WordPress
+				$post_id = wp_insert_post( $article_array ); 
 				if( is_wp_error($post_id) )
 
 				brafton_log( 
@@ -195,11 +197,14 @@
 						'option' => 'brafton_article_log',
 						'priority' => 1, 
 						'message' => array( 
-										'brafton_id' => $article_array['brafton_id'], 
+										'brafton_id' => $brafton_id, 
 										'post_id' => $post_id 
 									)
 					)
 				);
+				//add custom meta field so we can find the article again later.
+				update_post_meta($post_id, 'brafton_id', $brafton_id );
+
 			}
 			else
 			{
@@ -208,7 +213,6 @@
 					$this->update_post( $article_array, $post_exists ); 
 			}
 
-				return $post_id; 
 		}
 
 		/**

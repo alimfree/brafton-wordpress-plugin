@@ -51,7 +51,7 @@
 				$option_value =  get_option( $option );
 
 				if( $option == 'brafton_error_log' )
-					brafton_initialize_log('brafton_error_log' );
+					brafton_initialize_log( 'brafton_error_log' );
 	        	$brafton_options[$option] = $option_value;
 			}
 			$this->brafton_options = $brafton_options;  

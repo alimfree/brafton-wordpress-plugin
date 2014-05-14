@@ -34,10 +34,10 @@ class PhotoInstance  {
     /**
      * @param DOMNode $node
      */
-    public function parsePhotoInstance(DOMNode $node){
-    	$this->width = $node ? : $node->getElementsByTagName("width")->item(0)->nodeValue;
-        $this->height = $node ? : $node->getElementsByTagName("height")->item(0)->nodeValue;
-        $this->url = $node ? : $node->getElementsByTagName("url")->item(0)->nodeValue;
+    public function parsePhotoInstance($node){
+    	$this->width = $node->getElementsByTagName("width")->item(0)->nodeValue;
+        $this->height = $node->getElementsByTagName("height")->item(0)->nodeValue;
+        $this->url = $node->getElementsByTagName("url")->item(0)->nodeValue;
     } 
     
     public function getWidth(){

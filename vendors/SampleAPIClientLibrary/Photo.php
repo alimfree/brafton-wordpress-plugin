@@ -52,11 +52,11 @@ class Photo {
 	 */
 	private $caption;
 
-	function __construct( PhotoInstance $thumb = Null, PhotoInstance $large = Null, PhotoInstance $hiRes = Null, PhotoInstance $custom = Null ){
-		$this->thumb = $thumb ? : new PhotoInstance();
-		$this->large = $large ? : new PhotoInstance();
-		$this->hiRes = $hiRes ? : new PhotoInstance();
-		$this->custom = $custom ? : new PhotoInstance();
+	function __construct(){
+		$this->thumb = new PhotoInstance();
+		$this->large = new PhotoInstance();
+		$this->hiRes = new PhotoInstance();
+		$this->custom = new PhotoInstance();
 	}
 
 	/**
@@ -64,17 +64,16 @@ class Photo {
 	 * @param int $id
 	 * @return Photo[]
 	 */
-	public static function getPhotos($url, XMLHandler $xh = Null, Photo $p = Null ){
-		$xh = $xh ? : new XMLHandler($url);
+	public static function getPhotos($url){
+		$xh = new XMLHandler($url);
 		$photoItems = $xh->getNodes("photo");
 		$photoList  = array();
 
 		foreach($photoItems as $photoNode){
-			$p = $p ? : new Photo();
+			$p = new Photo();
 
 			$p->setId($photoNode->getElementsByTagName("id")->item(0)->textContent);
-			if( $photoNode->getElementsByTagName("htmlAlt")->length != 0 )
-				$p->setAlt($photoNode->getElementsByTagName("htmlAlt")->item(0)->textContent);
+			$p->setAlt($photoNode->getElementsByTagName("htmlAlt")->item(0)->textContent);
 			//$p->setOrientation($photoNode->getElementsByTagName("orientation")->item(0)->textContent);
       $p->setCaption($photoNode->getElementsByTagName("caption")->item(0)->textContent);
 
