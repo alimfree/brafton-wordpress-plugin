@@ -101,8 +101,8 @@ if ( !class_exists( 'Article_Importer' ) )
 				$post_id = $this->brafton_article->insert_article($article);
 			
 				//update post to include thumbnail image
-				if ( BRAFTON_ENABLE_IMAGES == "on" )
-					$this->brafton_image->insert_image( $photos, $post_id, $has_video, $downloader ); 
+				if ( get_option('brafton_enable_images') == "on" )
+					$this->brafton_image->insert_image( $photos, $post_id); 
 			}
 		}
 

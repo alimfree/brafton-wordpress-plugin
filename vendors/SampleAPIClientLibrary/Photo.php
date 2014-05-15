@@ -73,7 +73,8 @@ class Photo {
 			$p = new Photo();
 
 			$p->setId($photoNode->getElementsByTagName("id")->item(0)->textContent);
-			$p->setAlt($photoNode->getElementsByTagName("htmlAlt")->item(0)->textContent);
+			if( $photoNode->getElementsByTagName("htmlAlt")->length != 0 )
+				$p->setAlt($photoNode->getElementsByTagName("htmlAlt")->item(0)->textContent);
 			//$p->setOrientation($photoNode->getElementsByTagName("orientation")->item(0)->textContent);
       $p->setCaption($photoNode->getElementsByTagName("caption")->item(0)->textContent);
 

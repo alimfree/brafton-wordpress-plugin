@@ -236,6 +236,19 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings'))
         public function settings_section_brafton_advanced()
         {
             add_settings_field(
+                'WP_Brafton_Article_Importer_brafton_enable_images', 
+                'Photos', 
+                array(&$this->brafton_options, 'render_radio'), 
+                'WP_Brafton_Article_Importer', 
+                'brafton_advanced_section', 
+                array(
+                    'name' => 'brafton_enable_images', 
+                    'options' => array( 'off' => ' Off',
+                                        'on' => ' On'), 
+                    'default' => 'on'
+                    )
+                );
+            add_settings_field(
                 'WP_Brafton_Article_Importer_brafton_custom_post_type', 
                 'Custom Post Type', 
                 array(&$this->brafton_options, 'render_radio'), 
