@@ -70,11 +70,11 @@
 		public function get_articles( )
 		{
 			$feed_settings = $this->get_feed_settings(); 
-			//Archive upload check 
-			if (isset($_FILES['brafton-archive']['tmp_name'])) //todo add archive file upload settings
+
+			if (isset( $brafton_options->archives ) ) //todo add archive file upload settings
 			{
 				echo "Archive Option Selected<br/>";
-				$articles = NewsItem::getNewsList( $_FILES['archive']['tmp_name'], "html" );
+				$articles = NewsItem::getNewsList( $brafton_options->archives, "html" );
 			} 
 			else 
 			{
@@ -145,19 +145,13 @@
 		 * Retrieves client feed uri and brafton API key from brafton settings
 		 * @return Array $feed_settings['url', 'API_key']
 		 */
-		public function get_feed_settings( $has_video = NULL ){
-			if( ! isset( $has_video) ) {
+		public function get_feed_settings( ){
+
 				$feed_settings = array(
 					"api_url" => get_option(BRAFTON_DOMAIN),
 					"api_key" => get_option(BRAFTON_FEED),
 				);	
-			}
-			else
-			{
-				$feed_settings = array(
-
-					); 
-			}
+			
 			
 			return $feed_settings; 
 		}
@@ -240,5 +234,6 @@
         {
         	
         }
+
 	}
 ?>

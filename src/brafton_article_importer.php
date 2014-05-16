@@ -59,7 +59,6 @@ if ( !class_exists( 'Article_Importer' ) )
 			$article_array = $this->brafton_article->get_articles();
 			//Retrieve article import log
 			$this->brafton_articles_log = get_option( 'brafton_articles_log' );
-			$article_id_array = array();
 			foreach( $article_array as $a ){
 				//Get article meta data from feed
 				$brafton_id = $a->getID(); 
@@ -107,10 +106,6 @@ if ( !class_exists( 'Article_Importer' ) )
 					if ( get_option('brafton_enable_images') == "on" )
 						$this->brafton_image->insert_image( $photos, $post_id);	
 				} 
-				else 
-					continue; 
-
-				
 			}
 		}
 

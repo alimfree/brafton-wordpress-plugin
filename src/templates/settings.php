@@ -34,7 +34,7 @@
             echo '<div class="footer">Thank you for Partnering with ' . $brafton_options->link_to_product() .' </div>';
         ?>
     </form>
-   
+
     </div><!--- .brafton-options -->
 </div><!-- .wrap -->
  
