@@ -64,7 +64,7 @@ if ( !class_exists( 'Article_Importer' ) )
 				//Get article meta data from feed
 				$brafton_id = $a->getID(); 
 				$post_exists = $this->brafton_article->exists( $brafton_id );
-				if( $post_exists == false )
+				if( $post_exists == false || get_option( 'braftonxml_overwrite' ) == 'on' )
 				{
 					$post_date = $this->brafton_article->get_publish_date( $a ); 
 					$post_title = $a->getHeadline();
@@ -102,19 +102,15 @@ if ( !class_exists( 'Article_Importer' ) )
 
 					//insert article to WordPress database
 					$post_id = $this->brafton_article->insert_article($article);
-				
+
 					//update post to include thumbnail image
 					if ( get_option('brafton_enable_images') == "on" )
-						$this->brafton_image->insert_image( $photos, $post_id); 
-				} else {
-					//If overwrite is enabled, update the post
-					if ( get_option('braftonxml_overwrite') == 'on' )
-			 			$post_id = $this->brafton_article->update_post( $article, $post_exists ); 
-				}  
+						$this->brafton_image->insert_image( $photos, $post_id);	
+				} 
+				else 
+					continue; 
 
-				//update post to include thumbnail image
-				if ( get_option('brafton_enable_images') == "on" )
-					$this->brafton_image->insert_image( $photos, $post_id);	
+				
 			}
 		}
 
