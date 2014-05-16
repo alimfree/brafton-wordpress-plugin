@@ -20,9 +20,9 @@
 		private function update_image( $images_array,  $post_id )
 		{
 			//Grab pic_id of pre-existing post.
-			$old_image_id = get_post_meta($post_id, 'pic_id'); 
+			$old_image_id = get_post_meta( $post_id, $images_array['image_id'], true ); 
 			//Make sure the article to update doesn't already have an image	
-			if( ! ( get_the_post_thumbnail($post_id))){
+			if( ! ( get_the_post_thumbnail( $post_id ) ) ){
 				//if the image is the same as the image on client's feed. Do nothing.
 				if( $old_image_id == $images_array['image_id'] )
 					return; 
@@ -47,12 +47,12 @@
 		 */
 		public function insert_image( $photos, $post_id, $has_video = NULL )
 		{
-			if( $has_video )
-				$images_array = $this->get_video_images( $photos ); 
-			else
+			// if( $has_video )
+			// 	$images_array = $this->get_video_images( $photos ); 
+			// else
 				$images_array = $this->get_article_images( $photos ); 
 
-			if( get_option("braftonxml_overwrite", "on") == 'on' )
+			if( get_option( "braftonxml_overwrite", "on") == 'on' )
 				$attachment_id = $this->update_image( $images_array, $post_id ); 
 			
 			else
@@ -124,20 +124,22 @@
 		 */
 		public function download_image( $images_array, $post_id )
 		{
-			$orig_filename = $this->get_image_file_name( $images_array[ 'image_url' ]); 
+			$orig_filename = $this->get_image_file_name( $images_array[ 'image_url' ] ); 
 			// If post already has a thumbnail or feed does not have an updated image - Move on to the next article in the loop.
-		    if (has_post_thumbnail($post_id)){
+		    if (has_post_thumbnail( $post_id ) ){
 		     return;
 		    }
 
 			// Download file to temp location and setup a fake $_FILE handler
 		    // with a new name based on the slug
+
+		    var_dump( $images_array['image_url'] );
 		    $tmp_name = download_url( $images_array['image_url'] );
 		    $file_array['name'] = $orig_filename;  // new filename based on slug
 		    $file_array['tmp_name'] = $tmp_name;
 		     // If error storing temporarily, unlink
 		    if ( is_wp_error( $orig_filename ) ) {
-		        @unlink($file_array['tmp_name']);
+		        @unlink( $file_array['tmp_name'] );
 		        $file_array['tmp_name'] = '';
 		    }
 
@@ -147,10 +149,12 @@
 									'caption' => $images_array['image_caption'],
 									'alt' => 'inherit', 
 								);
+
 		    // validate and store the image.  
 		    $attachment_id = media_handle_sideload( $file_array, $post_id, $attachment );
-		    update_post_meta( $post_id, '_thumbnail_id', $attachment_id );
-		    update_post_meta( $post_id, 'pic_id', $images_array['image_id'] );
+		    echo 'image id and attachement id ' .  $images_array['image_id'] .  ' : ' .  $attachment_id . "<br />";
+		    add_post_meta( $post_id, '_thumbnail_id', $attachment_id );
+		    add_post_meta( $post_id, 'image_id', $images_array['image_id'] );
 			return $attachment_id; 
 		} 
 
@@ -162,7 +166,6 @@
 		public function get_image_file_name( $original_image_url )
 		{
 			$domain = get_option( "braftonxml_domain" );
-
 			$domain = str_replace( 'api', 'http://pictures', $domain );
 			$image_file_name = str_replace( $domain , "" , $original_image_url);
 

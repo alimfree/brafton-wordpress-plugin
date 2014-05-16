@@ -63,52 +63,62 @@ if ( !class_exists( 'Article_Importer' ) )
 			foreach( $article_array as $a ){
 				//Get article meta data from feed
 				$brafton_id = $a->getID(); 
-				$post_date = $this->brafton_article->get_publish_date( $a ); 
-				$post_title = $a->getHeadline();
-				$post_content = $a->getText(); 
-				$photos = $a->getPhotos(); 
-				$post_excerpt = $a->getExtract(); 
-				$keywords = $a->getKeywords();
-				$cats = $a->getCategories(); 
-				$tags = $a->getTags();
+				$post_exists = $this->brafton_article->exists( $brafton_id );
+				if( $post_exists == false )
+				{
+					$post_date = $this->brafton_article->get_publish_date( $a ); 
+					$post_title = $a->getHeadline();
+					$post_content = $a->getText(); 
+					$photos = $a->getPhotos(); 
+					$post_excerpt = $a->getExtract(); 
+					$keywords = $a->getKeywords();
+					$cats = $a->getCategories(); 
+					$tags = $a->getTags();
 
-				//Get more article meta data
-				$post_author = $this->brafton_article->get_post_author(); 
-				$post_status = $this->brafton_article->get_post_status();
+					//Get more article meta data
+					$post_author = $this->brafton_article->get_post_author(); 
+					$post_status = $this->brafton_article->get_post_status();
 
-				$post_status = get_option( 'braftonxml_sched_status' );
+					$post_status = get_option( 'braftonxml_sched_status' );
 
-				//prepare article tag id array
-				#$input_tags = $this->brafton_tags->get_terms( $tags, 'tag' );
+					//prepare article tag id array
+					#$input_tags = $this->brafton_tags->get_terms( $tags, 'tag' );
 
-				//prepare article category id array
-				$post_category = $this->brafton_cats->get_terms( $cats, 'category' );  
+					//prepare article category id array
+					$post_category = $this->brafton_cats->get_terms( $cats, 'category' );  
 
-				//prepare single article meta data array
-				$article = compact(
-							'brafton_id', 
-							'post_author', 
-							'post_date', 
-							'post_content', 
-							'post_title', 
-							'post_status', 
-							'post_excerpt', 
-							'post_category'
-							/* 'tags_input' */
-						); 
+					//prepare single article meta data array
+					$article = compact(
+								'brafton_id', 
+								'post_author', 
+								'post_date', 
+								'post_content', 
+								'post_title', 
+								'post_status', 
+								'post_excerpt', 
+								'post_category'
+								/* 'tags_input' */
+							); 
 
-				//insert article to WordPress database
-				$post_id = $this->brafton_article->insert_article($article);
-			
+					//insert article to WordPress database
+					$post_id = $this->brafton_article->insert_article($article);
+				
+					//update post to include thumbnail image
+					if ( get_option('brafton_enable_images') == "on" )
+						$this->brafton_image->insert_image( $photos, $post_id); 
+				} else {
+					//If overwrite is enabled, update the post
+					if ( get_option('braftonxml_overwrite') == 'on' )
+			 			$post_id = $this->brafton_article->update_post( $article, $post_exists ); 
+				}  
+
 				//update post to include thumbnail image
 				if ( get_option('brafton_enable_images') == "on" )
-					$this->brafton_image->insert_image( $photos, $post_id); 
+					$this->brafton_image->insert_image( $photos, $post_id);	
 			}
 		}
 
 	}
 
 }
-	
-
 ?>

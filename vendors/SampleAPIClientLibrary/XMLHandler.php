@@ -21,7 +21,6 @@ class XMLHandler {
 	 if(!preg_match('/^http:\/\//', $url)){
       $url = 'file://' . $url;
     }
-    echo "url to curl call " . $url . " <br />";
 	$this->doc = new DOMDocument();
     
     //load wp_http class   
@@ -31,7 +30,6 @@ class XMLHandler {
     $request = new WP_Http; 
     $result = $request->request( $url );
 
-    var_dump( $result->get_error_messages );
     $feed_string = $result['body'];
 
     
