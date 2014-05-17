@@ -155,13 +155,11 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                     $brafton_video_importer = new Brafton_Video_Importer(
                         $brafton_image, 
                         $brafton_cats, 
-                        $brafton_tags, 
                         $brafton_video 
                         );
                     $brafton_video_importer->import_videos();
                     update_option("braftonxml_sched_triggercount", get_option("braftonxml_sched_triggercount") + 1, 0);    
                 }
-                
             }
         }
         

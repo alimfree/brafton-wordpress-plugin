@@ -40,19 +40,20 @@
 		 * @usedby Brafton_Video_Importer to update posts with post thumbnail images after post creation. 
 		 * @param mixed $photos 
 		 * @param int $post_id
-		 * @param bool $has_video optional 
+		 * @param bool $video optional 
 		 * @return $attachment_id
 		 * $photos parameter must either be an AdferoArticlePhotosClient 
 		 * object or a string for video articles and regular articles respectively. 
 		 */
-		public function insert_image( $photos, $post_id, $has_video = NULL )
+		public function insert_image( $photos, $post_id, $video = NULL, $scale_axis = NULL, $scale = NULL, $brafton_id = NULL )
 		{
-			// if( $has_video )
-			// 	$images_array = $this->get_video_images( $photos ); 
-			// else
+			if( $video )
+				$images_array = $this->get_video_images( $photos, $scale_axis, $scale, $brafton_id ); 
+			else
 				$images_array = $this->get_article_images( $photos ); 
 
-			if( get_option( "braftonxml_overwrite", "on") == 'on' )
+
+			if( get_option( "braftonxml_overwrite", "on" ) == 'on' )
 				$attachment_id = $this->update_image( $images_array, $post_id ); 
 			
 			else
@@ -93,7 +94,7 @@
 		 * @param AdferoArticlePhotosClient $photos 
 		 * @return Array images_array['image_id', 'image_caption', 'image_url']
 		 */
-		private function get_video_images( AdferoArticlePhotosClient $photos ){
+		private function get_video_images(  $photos, $scale_axis, $scale, $brafton_id ){
 
 			$thisPhotos = $photos->ListForArticle($brafton_id, 0, 100);
 			
@@ -102,12 +103,12 @@
 				$image_id = $photos->Get( $thisPhotos->items[0]->id )->sourcePhotoId;
 				$image_url = $photoClient->Photos()->GetScaleLocationUrl( $image_id, $scale_axis, $scale )->locationUri;
 				$image_url = strtok( $image_url, '?' );
-				$photoCaption = $photos->Get($thisPhotos->items[0]->id)->fields['caption'];
+				$image_caption = $photos->Get($thisPhotos->items[0]->id)->fields['caption'];
 
 
 				$image_id = $thisPhotos->items[0]->id;
 
-				$images_array = compact( 'image_id', 'image_caption', 'image_url');
+				$images_array = compact( 'image_id', 'image_caption', 'image_url' );
 
 				return $images_array; 
 			}

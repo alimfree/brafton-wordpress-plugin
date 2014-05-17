@@ -74,17 +74,17 @@ if ( !class_exists( 'Article_Importer' ) )
 					$cats = $a->getCategories(); 
 					$tags = $a->getTags();
 
-					//Get more article meta data
+					//Get more video article meta data
 					$post_author = $this->brafton_article->get_post_author(); 
 					$post_status = $this->brafton_article->get_post_status();
 
 					$post_status = get_option( 'braftonxml_sched_status' );
 
-					//prepare article tag id array
+					//prepare video article tag id array
 					#$input_tags = $this->brafton_tags->get_terms( $tags, 'tag' );
 
-					//prepare article category id array
-					$post_category = $this->brafton_cats->get_terms( $cats, 'category' );  
+					//prepare video article category id array
+					$post_category = $this->brafton_cats->get_video_terms( $cats, 'category' );  
 
 					//prepare single article meta data array
 					$article = compact(
@@ -100,11 +100,11 @@ if ( !class_exists( 'Article_Importer' ) )
 							); 
 
 					//insert article to WordPress database
-					$post_id = $this->brafton_article->insert_article($article);
+					$post_id = $this->brafton_article->insert_article( $article );
 
 					//update post to include thumbnail image
-					if ( get_option('brafton_enable_images') == "on" )
-						$this->brafton_image->insert_image( $photos, $post_id);	
+					if ( get_option( 'brafton_enable_images' ) == "on" )
+						$this->brafton_image->insert_image( $photos, $post_id );	
 				} 
 			}
 		}

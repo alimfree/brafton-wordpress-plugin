@@ -134,9 +134,9 @@
 			}
 
 			//format post date
-			$post_date_gmt = strtotime($date);
-			$post_date_gmt = gmdate('Y-m-d H:i:s', $post_date_gmt);
-			$post_date = get_date_from_gmt($post_date_gmt);
+			$post_date_gmt = strtotime( $date );
+			$post_date_gmt = gmdate( 'Y-m-d H:i:s', $post_date_gmt );
+			$post_date = get_date_from_gmt( $post_date_gmt );
 			
 			return $post_date;
 		}
