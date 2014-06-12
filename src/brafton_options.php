@@ -1,5 +1,5 @@
 <?php 
-	require_once(sprintf("%s/brafton_errors.php", dirname(__FILE__)));
+	require_once( sprintf( "%s/brafton_errors.php", dirname( __FILE__ ) ) );
 
 	// Settings page options.
 	define( 'BRAFTON_ERROR_LOG', 'brafton_error_log', true );
@@ -17,8 +17,12 @@
 	define( 'BRAFTON_OVERWRITE', 'braftonxml_overwrite', true ); 
 	define( 'BRAFTON_POST_DATE', 'braftonxml_publishdate', true ); 
 	define( 'BRAFTON_VIDEO', 'braftonxml_video', true ); 
-	define( 'BRAFTON_VIDEO_FEED', 'braftonxml_videoSecret', true ); 
-	define( 'BRAFTON_VIDEO_FEED_NUM', 'braftonxml_videoFeedNum', true ); 
+	define( 'BRAFTON_VIDEO_SECRET', 'braftonxml_videosecret', true ); 
+    define( 'BRAFTON_VIDEO_PUBLIC', 'braftonxml_videopublic', true );
+	define( 'BRAFTON_VIDEO_FEED_NUM', 'braftonxml_video_feed_num', true ); 
+    define( 'BRAFTON_VIDEO_PLAYER', 'brafton_video_player', true ); 
+    define( 'BRAFTON_ENABLE_SCRIPT', 'brafton_enable_script', true );
+    define( 'BRAFTON_PLAYER_CSS', 'brafton_player_css', true );
 	define( 'BRAFTON_CUSTOM_POST', 'brafton_custom_post_type', true ); 
 	define( 'BRAFTON_DISABLE', 'brafton_purge', true ); 
 	define( 'BRAFTON_PARENT_CATEGORIES', 'brafton_parent_categories', true ); 
@@ -39,6 +43,7 @@
 		public $brafton_options;
         //Array of plugin errors log
         public $errors; 
+        public $archives; 
         //Brafton_Options Object 
         private static $instance = null;
 
@@ -51,7 +56,7 @@
 				$option_value =  get_option( $option );
 
 				if( $option == 'brafton_error_log' )
-					brafton_initialize_log('brafton_error_log' );
+					brafton_initialize_log( 'brafton_error_log' );
 	        	$brafton_options[$option] = $option_value;
 			}
 			$this->brafton_options = $brafton_options;  

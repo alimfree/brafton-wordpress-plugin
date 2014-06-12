@@ -21,7 +21,6 @@ class XMLHandler {
 	 if(!preg_match('/^http:\/\//', $url)){
       $url = 'file://' . $url;
     }
-
 	$this->doc = new DOMDocument();
     
     //load wp_http class   
@@ -31,7 +30,9 @@ class XMLHandler {
     $request = new WP_Http; 
     $result = $request->request( $url );
 
+
     $feed_string = $result['body'];
+
 
     
 		if(!$this->doc->loadXML($feed_string)) {

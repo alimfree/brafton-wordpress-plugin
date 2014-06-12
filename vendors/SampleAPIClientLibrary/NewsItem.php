@@ -23,7 +23,7 @@ define("CREATED_DATE", "createdDate");
 define("LAST_MODIFIED_DATE", "lastModifiedDate");
 define("EXTRACT", "extract");
 define("TEXT", "text");
-define("BY_LINE", "byLine");
+define("BY_LINE", "byline");
 define("TWEET_TEXT", "tweetText");
 define("SOURCE", "source");
 define("STATE", "state");
@@ -115,9 +115,9 @@ class NewsItem	{
 	 * @param String $url
 	 * @return NewsItem[]
 	 */
-	public static function getNewsList($url, $format, XMLHandler $xh = null, NewsItem $ni = null ) {
+	public static function getNewsList($url, $format) {
 		//Exception thrown in XMLHandler constructor if url is incorrect	
-		$xh = $xh ? : new XMLHandler($url);
+		$xh = new XMLHandler($url);
 
 		$newsList = array();
 		if(isset($xh)){
@@ -126,7 +126,7 @@ class NewsItem	{
 
 			foreach($news as $n){
 				/* @var $n DomElement */
-				$ni = $ni ? : new NewsItem();
+				$ni = new NewsItem();
 				try{
 					//Check if all required nodes exist, throw exception if not!
 					if($n->getElementsByTagName(ID)->length==0)throw new XMLNodeException("Element " . ID . " for " . NEWS_LIST_ITEM);

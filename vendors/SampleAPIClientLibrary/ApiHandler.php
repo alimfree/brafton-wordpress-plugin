@@ -26,12 +26,12 @@ class ApiHandler {
     private $commentUrl;
     private $feedName;	 
 
-    public function __construct($API_KEY, $apiUrl, XMLHandler $xh = null ){
+    public function __construct($API_KEY, $apiUrl){
         $this->API_KEY = $API_KEY;
         $trimmedUrl =  rtrim($apiUrl, "/");
         $this->apiUrl = $trimmedUrl . "/";
        
-        $xh = $xh ? : new XMLHandler($this->getFeedUrl());
+        $xh = new XMLHandler($this->getFeedUrl());
         
         $this->newsUrl = $xh->getHrefValue("news");
         $this->categoryUrl = $xh->getHrefValue("categoryDefinitions");
@@ -40,7 +40,6 @@ class ApiHandler {
     }
 
     /**
-     * 
      * @return NewsItem[]
      */
     public function getNewsHTML(){
