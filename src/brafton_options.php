@@ -220,7 +220,7 @@
         {
             $name = $args['name'];
             $label = $args['label'];
-            echo sprintf('<div class="archive-upload"><p>%s</p><input type="file" name="%s" ></div>', $label, $name);
+            echo sprintf('<div class="archive-upload"><p>%s</p><input type="file" name="%s" /></div>', $label, $name);
         }
 
         public function get_article_link()

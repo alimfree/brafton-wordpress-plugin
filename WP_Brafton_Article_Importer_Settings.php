@@ -63,7 +63,13 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer'
             );
            
+            add_settings_section(
+                'brafton_archives_section',
+                'Archives', 
+                array( &$this, 'settings_section_brafton_archives' ),
+                'Brafton_Archives'
 
+            );
             // Possibly do additional admin_init tasks
         } // END public static function activate
 
@@ -296,16 +302,6 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                     'default' => 'off'
                 )
             );
-            add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_archives',
-                'Archives',
-                array( &$this->brafton_options, 'settings_xml_upload' ),
-                'WP_Brafton_Article_Importer',
-                'brafton_developer_section',
-                array('label' => 'Upload a specific xml Archive file', 
-                    'name' => 'brafton-archive' 
-                    )
-            ); 
         }
 
         public function settings_section_brafton_advanced()
@@ -380,6 +376,20 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
             );
         }
 
+        public function settings_section_brafton_archives(){
+            
+             add_settings_field(
+                'WP_Brafton_Article_Importer_brafton_archives',
+                'Archives',
+                array( &$this->brafton_options, 'settings_xml_upload' ),
+                'Brafton_Archives',
+                'brafton_archives_section',
+                array('label' => 'Upload a specific xml Archive file', 
+                    'name' => 'brafton-archive' 
+                    )
+            ); 
+        }
+
         /* jQuery Tabs */
         public function scripts() {
             wp_print_scripts( 'jquery-ui-tabs' );
@@ -393,15 +403,44 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
             // Add a page to manage this plugin's settings
         	$admin_page = add_menu_page(
         	    'WP Brafton Article Importer Settings', 
-        	     $this->brafton_options->brafton_get_product() . ' Settings', 
+        	     $this->brafton_options->brafton_get_product(), 
         	    'manage_options', 
         	    'WP_Brafton_Article_Importer', 
         	    array( &$this, 'plugin_settings_page' )
         	);
+
+            add_submenu_page(
+                'WP_Brafton_Article_Importer', 
+                'Brafton Settings', 
+                'Settings', 
+                'manage_options', 
+                'WP_Brafton_Article_Importer', 
+                array( &$this, 'plugin_settings_page' )
+                );
+           add_submenu_page( 
+                'WP_Brafton_Article_Importer', 
+                'Archival Upload', 
+                'Archives', 
+                'edit_files', 
+                'brafton_archives', 
+                array( &$this, 'brafton_archives_page' ) 
+                );
+
             add_action( 'admin_print_scripts-' . $admin_page, array( &$this, 'scripts' ) );
 
         } // END public function add_menu()
        
+
+       public function brafton_archives_page()
+       {
+            if(!current_user_can('manage_options' ))
+                {
+                    wp_die(__('You do not have sufficient permissions to access this page.' ));
+                }
+        
+                // Render the settings template
+                include(sprintf("%s../src/templates/archives.php", dirname(__FILE__)));
+       }
 
         
         /**

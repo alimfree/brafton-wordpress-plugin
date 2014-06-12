@@ -30,7 +30,9 @@ class XMLHandler {
     $request = new WP_Http; 
     $result = $request->request( $url );
 
+
     $feed_string = $result['body'];
+
 
     
 		if(!$this->doc->loadXML($feed_string)) {

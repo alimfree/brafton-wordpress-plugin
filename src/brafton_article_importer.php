@@ -57,9 +57,12 @@ if ( !class_exists( 'Article_Importer' ) )
 		public function import_articles(){
 			//Retrieve articles from feed
 			$article_array = $this->brafton_article->get_articles();
+
+			//var_dump( $article_array );
 			//Retrieve article import log
 			$this->brafton_articles_log = get_option( 'brafton_articles_log' );
 			foreach( $article_array as $a ){
+				echo '<pre>' . var_dump( $a ) . '</pre>'; 
 				//Get article meta data from feed
 				$brafton_id = $a->getID(); 
 				$post_exists = $this->brafton_article->exists( $brafton_id );
@@ -97,11 +100,13 @@ if ( !class_exists( 'Article_Importer' ) )
 								'post_excerpt', 
 								'post_category'
 								/* 'tags_input' */
-							); 
+							); 	
+
+				echo '<pre>' . 	var_dump( $article ) . '</pre>'; 
 
 					//insert article to WordPress database
 					$post_id = $this->brafton_article->insert_article( $article );
-
+					echo "inserting post : "  . $post_id;
 					//update post to include thumbnail image
 					if ( get_option( 'brafton_enable_images' ) == "on" )
 						$this->brafton_image->insert_image( $photos, $post_id );	

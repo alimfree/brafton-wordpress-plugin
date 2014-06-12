@@ -53,6 +53,8 @@ if( !class_exists('WP_Brafton_Article_Importer' ) )
 
             #update_option(BRAFTON_ERROR_LOG, $message );
 
+            
+
         } // END public function __construct
 
         /**
@@ -112,14 +114,17 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         add_action( 'load-toplevel_page_WP_Brafton_Article_Importer', 'run_article_import' );
 
         add_action( 'load-toplevel_page_WP_Brafton_Article_Importer', 'run_video_import' );
-
+        //Run video and article importers when archives form is saved
+        add_action( 'load-brafton_page_brafton_archives', 'run_article_import' );
+        add_action( 'load-brafton_page_brafton_archives', 'run_video_import' );
         /**
          * Run the article importer
          */
         function run_article_import(){
             //Wait until settings are saved before attempting to import articles
-            if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true ) 
+            if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true || isset( $_POST['option_page'] ) && $_POST['option_page'] == 'brafton_archives' )
             {
+                echo 'running article_import';
                 $brafton_options = Brafton_options::get_instance();
                 $brafton_cats = new Brafton_Taxonomy();
                 $brafton_tags = new Brafton_Taxonomy();
@@ -166,6 +171,23 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         #run duplicate killer if version is not appropriate
     }
 
+    //Add video player scripts and css to <head>
+    function brafton_enqueue_video_scripts() {
+        //support atlantisjs embed codes
+        $player = get_option( 'brafton_video_player' );
+        switch( $player ) {
+            case $player = "atlantis":
+                wp_enqueue_script( 'jquery' );
+                wp_enqueue_script( 'atlantisjs', 'http://p.ninjacdn.co.uk/atlantisjs/v0.11.7/atlantis.js', array( 'jquery' ) );
+
+
+                if( get_option( 'brafton_player_css' ) == 'on' )
+                    wp_enqueue_style( 'atlantis', 'http://p.ninjacdn.co.uk/atlantisjs/v0.11.7/atlantisjs.css' );
+                break;
+        }
+
+    }
+    add_action( 'wp_enqueue_scripts', 'brafton_enqueue_video_scripts' );
 
   //Load the admin page Stylesheet. 
     function wp_brafton_article_importer_settings_style() {

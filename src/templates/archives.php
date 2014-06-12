@@ -6,41 +6,24 @@
 
 <div class="wrap">
     <div class="brafton-options">
-    <h2> <?php echo $brafton_options->brafton_get_product(); ?>  Importer</h2>
+    <h2> <?php echo $brafton_options->brafton_get_product(); ?>  Manual Archival Upload</h2>
+    <p>If you wish to update existing content, enable overwrite</p>
+    <form method="post" action="" enctype="multipart/form-data">
+        <?php settings_fields( 'brafton_archives' ); ?>
+        <?php @do_settings_fields('Brafton_Archives_group'); ?>
+  
+        <?php do_settings_sections('Brafton_Archives'); ?>
 
-    <?php 
+        <?php do_settings_sections( $_GET['page'] ); ?>
 
-    if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true )
-            echo '<div class="updated fade"><p>' . __( sprintf('%s options updated.', $brafton_options->brafton_get_product() ) ) . '</p></div>'; ?>
-
-    <form method="post" action="options.php" enctype="multipart/form-data"> 
-        <?php @settings_fields('WP_Brafton_Article_Importer_group'); ?>
-        <div class="ui-tabs"> 
-            <ul class="ui-tabs-nav">
-                <?php 
-                
-
-               $sections = $brafton_options->get_sections(); 
-                foreach ( $sections as $section_slug => $section )
-                   echo '<li><a href="#' . $section_slug . '">' . $section . '</a></li>'; ?>
-
-            </ul><!-- end .ul-tabs-nav -->
-                <?php do_settings_sections( $_GET['page'] ); ?>
-
-        </div><!-- end .ul-tabs-->
+         <!-- <p class="submit"><input name="Submit" type="submit" class="button-primary" value="<?php echo  __( "Save Changes" )?>" /></p>'
+ -->
         <?php   @submit_button(); ?>
-        <?php
+
+            <?php
         if( $brafton_options->brafton_has_api_key() )
             echo '<div class="footer">Thank you for Partnering with ' . $brafton_options->link_to_product() .' </div>';
-        ?>
-    </form>
-
-    <form method="post" action="" enctype="multipart/form-data">
-        
-            <div class="ui-tabs-panel" id="brafton-developer-section">
-                <?php $args = array( 'name' => 'brafton-archive', 'label' => 'Upload a specific xml Archive file' ); ?>
-               <?php  $brafton_options->settings_xml_upload($args); ?>
-            </div>
+        ?>    
     </form>
 
     </div><!--- .brafton-options -->
