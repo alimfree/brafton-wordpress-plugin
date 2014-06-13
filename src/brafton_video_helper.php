@@ -24,6 +24,7 @@ class Brafton_Video_Helper
 	private $width;
 	private $embed_code;
 
+	private $presplash;
 	public $post_type;
 	function __construct()
 	{
@@ -80,7 +81,7 @@ class Brafton_Video_Helper
 
 		$video_list = $this->video_out_client->ListForArticle( $brafton_id,0,10 );
 		$list = $video_list->items;
-		
+		$this->presplash = $presplash;
 		foreach( $list as $list_item ){
 			$output = $this->video_out_client->Get( $list_item->id );
 			$type = $output->type; 
@@ -104,13 +105,24 @@ class Brafton_Video_Helper
 	private function format_video_output( $output, $type )
 	{
 		$path = $output->path; 
-		$this->width = $output->width; 
-		$this->height = $output->height;
+
 
 		//Standard suported outputs
-		if( $type == 'htmlmp4' ) $this->mp4 = $path; 
-		if( $type == 'htmlogg' ) $this->ogg = $path; 
-		if( $type == 'flash' ) $this->flv = $path; 
+		if( $type == 'htmlmp4' ){ 
+			$this->mp4 = $path;
+			$this->width = $output->width; 
+			$this->height = $output->height;
+		}
+		if( $type == 'htmlogg' ){
+			$this->ogg = $path;
+			$this->width = $output->width; 
+			$this->height = $output->height; 
+		}
+		if( $type == 'flash' ) {
+			$this->flv = $path; 
+			$this->width = $output->width; 
+			$this->height = $output->height;
+		}
 
 		//Grab HD outputs
 		if ( $type == 'custom' )
@@ -138,11 +150,13 @@ class Brafton_Video_Helper
 	public function create_embed_code( $brafton_id, $presplash ){
 
 		$player = get_option("brafton_video_player");
+		$width = $this->width; 
+		$height = $this->height; 
 
 		if ( $player == 'atlantis' )
 		{
 			$this->embed_code = <<<EOT
-            <video id='video-$brafton_id' class="ajs-default-skin atlantis-js" controls preload="auto" width="$this->width" height='$this->height'
+            <video id='video-$brafton_id' class="ajs-default-skin atlantis-js" controls preload="auto" width="$width" height='$height'
                     poster='$presplash'>
                     <source src="$this->mp4" type='video/mp4' data-resolution="288" />
                     <source src="$this->ogg" type='video/ogg' data-resolution="288" />
@@ -245,7 +259,7 @@ EOT;
 
 	public function insert_video_article( $video_article_array, $brafton_id ) {
 		//generate video embed code containing supported video output formats.
-		$this->get_video_output( $brafton_id );
+		$this->get_video_output( $brafton_id, $this->presplash );
 
 		$video_article_array['post_type'] = $this->post_type; 
 		$video_article_array['post_content'] = sanitize_text_field( $video_article_array['post_content'] );
@@ -283,7 +297,8 @@ EOT;
 			if ( get_option('braftonxml_overwrite') == 'on' ){
 				$post_id = $this->update_post( $video_article_array, $post_exists ); 
 
-			return $post_id;
+				update_post_meta($post_id, 'video_embed_code', $this->embed_code );
+				return $post_id;
 			}
 
 		}
