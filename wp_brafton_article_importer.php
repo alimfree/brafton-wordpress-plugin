@@ -131,6 +131,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
 
 
                 if( get_option( 'brafton_import_articles' ) === 'off' ) return; 
+                brafton_log( array( 'message' => 'Starting to import articles.' ) );
                 
                 //We need curl to upload via archives.
                 if (!function_exists('curl_init') && $_POST['option_page'] == 'brafton_archives' )
@@ -166,7 +167,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
             if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true ) 
             {
                 if( get_option( 'braftonxml_video' ) === 'off' ) return;
-                
+                    brafton_log( array( 'message' => 'Starting to import videos.' ) );
                     $brafton_options = Brafton_options::get_instance();
                     $brafton_cats = new Brafton_Taxonomy();
                     $brafton_tags = new Brafton_Taxonomy();
@@ -183,7 +184,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                     //Schedule event.
                     braftonxml_clear_all_crons('braftonxml_sched_hook');
                     wp_schedule_event(time() + 3600, "hourly", "braftonxml_sched_hook", $feedSettings);
-                    braftonxml_sched_trigger_schedule( );
+                    //braftonxml_sched_trigger_schedule( );
             }
         }
         

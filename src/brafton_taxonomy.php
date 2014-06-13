@@ -22,7 +22,6 @@
 		public function get_terms( $terms, $taxonomy, $video = null )
 		{
 			$term_array = array(); 
-			echo 'Custom Terms <pre>' . var_dump( $terms ) . '</pre><br />';
 			if( isset( $terms ) ){ 
 				foreach( $terms as $t )
 					{

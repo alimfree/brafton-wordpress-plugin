@@ -6,6 +6,8 @@
  * class XMLHandler is a helper class to parse the XML feed data
  * @package SamplePHPApi
  */
+
+include_once( plugin_dir_path( __FILE__ ) . '../../src/brafton_errors.php' );
 class XMLHandler {
 	/** @var Document */
 	private $doc;
@@ -32,6 +34,13 @@ class XMLHandler {
 	    curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 	    curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 60);
 	    $feed_string = curl_exec($ch);
+	    $error = curl_error( $ch );
+
+	    if( is_wp_error( $post_id) )
+				brafton_log( array( 'message' => 'Failed to execute external web rquest: ' . $url . '. cURL returned error: ' . $error ) );
+		else
+			brafton_log( array( 'message' => 'Successfully executed external web request: ' . $url ) );
+
   	}
   	else {
   		//load wp_http class   
@@ -43,6 +52,13 @@ class XMLHandler {
 
 	    echo "requesting :" . $url . "<br />";
 	    echo '<pr>' . var_dump( $result ) . '</pr><br />'; 
+
+	    $error = $result->get_error_message();
+	    if( is_wp_error( $post_id) )
+			brafton_log( array( 'message' => 'Failed to execute external web rquest: ' . $url . '. WP_HTTP returned error: ' . $error ) );
+		else
+			brafton_log( array( 'message' => 'Successfully executed external web request: ' . $url ) );
+
 	    $feed_string = $result['body'];
 
   	}  

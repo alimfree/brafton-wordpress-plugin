@@ -68,6 +68,7 @@ if ( !class_exists( 'Article_Importer' ) )
 				$post_exists = $this->brafton_article->exists( $brafton_id );
 				if( $post_exists == false || get_option( 'braftonxml_overwrite' ) == 'on' )
 				{
+					brafton_log( array( 'message' => 'Attempting to import article with brafton_id: ' . $brafton_id ) );
 					$post_date = $this->brafton_article->get_publish_date( $a ); 
 					$post_title = $a->getHeadline();
 					$post_content = $a->getText(); 
@@ -110,7 +111,7 @@ if ( !class_exists( 'Article_Importer' ) )
 
 					//insert article to WordPress database
 					$post_id = $this->brafton_article->insert_article( $article );
-					echo "inserting post : "  . $post_id;
+					
 					//update post to include thumbnail image
 					if ( get_option( 'brafton_enable_images' ) == "on" )
 						$this->brafton_image->insert_image( $photos, $post_id );	

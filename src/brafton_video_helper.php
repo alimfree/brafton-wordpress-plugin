@@ -262,8 +262,6 @@ EOT;
 		$this->get_video_output( $brafton_id, $this->presplash );
 
 		$video_article_array['post_type'] = $this->post_type; 
-		$video_article_array['post_content'] = sanitize_text_field( $video_article_array['post_content'] );
-
 
 		$post_exists = $this->exists( $brafton_id );
 
@@ -288,7 +286,6 @@ EOT;
 
 			//attach the video embed code to the article
 			update_post_meta($post_id, 'video_embed_code', $this->embed_code );
-			return $post_id;
 
 		}
 		else
@@ -298,11 +295,17 @@ EOT;
 				$post_id = $this->update_post( $video_article_array, $post_exists ); 
 
 				update_post_meta($post_id, 'video_embed_code', $this->embed_code );
-				return $post_id;
 			}
 
 		}
-			
+
+		if( is_wp_error( $post_id) )
+			brafton_log( array( 'message' => 'Failed to import article with brafton_id: ' . $brafton_id . ' titled: ' . $video_article_array['post_title'] . '. WP returned error: ' . $post_id->get_error_message() ) );
+		else
+			brafton_log( array( 'message' => 'Successfully imported article with brafton_id: ' . $brafton_id . ' titled: ' . $video_article_array['post_title'] ) );
+
+		return $post_id;
+					
 	}
 }
 

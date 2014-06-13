@@ -6,7 +6,7 @@
 	include_once( plugin_dir_path( __FILE__ ) . '..\vendors\RCClientLibrary\AdferoArticlesVideoExtensions\AdferoVideoClient.php');
 	include_once( plugin_dir_path( __FILE__ ) . '..\vendors\RCClientLibrary\AdferoArticles\AdferoClient.php');
 	include_once( plugin_dir_path( __FILE__ ) . '..\vendors\RCClientLibrary\AdferoPhotos\AdferoPhotoClient.php');
-
+	include_once( plugin_dir_path( __FILE__ ) . '\brafton_errors.php' );
 	class Brafton_Image_Handler {
 
 		
@@ -74,6 +74,9 @@
 		 */
 		private function get_article_images( $photos )
 		{
+			$image_id = null; 
+			$image_url = null;
+			$image_caption = null;
 			if ( !empty( $photos ) )
 				{
 					//Large photo
@@ -134,7 +137,15 @@
 		 * @return int $attachment_id
 		 */
 		public function download_image( $images_array, $post_id )
-		{
+		{	
+
+			if( ! $images_array['image_url'] ) {
+				brafton_log( 
+						array( 
+							'message' => 'This article is missing an image. Make sure your feed has an image for this article - ' . get_the_title( $post_id )
+							 )
+					);
+			}
 			$orig_filename = $this->get_image_file_name( $images_array[ 'image_url' ] ); 
 			// If post already has a thumbnail or feed does not have an updated image - Move on to the next article in the loop.
 		    if (has_post_thumbnail( $post_id ) ){
@@ -182,14 +193,6 @@
 
 			return $image_file_name; 
 		}
-
-	}
-
-
-	/**
-	 * Download images  and stores to the WordPress Database
-	 */
-	class Brafton_Downloader {
 
 	}
 ?>

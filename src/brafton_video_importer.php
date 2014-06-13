@@ -53,9 +53,6 @@ class Brafton_Video_Importer
 				
 				$presplash = $attribute->fields['preSplash'];
 
-
-
-
 				$postsplash = $attribute->fields['postSplash'];
 				$post_title = $attribute->fields['title'];
 				$post_excerpt = $attribute->fields['extract'];

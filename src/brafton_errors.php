@@ -3,9 +3,8 @@
  * 
  * Plugin error handling and import failure debugging methods. 
  * Developer option Errors must be enabled to use these.
- * @author Ali
+ * @author Ali <techsupport@brafton.com>
  * @package Brafton Importer
- * @subpackage Log
  * 
  */
 
