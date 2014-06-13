@@ -18,7 +18,6 @@ class Brafton_Video_Importer
 	public $brafton_video;
 	public $brafton_images;
 
-	public $presplash;
 	//Initialize 
 	function __construct ( 
 					Brafton_Image_Handler $brafton_image = Null, 
@@ -52,7 +51,11 @@ class Brafton_Video_Importer
 			{
 				$attribute = $this->brafton_video->adfero_client->Articles()->Get( $brafton_id );
 				
-				$this->presplash = $attribute->fields['preSplash'];
+				$presplash = $attribute->fields['preSplash'];
+
+
+
+
 				$postsplash = $attribute->fields['postSplash'];
 				$post_title = $attribute->fields['title'];
 				$post_excerpt = $attribute->fields['extract'];
@@ -61,7 +64,7 @@ class Brafton_Video_Importer
 
 				$post_status = get_option( 'braftonxml_sched_status', "draft" );
 
-				$this->brafton_video->get_video_output( $brafton_id, $this->presplash );
+				$this->brafton_video->get_video_output( $brafton_id, $presplash );
 
 				$categories = $this->brafton_video->adfero_client->Categories();
 				$categories = $categories->ListForArticle( $brafton_id, 0, 100 )->items; 
@@ -78,10 +81,9 @@ class Brafton_Video_Importer
 
 
 				$post_id = $this->brafton_video->insert_video_article( $video_article, $brafton_id );
-				$photos = $adfero_client->ArticlePhotos();
+				$photos = $this->brafton_video->adfero_client->ArticlePhotos();
 				$scale_axis = 500;
 				$scale = 500;
-
 				//update post to include thumbnail image
 				if ( get_option( 'brafton_enable_images' ) == "on" )
 					$this->brafton_image->insert_image( $photos, $post_id, $video = true, $scale_axis, $scale, $brafton_id );	

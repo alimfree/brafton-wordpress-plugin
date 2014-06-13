@@ -52,6 +52,7 @@
 			else
 				$images_array = $this->get_article_images( $photos ); 
 
+			if ( $images_array == false ) return;
 
 			if( get_option( "braftonxml_overwrite", "on" ) == 'on' )
 				$attachment_id = $this->update_image( $images_array, $post_id ); 
@@ -97,21 +98,27 @@
 		private function get_video_images(  $photos, $scale_axis, $scale, $brafton_id ){
 
 			$thisPhotos = $photos->ListForArticle($brafton_id, 0, 100);
+			//If Video doesn't include an image.
+			if ( ! isset($thisPhotos->items[0] )) return false;
+
+			$image_id = $photos->Get( $thisPhotos->items[0]->id )->sourcePhotoId;
+			$image_url = $photoClient->Photos()->GetScaleLocationUrl( $image_id, $scale_axis, $scale )->locationUri;
 			
-			if (isset($thisPhotos->items[0]->id))
-			{
-				$image_id = $photos->Get( $thisPhotos->items[0]->id )->sourcePhotoId;
-				$image_url = $photoClient->Photos()->GetScaleLocationUrl( $image_id, $scale_axis, $scale )->locationUri;
-				$image_url = strtok( $image_url, '?' );
-				$image_caption = $photos->Get($thisPhotos->items[0]->id)->fields['caption'];
+			echo "Image url before strtok is " . $image_url . "<br />"; 
 
+			$image_url = strtok( $image_url, '?' );
+			$image_caption = $photos->Get($thisPhotos->items[0]->id)->fields['caption'];
 
-				$image_id = $thisPhotos->items[0]->id;
+			echo "Image url is " . $image_url . "<br />"; 
 
-				$images_array = compact( 'image_id', 'image_caption', 'image_url' );
+			echo "Image caption is " . $image_caption . "<br />"; 
 
-				return $images_array; 
-			}
+			$image_id = $thisPhotos->items[0]->id;
+			echo "Image id is " . $image_id . "<br />"; 
+
+			$images_array = compact( 'image_id', 'image_caption', 'image_url' );
+
+			return $images_array; 
 
 		}
 
