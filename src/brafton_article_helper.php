@@ -71,9 +71,8 @@
 		{
 			$feed_settings = $this->get_feed_settings(); 
 
-			if ( isset( $_FILES ) ) //todo add archive file upload settings
+			if ( isset( $_FILES['brafton-archive']['tmp_name'] ) ) //todo add archive file upload settings
 			{
-				var_dump( $_FILES['brafton-archive']['tmp_name'] );
 				echo "Archive Option Selected<br/>";
 				$articles = NewsItem::getNewsList( $_FILES['brafton-archive']['tmp_name'], "html" );
 			} 
