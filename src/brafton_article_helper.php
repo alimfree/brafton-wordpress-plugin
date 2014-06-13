@@ -174,7 +174,6 @@
 		public function insert_article($article_array){
 			
 			$article_array['post_type'] = $this->post_type; 
-			$article_array['post_content'] = sanitize_text_field( $article_array['post_content'] );
 
 			// //Checks if post exists
 			$post_exists = $this->exists( $article_array['brafton_id'] );
@@ -184,33 +183,25 @@
 			if ( $post_exists  == false )
 			{	//add the article to WordPress
 				$post_id = wp_insert_post( $article_array ); 
-				if( is_wp_error( $post_id) )
-
-				brafton_log( 
-					array(
-						'option' => 'brafton_article_log',
-						'priority' => 1, 
-						'message' => array( 
-										'brafton_id' => $brafton_id, 
-										'post_id' => $post_id 
-									)
-					)
-				);
+				
 				//add custom meta field so we can find the article again later.
 				update_post_meta($post_id, 'brafton_id', $brafton_id );
-				return $post_id;
-
 			}
 			else
 			{
 				//check if overwrite is set to on
-				if ( get_option('braftonxml_overwrite') == 'on' ){
+				if ( get_option('braftonxml_overwrite') == 'on' )
 					$post_id = $this->update_post( $article_array, $post_exists ); 
-
-				return $post_id;
-				}
+				
 
 			}
+
+			if( is_wp_error( $post_id) )
+				brafton_log( array( 'message' => 'Failed to import article with brafton_id: ' . $brafton_id . ' titled: ' . $article_array['post_title'] . '. WP returned error: ' . $post_id->get_error_message() ) );
+			else
+				brafton_log( array( 'message' => 'Successfully imported article with brafton_id: ' . $brafton_id . ' titled: ' . $article_array['post_title'] ) );
+			
+			return $post_id;
 			//not returning post_id here because if post already exists and overwrite 
 			//isn't enabled, post_id will be undefined.
 		}

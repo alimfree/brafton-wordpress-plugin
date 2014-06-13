@@ -25,8 +25,10 @@
 			if( isset( $terms ) ){ 
 				foreach( $terms as $t )
 					{
-						if( isset( $video ) )
-							$term_name = $t->Get( $t->id );
+						if( isset( $video ) ){
+							$t_id = $t->ListForArticle($brafton_id, 0, 100)->items[0]->id;
+							$term_name = $t->Get( $t->id );	
+						}
 						else
 							$term_name = $t->getName(); 
 
@@ -67,14 +69,12 @@
 		public function get_custom_terms(  $taxonomy )
 		{
 			$option = 'brafton_custom_' . $taxonomy;
-			echo "custom term option " . $option . " and taxonomy: " . $taxonomy . "<br />"; 
 			$custom_terms = get_option( $option );
 			
 			if( $custom_terms == '' )
 				return false;				
 
 			$terms = explode( ' ', $custom_terms );
-			echo 'Custom Terms <pre>' . var_dump( $terms ) . '</pre><br />';
 			foreach( $terms as $t )
 			{
 				$term_id = $this->insert_term( $t, $taxonomy );
