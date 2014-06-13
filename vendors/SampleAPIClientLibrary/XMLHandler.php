@@ -22,17 +22,31 @@ class XMLHandler {
       $url = 'file://' . $url;
     }
 	$this->doc = new DOMDocument();
+  
+  	//we need curl to execute temp file requests on archive upload. 
+  	if( function_exists('curl_init') ){
+  		if(!isset($ch)){
+	      $ch = curl_init();
+	    }
+	    curl_setopt ($ch, CURLOPT_URL, $url);
+	    curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+	    curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 60);
+	    $feed_string = curl_exec($ch);
+  	}
+  	else {
+  		//load wp_http class   
+		if( !class_exists( 'WP_Http' ) )
+		  	include_once( ABSPATH . WPINC . '/class-http.php' );
+
+	    $request = new WP_Http; 
+	    $result = $request->request( $url );
+
+	    echo "requesting :" . $url . "<br />";
+	    echo '<pr>' . var_dump( $result ) . '</pr><br />'; 
+	    $feed_string = $result['body'];
+
+  	}  
     
-    //load wp_http class   
-	if( !class_exists( 'WP_Http' ) )
-	  	include_once( ABSPATH . WPINC . '/class-http.php' );
-
-    $request = new WP_Http; 
-    $result = $request->request( $url );
-
-
-    $feed_string = $result['body'];
-
 
     
 		if(!$this->doc->loadXML($feed_string)) {

@@ -116,7 +116,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         add_action( 'load-toplevel_page_WP_Brafton_Article_Importer', 'run_video_import' );
         //Run video and article importers when archives form is saved
         add_action( 'load-brafton_page_brafton_archives', 'run_article_import' );
-        add_action( 'load-brafton_page_brafton_archives', 'run_video_import' );
+        //add_action( 'load-brafton_page_brafton_archives', 'run_video_import' );
         /**
          * Run the article importer
          */
@@ -124,7 +124,14 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
             //Wait until settings are saved before attempting to import articles
             if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true || isset( $_POST['option_page'] ) && $_POST['option_page'] == 'brafton_archives' )
             {
-                echo 'running article_import';
+                //We need curl to upload via archives.
+                if (!function_exists('curl_init') && $_POST['option_page'] == 'brafton_archives' )
+                    echo "<li>WARNING: <b>cURL</b> is disabled or not installed on your server. cURL is required to upload article archive.</li>";
+                
+                //We need DOMDocument to parse XML feed.
+                if (!class_exists('DOMDocument'))
+                    echo "<li>WARNING: DOM XML is disabled or not installed on your server.  It is required for this plugin's operation.</li>";
+
                 $brafton_options = Brafton_options::get_instance();
                 $brafton_cats = new Brafton_Taxonomy();
                 $brafton_tags = new Brafton_Taxonomy();

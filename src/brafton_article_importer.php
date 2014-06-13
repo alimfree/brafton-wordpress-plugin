@@ -77,17 +77,11 @@ if ( !class_exists( 'Article_Importer' ) )
 					$cats = $a->getCategories(); 
 					$tags = $a->getTags();
 
-					//Get more video article meta data
+					//Get more article meta data
 					$post_author = $this->brafton_article->get_post_author(); 
 					$post_status = $this->brafton_article->get_post_status();
 
 					$post_status = get_option( 'braftonxml_sched_status' );
-
-					//prepare video article tag id array
-					#$input_tags = $this->brafton_tags->get_terms( $tags, 'tag' );
-
-					//prepare video article category id array
-					$post_category = $this->brafton_cats->get_video_terms( $cats, 'category' );  
 
 					//prepare single article meta data array
 					$article = compact(

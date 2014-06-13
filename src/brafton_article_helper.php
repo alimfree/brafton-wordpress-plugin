@@ -73,7 +73,7 @@
 
 			if ( isset( $_FILES ) ) //todo add archive file upload settings
 			{
-				var_dump( $_FILES );
+				var_dump( $_FILES['brafton-archive']['tmp_name'] );
 				echo "Archive Option Selected<br/>";
 				$articles = NewsItem::getNewsList( $_FILES['brafton-archive']['tmp_name'], "html" );
 			} 
