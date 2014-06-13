@@ -1,7 +1,11 @@
 <?php
 /**
+ * @author Ali <techsupport@brafton.com>
  * Handles post tag and category assignment. Maintains parent child relationships
- * if they exist. You'll need to set these relationships manually. 
+ * if they exist. Brafton Tech or will need to set these relationships manually. 
+ * 
+ * If necessary we can add a get_parent_term to dynamically insert taxonomy hierarchy 
+ * found in the feed.
  */
 	
 	class Brafton_Taxonomy {
@@ -24,8 +28,10 @@
 				if( ! $term == false )
 					$term_id = $term->term_id;
 				//Insert new term
-				else
+				else{
+					// todo: check if term has a parent taxonomy.
 					$term_id = wp_insert_term( sanitize_text_field( $t->getName() ), $taxonomy);
+				}
 
 				$term_array[] = $term_id;
 			} 

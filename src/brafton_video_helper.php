@@ -1,5 +1,6 @@
 <?php 
 /**
+ * @author Ali <techsupport@brafton.com>
  * Helper class for brafton_video_importer.
  */
 include_once ( plugin_dir_path( __FILE__ ) . '../vendors/RCClientLibrary/AdferoArticlesVideoExtensions/AdferoVideoClient.php');
