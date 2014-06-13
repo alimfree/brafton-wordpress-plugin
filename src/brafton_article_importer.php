@@ -25,9 +25,9 @@ if ( !class_exists( 'Article_Importer' ) )
 						Brafton_Taxonomy $brafton_tags, 
 						Brafton_Article_Helper $brafton_article )
 		{
-			if( 'on' == get_option(BRAFTON_ENABLE_IMAGES) )
-			{	//grab image data for previously imported images
-				$this->brafton_images = get_option('brafton_images');
+			if( 'on' == BRAFTON_ENABLE_IMAGES )
+			{	
+
 				//and load the image class.
 				$this->brafton_image_handler = $brafton_image;
 			}
@@ -60,13 +60,12 @@ if ( !class_exists( 'Article_Importer' ) )
 
 			//var_dump( $article_array );
 			//Retrieve article import log
-			$this->brafton_articles_log = get_option( 'brafton_articles_log' );
 			foreach( $article_array as $a ){
 				echo '<pre>' . var_dump( $a ) . '</pre>'; 
 				//Get article meta data from feed
 				$brafton_id = $a->getID(); 
 				$post_exists = $this->brafton_article->exists( $brafton_id );
-				if( $post_exists == false || get_option( 'braftonxml_overwrite' ) == 'on' )
+				if( $post_exists == false || braftonxml_overwrite == 'on' )
 				{
 					brafton_log( array( 'message' => 'Attempting to import article with brafton_id: ' . $brafton_id ) );
 					$post_date = $this->brafton_article->get_publish_date( $a ); 
@@ -82,7 +81,7 @@ if ( !class_exists( 'Article_Importer' ) )
 					$post_author = $this->brafton_article->get_post_author(); 
 					$post_status = $this->brafton_article->get_post_status();
 
-					$post_status = get_option( 'braftonxml_sched_status' );
+					$post_status = braftonxml_sched_status;
 
 					//prepare article tag id array
 					$input_tags = $this->brafton_tags->get_terms( $tags, 'post_tag' );
@@ -113,7 +112,7 @@ if ( !class_exists( 'Article_Importer' ) )
 					$post_id = $this->brafton_article->insert_article( $article );
 					
 					//update post to include thumbnail image
-					if ( get_option( 'brafton_enable_images' ) == "on" )
+					if ( brafton_enable_images == "on" )
 						$this->brafton_image->insert_image( $photos, $post_id );	
 				} 
 			}

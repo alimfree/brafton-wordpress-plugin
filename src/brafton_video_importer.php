@@ -24,9 +24,9 @@ class Brafton_Video_Importer
 					Brafton_Taxonomy $brafton_cats, 
 					Brafton_Video_Helper $brafton_video)
 	{
-		if( 'on' == get_option(BRAFTON_ENABLE_IMAGES) )
+		if( 'on' == BRAFTON_ENABLE_IMAGES )
 		{	//grab image data for previously imported images
-			$this->brafton_images = get_option('brafton_images');
+			$this->brafton_images = brafton_images );
 			//and load the image class.
 			$this->brafton_image_handler = $brafton_image;
 		}
@@ -47,7 +47,7 @@ class Brafton_Video_Importer
 
 			$brafton_id = $video->id;
 			$post_exists = $this->brafton_video->exists( $brafton_id );
-			if( $post_exists == false || get_option( 'braftonxml_overwrite' ) == 'on' )
+			if( $post_exists == false || braftonxml_overwrite == 'on' )
 			{
 				$attribute = $this->brafton_video->adfero_client->Articles()->Get( $brafton_id );
 				
@@ -59,7 +59,7 @@ class Brafton_Video_Importer
 				$post_date = $this->brafton_video->format_post_date( $attribute->fields['date'] );
 				$post_content = $attribute->fields['content'];
 
-				$post_status = get_option( 'braftonxml_sched_status', "draft" );
+				$post_status = braftonxml_sched_status;
 
 				$this->brafton_video->get_video_output( $brafton_id, $presplash );
 
@@ -81,7 +81,7 @@ class Brafton_Video_Importer
 				$scale_axis = 500;
 				$scale = 500;
 				//update post to include thumbnail image
-				if ( get_option( 'brafton_enable_images' ) == "on" )
+				if ( brafton_enable_images == "on" )
 					$this->brafton_image->insert_image( $photos, $post_id, $video = true, $scale_axis, $scale, $brafton_id );	
 			}
 		}

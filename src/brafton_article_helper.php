@@ -4,7 +4,7 @@
 		public $post_type;
 		// Require Client Libraries 
 		function __construct( Brafton_Options $brafton_options ){
-			if( get_option('brafton_custom_post_type', true ) == 'on')
+			if( brafton_custom_post_type == 'on')
 				$this->post_type = 'brafton_article'; 
 			else
 				$this->post_type = 'post';
@@ -98,7 +98,7 @@
 		 */
 		public function get_post_author()
 		{
-			$post_author = apply_filters('braftonxml_author', get_option("braftonxml_default_author", 1));
+			$post_author = apply_filters('braftonxml_author', braftonxml_default_author );
 			return $post_author; 
 		}
 
@@ -108,7 +108,7 @@
 		 */
 		public function get_post_status()
 		{	
-			$post_status = get_option("braftonxml_sched_status");
+			$post_status = braftonxml_sched_status;
 			return $post_status; 
 		}
 
@@ -118,7 +118,7 @@
 		 */
 		public function get_publish_date($article_array) {
 			
-			switch ( get_option( BRAFTON_POST_DATE ) )
+			switch (  BRAFTON_POST_DATE  )
 			{
 				case 'modified':
 					$date = $article_array->getLastModifiedDate();
@@ -148,8 +148,8 @@
 		public function get_feed_settings( ){
 
 				$feed_settings = array(
-					"api_url" => get_option(BRAFTON_DOMAIN),
-					"api_key" => get_option(BRAFTON_FEED),
+					"api_url" => BRAFTON_DOMAIN,
+					"api_key" => BRAFTON_FEED,
 				);	
 			
 			
@@ -190,7 +190,7 @@
 			else
 			{
 				//check if overwrite is set to on
-				if ( get_option('braftonxml_overwrite') == 'on' )
+				if ( braftonxml_overwrite == 'on' )
 					$post_id = $this->update_post( $article_array, $post_exists ); 
 				
 

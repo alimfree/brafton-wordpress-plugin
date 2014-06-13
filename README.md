@@ -7,14 +7,16 @@ An Opinionated version of Brafton's WordPress Importer.
 todo: 
 
 priority
-schedule importer by hooking into wp-cron.php
 test everything add log statements.
-fix logger
 auto updater
-save all option settings in single db field.
-make sure video categories work and images work.
+save all option settings in single db field. 
+make sure video categories work.
 
 
 clean up unnecesary files.
 clean up syntax
+purge options
+purge articles.
 add subcategory feature
+
+single options field needs to be updated to accomodate multisite.

@@ -54,7 +54,7 @@
 
 			if ( $images_array == false ) return;
 
-			if( get_option( "braftonxml_overwrite", "on" ) == 'on' )
+			if( braftonxml_overwrite == 'on' )
 				$attachment_id = $this->update_image( $images_array, $post_id ); 
 			
 			else
@@ -187,7 +187,7 @@
    		 */
 		public function get_image_file_name( $original_image_url )
 		{
-			$domain = get_option( "braftonxml_domain" );
+			$domain = braftonxml_domain;
 			$domain = str_replace( 'api', 'http://pictures', $domain );
 			$image_file_name = str_replace( $domain , "" , $original_image_url);
 

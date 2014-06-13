@@ -53,7 +53,7 @@
 			$brafton_options = array();
 			foreach( $options as $key => $option )
 			{
-				$option_value =  get_option( $option );
+				$option_value =  $this->get_option( 'brafton_options', $option );
 
 				if( $option == 'brafton_error_log' )
 					brafton_initialize_log( 'brafton_error_log' );
@@ -79,6 +79,58 @@
     		}
     		return $constants;
     	}
+        /**
+         * Save  option in single option's table field
+         * 
+         * @param String $option_name 
+         * @param String $key 
+         * @param String $value
+         *          
+         */ 
+        function update_option($option_name, $key, $value) {
+            //first get the option
+            $options = get_option( $option_name );
+
+            if ( !$options ) {
+                //no options have been saved yet, so add it
+                add_option( $option_name, array($key => $value) );
+            } else {
+                //update the existing option
+                $options[$key] = $value;
+                update_option( $option_name , $options );
+            }
+        }
+
+        /**
+         * Retreive option value from single field in WP options table.
+         * @param String $option_name 
+         * @param String $key          
+         * @param String $default 
+         * 
+         * @return $option
+         */
+        function get_option($option_name, $key, $default = false) {
+            $options = get_option( $option_name );
+
+            if ( $options ) {
+                return (array_key_exists( $key, $options )) ? $options[$key] : $default;
+            }
+
+            return $default;
+        }
+        /**
+         * Removes single option from options brafton_options field in wp options table.
+         * @param String $option_name 
+         * @param String $key 
+         */
+        function delete_option($option_name, $key) {
+            $options = get_option( $option_name );
+
+            if ( $options ) {
+                unset($options[$key]);
+                update_option( $option_name , $options );
+            }
+        }
 
     	/**
     	 * Access this object with this method.
@@ -159,6 +211,14 @@
         {
         	$option = get_option('braftonxml_sched_API_KEY');
         	//what kind of hashing algorithm do we use for our API keys
+        }
+
+        public function validate_options( $input ){
+
+            $output = get_option( 'brafton_options' );
+           // todo:
+           // validate feed key
+           // validate custom taxonomies
         }
 
     	public function last_import_run()

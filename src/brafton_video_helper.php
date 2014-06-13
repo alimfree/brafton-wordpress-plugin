@@ -28,7 +28,7 @@ class Brafton_Video_Helper
 	public $post_type;
 	function __construct()
 	{
-		if( get_option('brafton_custom_post_type', true ) == 'on')
+		if( brafton_custom_post_type == 'on')
 			$this->post_type = 'brafton_article'; 
 		else
 			$this->post_type = 'post';
@@ -51,9 +51,9 @@ class Brafton_Video_Helper
 	private function get_video_settings()
 	{
 		$video_settings = array(
-				'video_secret' => get_option( 'braftonxml_videosecret' ),
-				'video_public' => get_option( 'braftonxml_videopublic' ), 
-				'feed_num' => get_option( 'braftonxml_video_feed_num' )
+				'video_secret' => braftonxml_videosecret,
+				'video_public' => braftonxml_videopublic, 
+				'feed_num' => braftonxml_video_feed_num
 			);
 
 		return $video_settings; 
@@ -68,7 +68,7 @@ class Brafton_Video_Helper
 		$feedList = $feeds->ListFeeds(0, 10);
 
 		$video_articles = $this->adfero_client->Articles();
-		$feed_num = get_option( 'braftonxml_video_feed_num' ); 
+		$feed_num = braftonxml_video_feed_num; 
 		$video_article_list = $video_articles->ListForFeed($feedList->items[ $feed_num ]->id, 'live', 0, 100);		
 		return $video_article_list;
 	}
@@ -149,7 +149,7 @@ class Brafton_Video_Helper
 	 */
 	public function create_embed_code( $brafton_id, $presplash ){
 
-		$player = get_option("brafton_video_player");
+		$player = brafton_video_player;
 		$width = $this->width; 
 		$height = $this->height; 
 
@@ -269,18 +269,7 @@ EOT;
 		if ( $post_exists  == false )
 		{	//add the article to WordPress
 			$post_id = wp_insert_post( $video_article_array ); 
-			if( is_wp_error( $post_id) )
 
-			brafton_log( 
-				array(
-					'option' => 'brafton_article_log',
-					'priority' => 1, 
-					'message' => array( 
-									'brafton_id' => $brafton_id, 
-									'post_id' => $post_id 
-								)
-				)
-			);
 			//add custom meta field so we can find the video article again later.
 			update_post_meta($post_id, 'brafton_id', $brafton_id );
 
@@ -291,7 +280,7 @@ EOT;
 		else
 		{
 			//check if overwrite is set to on
-			if ( get_option('braftonxml_overwrite') == 'on' ){
+			if ( braftonxml_overwrite == 'on' ){
 				$post_id = $this->update_post( $video_article_array, $post_exists ); 
 
 				update_post_meta($post_id, 'video_embed_code', $this->embed_code );

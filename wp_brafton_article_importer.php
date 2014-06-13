@@ -45,15 +45,6 @@ if( !class_exists('WP_Brafton_Article_Importer' ) )
             if( $brafton_options->custom_post_type_enabled() )
                 $Brafton_Article_Template = new Brafton_Article_Template( $brafton_options );
             
-            add_option( BRAFTON_PLUGIN_VERSION_KEY, BRAFTON_PLUGIN_VERSION_NUM );
-
-            #$errors = new Brafton_Errors();
-            $message = array('type' => 'Brafton Importer', 'priority' => 0, 'message' => 'this is fun');
-            #$msg = serialize($message);
-
-            #update_option(BRAFTON_ERROR_LOG, $message );
-
-            
 
         } // END public function __construct
 
@@ -76,10 +67,10 @@ if( !class_exists('WP_Brafton_Article_Importer' ) )
             //remove scheduled hook.
             braftonxml_clear_all_crons('braftonxml_sched_hook');
 
-            if( get_option( 'brafton_purge' ) == 'options' )
+            if( brafton_purge == 'options' )
                 $this->brafton_options->purge_options(); 
 
-            if( get_option( 'brafton_purge_articles' ) )
+            if( brafton_purge_articles )
                 $this->brafton_options->purge_articles(); 
 
 
@@ -130,7 +121,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
             {
 
 
-                if( get_option( 'brafton_import_articles' ) === 'off' ) return; 
+                if( brafton_import_articles === 'off' ) return; 
                 brafton_log( array( 'message' => 'Starting to import articles.' ) );
                 
                 //We need curl to upload via archives.
@@ -153,7 +144,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                     $brafton_article 
                     );
                 $brafton_article_importer->import_articles();
-                update_option("braftonxml_sched_triggercount", get_option("braftonxml_sched_triggercount") + 1, 0);
+                $brafton_options->update_option( "brafton_options", "braftonxml_sched_triggercount", $brafton_options->get_option( "brafton_options", "braftonxml_sched_triggercount") + 1, 0);
             }
         }
         
@@ -166,7 +157,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
             //Wait until settings are saved before attempting to import articles
             if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true ) 
             {
-                if( get_option( 'braftonxml_video' ) === 'off' ) return;
+                if( 'braftonxml_video' === 'off' ) return;
                     brafton_log( array( 'message' => 'Starting to import videos.' ) );
                     $brafton_options = Brafton_options::get_instance();
                     $brafton_cats = new Brafton_Taxonomy();
@@ -179,8 +170,8 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                         $brafton_video 
                         );
                     $brafton_video_importer->import_videos();
-                    update_option("braftonxml_sched_triggercount", get_option("braftonxml_sched_triggercount") + 1, 0);    
-                        
+                    $brafton_options->update_option( "brafton_options", "braftonxml_sched_triggercount", $brafton_options->get_option( "brafton_options", "braftonxml_sched_triggercount") + 1, 0);
+                    
                     //Schedule event.
                     braftonxml_clear_all_crons('braftonxml_sched_hook');
                     wp_schedule_event(time() + 3600, "hourly", "braftonxml_sched_hook", $feedSettings);
@@ -194,14 +185,14 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
     //Add video player scripts and css to <head>
     function brafton_enqueue_video_scripts() {
         //support atlantisjs embed codes
-        $player = get_option( 'brafton_video_player' );
+        $player = brafton_video_player;
         switch( $player ) {
             case $player = "atlantis":
                 wp_enqueue_script( 'jquery' );
                 wp_enqueue_script( 'atlantisjs', 'http://p.ninjacdn.co.uk/atlantisjs/v0.11.7/atlantis.js', array( 'jquery' ) );
 
 
-                if( get_option( 'brafton_player_css' ) == 'on' )
+                if( brafton_player_css == 'on' )
                     wp_enqueue_style( 'atlantis', 'http://p.ninjacdn.co.uk/atlantisjs/v0.11.7/atlantisjs.css' );
                 break;
         }
@@ -225,7 +216,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
     {
         run_article_import();
         run_video_import();
-        update_option("braftonxml_sched_triggercount", get_option("braftonxml_sched_triggercount") + 1);
+        //update_option("braftonxml_sched_triggercount", get_option("braftonxml_sched_triggercount") + 1);
 
         // HACK: posts are duplicated due to a lack of cron lock resolution (see http://core.trac.wordpress.org/ticket/19700)
         // this is fixed in wp versions >= 3.4.
@@ -237,7 +228,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
 
   //Load the admin page Stylesheet. 
     function wp_brafton_article_importer_settings_style() {
-        $siteurl = get_option('siteurl');
+        $siteurl = siteurl;
         $url = $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/css/settings.css';
         echo "<link rel='stylesheet' type='text/css' href='$url' />\n";
     }
