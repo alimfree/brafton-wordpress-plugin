@@ -10,7 +10,7 @@
 	define( 'BRAFTON_AUTHOR', 'brafton_default_author', true ); 
 	define( 'BRAFTON_FEED', 'braftonxml_sched_API_KEY', true ); 
 	define( 'BRAFTON_DOMAIN', 'braftonxml_domain', true ); 
-	define( 'BRAFTON_CUSTOM_TAGS', 'brafton_custom_tags', true ); 
+	define( 'BRAFTON_CUSTOM_POST_TAG', 'brafton_custom_post_tag', true ); 
 	define( 'BRAFTON_SCHEDULED_STATUS', 'braftonxml_sched_status', true ); 
 	define( 'BRAFTON_TAGS', 'brafton_tags_option', true ); 
 	define( 'BRAFTON_CATEGORIES', 'brafton_categories', true ); 
@@ -25,7 +25,7 @@
     define( 'BRAFTON_PLAYER_CSS', 'brafton_player_css', true );
 	define( 'BRAFTON_CUSTOM_POST', 'brafton_custom_post_type', true ); 
 	define( 'BRAFTON_DISABLE', 'brafton_purge', true ); 
-	define( 'BRAFTON_CUSTOM_CATEGORIES', 'brafton_custom_categories', true ); 
+	define( 'BRAFTON_CUSTOM_CATEGORY', 'brafton_custom_category', true ); 
 	define( 'BRAFTON_CUSTOM_TAXONOMY', 'brafton_custom_taxonomy', true ); 
 	define( 'BRAFTON_IMPORT_COUNT', 'braftonxml_sched_triggercount', true );
 

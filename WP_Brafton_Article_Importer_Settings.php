@@ -303,25 +303,25 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 )
             );
             add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_custom_categories', 
+                'WP_Brafton_Article_Importer_brafton_custom_category', 
                 'Custom Categories', 
                 array( &$this->brafton_options, 'settings_field_input_text' ), 
                 'WP_Brafton_Article_Importer', 
                 'brafton_developer_section',
                 array(
                     'name' => 'custom_categories',
-                    'field' => 'brafton_custom_categories'
+                    'field' => 'brafton_custom_category'
                 )
             );
             add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_custom_tags', 
+                'WP_Brafton_Article_Importer_brafton_custom_post_tag', 
                 'Custom Tags', 
                 array( &$this->brafton_options, 'settings_field_input_text' ), 
                 'WP_Brafton_Article_Importer', 
                 'brafton_developer_section',
                 array(
                     'name' => 'custom_tags',
-                    'field' => 'brafton_custom_tags'
+                    'field' => 'brafton_custom_post_tag'
                 )
             );
         }
