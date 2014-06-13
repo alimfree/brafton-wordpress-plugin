@@ -95,11 +95,14 @@
 		 * @param AdferoArticlePhotosClient $photos 
 		 * @return Array images_array['image_id', 'image_caption', 'image_url']
 		 */
-		private function get_video_images(  $photos, $scale_axis, $scale, $brafton_id ){
+		private function get_video_images( $photos, $scale_axis, $scale, $brafton_id ){
+			
+			$photoURI = "http://pictures.video.brafton.com/v2/";
+			$photoClient = new AdferoPhotoClient( $photoURI );
 
 			$thisPhotos = $photos->ListForArticle($brafton_id, 0, 100);
 			//If Video doesn't include an image.
-			if ( ! isset($thisPhotos->items[0] )) return false;
+			if ( ! isset( $thisPhotos->items[0] ) ) return false;
 
 			$image_id = $photos->Get( $thisPhotos->items[0]->id )->sourcePhotoId;
 			$image_url = $photoClient->Photos()->GetScaleLocationUrl( $image_id, $scale_axis, $scale )->locationUri;
