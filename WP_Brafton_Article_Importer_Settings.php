@@ -12,38 +12,37 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
      * Contains logic used to render Brafton Options Menu
      * @uses Brafton_Options to dynamically display options stored in database
      */
-	class WP_Brafton_Article_Importer_Settings
-	{
-		/**
+    class WP_Brafton_Article_Importer_Settings
+    {
+        /**
          * Construct the Plugin object
          * @param $brafton_options 
-		 */
-		public function __construct( Brafton_Options $brafton_options )
-		{
-            if( isset( $brafton_options ) ){ 
-                register_setting( 'WP_Brafton_Article_Importer_group', 'brafton_options', array( &$brafton_options, 'validate_options' ) ); 
-                register_setting( 'WP_Brafton_Article_Importer_group', 'BRAFTON_ERROR_LOG');
-            }
-			// register actions
+         */
+        public function __construct( Brafton_Options $brafton_options )
+        {
+            if( isset( $brafton_options ) )
+                $this->brafton_options = $brafton_options; 
+
+            // register actions
             add_action('admin_init', array( &$this, 'admin_init' ));
-        	add_action('admin_menu', array( &$this, 'add_menu' ));
-		} // END public function __construct
-		
+            add_action('admin_menu', array( &$this, 'add_menu' ));
+        } // END public function __construct
+        
         /**
          * hook into WP's admin_init action hook
          */
         public function admin_init()
         {
-        	// register your plugin's settings
-            $this->brafton_options->register_options();
+            // register your plugin's settings
+            register_setting( 'WP_Brafton_Article_Importer_group', 'brafton_sex' ); 
 
             // add your settings section
-        	add_settings_section(
-        	    'brafton_article_section', 
-        	    'Article Settings', 
-        	    array( &$this, 'settings_section_brafton_article' ), 
-        	    'WP_Brafton_Article_Importer'
-        	);
+            add_settings_section(
+                'brafton_article_section', 
+                'Article Settings', 
+                array( &$this, 'settings_section_brafton_article' ), 
+                'WP_Brafton_Article_Importer'
+            );
             add_settings_section(
                 'brafton_video_section', 
                 'Video Settings', 
@@ -83,7 +82,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_article_section',
                 array(
-                    'name' => 'brafton_options[brafton_import_articles]',
+                    'name' => 'brafton_import_articles',
                     'options' => array( 'off' => ' Off',
                                         'on' => ' On' ), 
                     'default' => 'on'
@@ -97,7 +96,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_article_section',
                 array(
-                    'name' => 'brafton_options[api-key]',
+                    'name' => 'api-key',
                     'field' => 'braftonxml_sched_API_KEY'
                 )
             );
@@ -108,7 +107,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_article_section',
                 array(
-                    'name' => 'brafton_options[braftonxml_domain]', 
+                    'name' => 'braftonxml_domain', 
                     'options' => array( 'api.brafton.com/' => ' Brafton', 
                                         'api.contentlead.com/'=> ' ContentLEAD', 
                                         'api.castleford.com.au/' => ' Castleford'
@@ -123,7 +122,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_article_section',
                 array(
-                    'name' => 'brafton_options[brafton_default_author]'
+                    'name' => 'brafton_default_author'
                 )
             );
             add_settings_field(
@@ -133,7 +132,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_article_section',
                  array(
-                    'name' => 'brafton_options[braftonxml_sched_status]', 
+                    'name' => 'braftonxml_sched_status', 
                     'options' => array('publish' => ' Publish',
                                        'draft' => ' Draft' ),
                     'default' => 'publish'
@@ -151,7 +150,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_video_section',
                 array(
-                    'name' => 'brafton_options[braftonxml_video]',
+                    'name' => 'braftonxml_video',
                     'options' => array( 'off' => ' Off',
                                         'on' => ' On' ), 
                     'default' => 'off'
@@ -164,7 +163,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_video_section',
                 array(
-                    'name' => 'brafton_options[video-private-key]',
+                    'name' => 'video-private-key',
                     'field' => 'braftonxml_videosecret'
                 )
             );
@@ -175,7 +174,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_video_section',
                 array(
-                    'name' => 'brafton_options[video-public-key]',
+                    'name' => 'video-public-key',
                     'field' => 'braftonxml_videopublic'
                 )
             );
@@ -186,7 +185,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_video_section',
                 array(
-                    'name' => 'brafton_options[feed-number]',
+                    'name' => 'feed-number',
                     'field' => 'braftonxml_video_feed_num'
                 )
             );
@@ -197,7 +196,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_video_section',
                 array(
-                    'name' => 'brafton_options[brafton_video_player]',
+                    'name' => 'brafton_video_player',
                     'options' => array( 'videojs' => ' VideoJS',
                                         'atlantis' => ' AtlantisJS', 
                                         'none' => ' None'
@@ -211,7 +210,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_video_section',
                 array(
-                    'name' => 'brafton_options[brafton_enable_script]',
+                    'name' => 'brafton_enable_script',
                     'options' => array( 'off' => ' Off',
                                         'on' => ' On' ), 
                     'default' => 'off'
@@ -224,7 +223,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_video_section',
                 array(
-                    'name' => 'brafton_options[brafton_player_css]',
+                    'name' => 'brafton_player_css',
                     'options' => array( 'off' => ' Off',
                                         'on' => ' On' ), 
                     'default' => 'off'
@@ -241,7 +240,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_developer_section',
                 array(
-                    'name' => 'brafton_options[brafton_parent_categories]', 
+                    'name' => 'brafton_parent_categories', 
                     'options' => array( 'on' => ' On', 
                                         'off'=> ' Off' 
                         ),
@@ -255,7 +254,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_developer_section',
                 array(
-                    'name' => 'brafton_options[brafton_custom_taxonomy]', 
+                    'name' => 'brafton_custom_taxonomy', 
                     'options' => array( 'on' => ' On', 
                                         'off'=> ' Off' 
                         ),
@@ -269,7 +268,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_developer_section',
                 array(
-                    'name' => 'brafton_options[braftonxml_overwrite]', 
+                    'name' => 'braftonxml_overwrite', 
                     'options' => array('on' => ' On',
                                        'off' => ' Off' ), 
                     'default' => 'off'
@@ -282,7 +281,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_developer_section',
                 array(
-                    'name' => 'brafton_options[brafton_purge]',
+                    'name' => 'brafton_purge',
                     'options' => array( 'none' => ' Stop Importing Content', 
                                         'posts' => ' Delete All ' . $this->brafton_options->brafton_get_product() . ' Articles', 
                                         'all' => ' Purge this plugin entirely!'
@@ -297,7 +296,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_developer_section',
                 array(
-                    'name' => 'brafton_options[brafton_errors]', 
+                    'name' => 'brafton_errors', 
                     'options' => array('on' => ' On',
                                        'off' => ' Off' ), 
                     'default' => 'off'
@@ -310,7 +309,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_developer_section',
                 array(
-                    'name' => 'brafton_options[custom_categories]',
+                    'name' => 'custom_categories',
                     'field' => 'brafton_custom_category'
                 )
             );
@@ -321,7 +320,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_developer_section',
                 array(
-                    'name' => 'brafton_options[custom_tags]',
+                    'name' => 'custom_tags',
                     'field' => 'brafton_custom_post_tag'
                 )
             );
@@ -336,7 +335,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_advanced_section', 
                 array(
-                    'name' => 'brafton_options[brafton_enable_images]', 
+                    'name' => 'brafton_enable_images', 
                     'options' => array( 'off' => ' Off',
                                         'on' => ' On' ), 
                     'default' => 'on'
@@ -349,7 +348,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_advanced_section', 
                 array(
-                    'name' => 'brafton_options[brafton_custom_post_type]', 
+                    'name' => 'brafton_custom_post_type', 
                     'options' => array( 'off' => ' Off',
                                         'on' => ' On' ), 
                     'default' => 'on'
@@ -362,7 +361,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_advanced_section',
                 array(
-                    'name' => 'brafton_options[brafton_categories]', 
+                    'name' => 'brafton_categories', 
                     'options' => array('categories' => ' Brafton Categories',
                                        'no_categories' => ' None' )
                 )
@@ -374,7 +373,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_advanced_section',
                 array(
-                    'name' => 'brafton_options[braftonxml_sched_tags]', 
+                    'name' => 'braftonxml_sched_tags', 
                     'options' => array('tags' => ' Brafton Tags as Tags',
                                        'keywords' => ' Brafton Keywords as Tags',
                                        'categories' => ' Brafton Categories as Tags', 
@@ -389,7 +388,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'WP_Brafton_Article_Importer', 
                 'brafton_advanced_section',
                  array(
-                    'name' => 'brafton_options[braftonxml_publishdate]', 
+                    'name' => 'braftonxml_publishdate', 
                     'options' => array('published' => ' Published Date',
                                        'modified' => ' Last Modified Date',
                                        'created' => ' Created Date'
@@ -408,7 +407,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'Brafton_Archives',
                 'brafton_archives_section',
                 array('label' => 'Upload a specific xml Archive file', 
-                    'name' => 'brafton_options[brafton-archive]' 
+                    'name' => 'brafton-archive' 
                     )
             ); 
         }
@@ -420,17 +419,17 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
        
         /**
          * add a menu
-         */		
+         */     
         public function add_menu()
         {
             // Add a page to manage this plugin's settings
-        	$admin_page = add_menu_page(
-        	    'WP Brafton Article Importer Settings', 
-        	     $this->brafton_options->brafton_get_product(), 
-        	    'manage_options', 
-        	    'WP_Brafton_Article_Importer', 
-        	    array( &$this, 'plugin_settings_page' )
-        	);
+            $admin_page = add_menu_page(
+                'WP Brafton Article Importer Settings', 
+                 $this->brafton_options->brafton_get_product(), 
+                'manage_options', 
+                'WP_Brafton_Article_Importer', 
+                array( &$this, 'plugin_settings_page' )
+            );
 
             add_submenu_page(
                 'WP_Brafton_Article_Importer', 
@@ -468,16 +467,16 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
         
         /**
          * Menu Callback
-         */		
+         */     
         public function plugin_settings_page()
         {
-        	if(!current_user_can('manage_options' ))
-        	{
-        		wp_die(__('You do not have sufficient permissions to access this page.' ));
-        	}
-	
-        	// Render the settings template
-        	include(sprintf("%s../src/templates/settings.php", dirname(__FILE__)));
+            if(!current_user_can('manage_options' ))
+            {
+                wp_die(__('You do not have sufficient permissions to access this page.' ));
+            }
+    
+            // Render the settings template
+            include(sprintf("%s../src/templates/settings.php", dirname(__FILE__)));
         } // END public function plugin_settings_page()
     } // END class WP_Brafton_Article_Importer_Settings
 } // END if(!class_exists('WP_Brafton_Article_Importer_Settings' ))

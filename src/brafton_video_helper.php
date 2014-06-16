@@ -23,12 +23,13 @@ class Brafton_Video_Helper
 	private $height;
 	private $width;
 	private $embed_code;
-
+	public $brafton_options;
 	private $presplash;
 	public $post_type;
-	function __construct()
+	function __construct( $brafton_options )
 	{
-		if( brafton_custom_post_type == 'on')
+		$this->brafton_options = $brafton_options;
+		if( $this->brafton_options->options['brafton_custom_post_type'] == 'on')
 			$this->post_type = 'brafton_article'; 
 		else
 			$this->post_type = 'post';
@@ -51,9 +52,9 @@ class Brafton_Video_Helper
 	private function get_video_settings()
 	{
 		$video_settings = array(
-				'video_secret' => braftonxml_videosecret,
-				'video_public' => braftonxml_videopublic, 
-				'feed_num' => braftonxml_video_feed_num
+				'video_secret' => $this->brafton_options->options['brafton_video_secret'],
+				'video_public' => $this->brafton_options->options['brafton_video_public'], 
+				'feed_num' => $this->brafton_options->options['braftonx_video_feed_num']
 			);
 
 		return $video_settings; 
@@ -68,7 +69,7 @@ class Brafton_Video_Helper
 		$feedList = $feeds->ListFeeds(0, 10);
 
 		$video_articles = $this->adfero_client->Articles();
-		$feed_num = braftonxml_video_feed_num; 
+		$feed_num = $this->brafton_options->options['brafton_video_feed_num']; 
 		$video_article_list = $video_articles->ListForFeed($feedList->items[ $feed_num ]->id, 'live', 0, 100);		
 		return $video_article_list;
 	}
@@ -149,7 +150,7 @@ class Brafton_Video_Helper
 	 */
 	public function create_embed_code( $brafton_id, $presplash ){
 
-		$player = brafton_video_player;
+		$player = $this->brafton_options->options['brafton_video_player'];
 		$width = $this->width; 
 		$height = $this->height; 
 
@@ -280,7 +281,7 @@ EOT;
 		else
 		{
 			//check if overwrite is set to on
-			if ( braftonxml_overwrite == 'on' ){
+			if ( $this->brafton_options->options['brafton_overwrite'] == 'on' ){
 				$post_id = $this->update_post( $video_article_array, $post_exists ); 
 
 				update_post_meta($post_id, 'video_embed_code', $this->embed_code );

@@ -11,7 +11,7 @@ test everything add log statements.
 auto updater
 save all option settings in single db field. 
 make sure video categories work.
-
+make sure article and video posts have author 
 
 clean up unnecesary files.
 clean up syntax

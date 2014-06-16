@@ -8,9 +8,10 @@
 	include_once( plugin_dir_path( __FILE__ ) . '..\vendors\RCClientLibrary\AdferoPhotos\AdferoPhotoClient.php');
 	include_once( plugin_dir_path( __FILE__ ) . '\brafton_errors.php' );
 	class Brafton_Image_Handler {
-
-		
-
+		public $brafton_options;
+		function __construct( $brafton_options){
+			$this->brafton_options = $brafton_options;
+		}
 		/**
 		 * Removes attached image and adds new post thumnail image to  an article.
 		 * @param int $post_id
@@ -54,7 +55,8 @@
 
 			if ( $images_array == false ) return;
 
-			if( braftonxml_overwrite == 'on' )
+
+			if( $this->brafton->options['brafton_overwrite'] == 'on' )
 				$attachment_id = $this->update_image( $images_array, $post_id ); 
 			
 			else
@@ -187,7 +189,7 @@
    		 */
 		public function get_image_file_name( $original_image_url )
 		{
-			$domain = braftonxml_domain;
+			$domain = $this->brafton_options->options{'brafton_domain'};
 			$domain = str_replace( 'api', 'http://pictures', $domain );
 			$image_file_name = str_replace( $domain , "" , $original_image_url);
 

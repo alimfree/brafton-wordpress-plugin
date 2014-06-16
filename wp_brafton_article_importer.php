@@ -42,7 +42,7 @@ if( !class_exists('WP_Brafton_Article_Importer' ) )
             
             // Register custom post types
             require_once( sprintf( "%s/src/brafton_article_template.php", dirname( __FILE__ ) ) );
-            if( $brafton_options->custom_post_type_enabled() )
+            if( $brafton_options->options['brafton_custom_post_type'] === "on" )
                 $Brafton_Article_Template = new Brafton_Article_Template( $brafton_options );
             
 
@@ -65,12 +65,12 @@ if( !class_exists('WP_Brafton_Article_Importer' ) )
         public static function deactivate()
         {
             //remove scheduled hook.
-            braftonxml_clear_all_crons('braftonxml_sched_hook');
+            braftonxml_clear_all_crons('brafton_import_trigger_hook');
 
-            if( brafton_purge == 'options' )
+            if( $this->brafton_options->options['brafton_purge'] == 'options' )
                 $this->brafton_options->purge_options(); 
 
-            if( brafton_purge_articles )
+            if( $this->brafton_options->options['brafton_purge'] == 'articles' )
                 $this->brafton_options->purge_articles(); 
 
 
@@ -89,7 +89,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
     $WP_Brafton_Article_Importer = new WP_Brafton_Article_Importer();
 
     /* This is the scheduling hook for our plugin that is triggered by cron */
-    #add_action('braftonxml_sched_hook', 'run_import', 10, 2);
+    #add_action('brafton_import_trigger_hook', 'run_import', 10, 2);
     
     // Add a link to the settings page onto the plugin page
     if( isset( $WP_Brafton_Article_Importer ) )
@@ -102,7 +102,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
             return $links; 
         }
 
-        $plugin = plugin_basename(__FILE__); 
+        $plugin = plugin_basename( __FILE__ ); 
         add_filter( "plugin_action_links_$plugin", 'plugin_settings_link' );
         
         //Manually run importer when settings are saved.
@@ -120,31 +120,35 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
             if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true || isset( $_POST['option_page'] ) && $_POST['option_page'] == 'brafton_archives' )
             {
 
+                $brafton_options = Brafton_options::get_instance();
 
-                if( brafton_import_articles === 'off' ) return; 
-                brafton_log( array( 'message' => 'Starting to import articles.' ) );
+                if( $brafton_options->options['brafton_import_articles'] === 'off' ) return; 
+
+                if( !$brafton_options->options['brafton_api_key'] ) return;
                 
+                brafton_log( array( 'message' => 'Starting to import articles.' ) );
                 //We need curl to upload via archives.
-                if (!function_exists('curl_init') && $_POST['option_page'] == 'brafton_archives' )
+                if ( !function_exists( 'curl_init' ) && $_POST['option_page'] == 'brafton_archives' )
                     echo "<li>WARNING: <b>cURL</b> is disabled or not installed on your server. cURL is required to upload article archive.</li>";
                 
                 //We need DOMDocument to parse XML feed.
-                if (!class_exists('DOMDocument'))
+                if ( !class_exists( 'DOMDocument' ) )
                     echo "<li>WARNING: DOM XML is disabled or not installed on your server.  It is required for this plugin's operation.</li>";
-                
-                $brafton_options = Brafton_options::get_instance();
-                $brafton_cats = new Brafton_Taxonomy();
-                $brafton_tags = new Brafton_Taxonomy();
-                $brafton_image = new Brafton_Image_Handler();
-                $brafton_article = new Brafton_Article_Helper($brafton_options);
+
+                                
+                $brafton_cats = new Brafton_Taxonomy( $brafton_options );
+                $brafton_tags = new Brafton_Taxonomy( $brafton_options );
+                $brafton_image = new Brafton_Image_Handler( $brafton_options );
+                $brafton_article = new Brafton_Article_Helper( $brafton_options );
                 $brafton_article_importer = new Brafton_Article_Importer(
                     $brafton_image, 
                     $brafton_cats, 
                     $brafton_tags, 
-                    $brafton_article 
+                    $brafton_article, 
+                    $brafton_options
                     );
                 $brafton_article_importer->import_articles();
-                $brafton_options->update_option( "brafton_options", "braftonxml_sched_triggercount", $brafton_options->get_option( "brafton_options", "braftonxml_sched_triggercount") + 1, 0);
+                $brafton_options->update_option( "brafton_options", "brafton_sched_trigger_count", $brafton_options->get_option( "brafton_options", "braftonxml_sched_triggercount") + 1, 0);
             }
         }
         
@@ -157,24 +161,26 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
             //Wait until settings are saved before attempting to import articles
             if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true ) 
             {
-                if( 'braftonxml_video' === 'off' ) return;
+                $brafton_options = Brafton_options::get_instance();
+
+                if( $brafton_options->options['brafton_enable_video'] === 'off' ) return;
                     brafton_log( array( 'message' => 'Starting to import videos.' ) );
-                    $brafton_options = Brafton_options::get_instance();
-                    $brafton_cats = new Brafton_Taxonomy();
-                    $brafton_tags = new Brafton_Taxonomy();
-                    $brafton_image = new Brafton_Image_Handler();
-                    $brafton_video = new Brafton_Video_Helper($brafton_options);
+                    $brafton_cats = new Brafton_Taxonomy( $brafton_options );
+                    $brafton_tags = new Brafton_Taxonomy( $brafton_options );
+                    $brafton_image = new Brafton_Image_Handler( $brafton_options );
+                    $brafton_video = new Brafton_Video_Helper( $brafton_options );
                     $brafton_video_importer = new Brafton_Video_Importer(
                         $brafton_image, 
                         $brafton_cats, 
-                        $brafton_video 
+                        $brafton_video, 
+                        $brafton_options 
                         );
                     $brafton_video_importer->import_videos();
-                    $brafton_options->update_option( "brafton_options", "braftonxml_sched_triggercount", $brafton_options->get_option( "brafton_options", "braftonxml_sched_triggercount") + 1, 0);
+                    $brafton_options->update_option( "brafton_options", "brafton_import_trigger_count", $brafton_options->get_option( "brafton_options", "braftonxml_sched_triggercount") + 1, 0);
                     
                     //Schedule event.
-                    braftonxml_clear_all_crons('braftonxml_sched_hook');
-                    wp_schedule_event(time() + 3600, "hourly", "braftonxml_sched_hook", $feedSettings);
+                    braftonxml_clear_all_crons('brafton_import_trigger_hook');
+                    wp_schedule_event(time() + 3600, "hourly", "brafton_import_trigger_hook", $feedSettings);
                     //braftonxml_sched_trigger_schedule( );
             }
         }
@@ -184,15 +190,17 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
 
     //Add video player scripts and css to <head>
     function brafton_enqueue_video_scripts() {
+
+        $brafton_options = Brafton_options::get_instance(); 
         //support atlantisjs embed codes
-        $player = brafton_video_player;
+        $player = $brafton_options->options['brafton_video_player'];
         switch( $player ) {
             case $player = "atlantis":
                 wp_enqueue_script( 'jquery' );
                 wp_enqueue_script( 'atlantisjs', 'http://p.ninjacdn.co.uk/atlantisjs/v0.11.7/atlantis.js', array( 'jquery' ) );
 
 
-                if( brafton_player_css == 'on' )
+                if( $brafton->options->options['brafton_player_css'] == 'on' )
                     wp_enqueue_style( 'atlantis', 'http://p.ninjacdn.co.uk/atlantisjs/v0.11.7/atlantisjs.css' );
                 break;
         }
@@ -205,13 +213,13 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
     add_action("init", "clear_crons_left");
     function clear_crons_left()
     {
-        wp_clear_scheduled_hook("braftonxml_sched_hook");
+        wp_clear_scheduled_hook("brafton_import_trigger_hook");
     }
 
     /**  
      * This is the scheduling hook for our plugin that is triggered by cron
      */
-    add_action('braftonxml_sched_hook', 'braftonxml_sched_trigger_schedule', 10, 2);
+    add_action('brafton_import_trigger_hook', 'braftonxml_sched_trigger_schedule', 10, 2);
     function braftonxml_sched_trigger_schedule()
     {
         run_article_import();
@@ -222,13 +230,13 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         // this is fixed in wp versions >= 3.4.
         $wpVersion = get_bloginfo('version');
 
-        if (version_compare($wpVersion, '3.4', '<'))
+        if ( version_compare($wpVersion, '3.4', '<') )
             duplicateKiller();
     }
 
   //Load the admin page Stylesheet. 
     function wp_brafton_article_importer_settings_style() {
-        $siteurl = siteurl;
+        $siteurl = get_option('siteurl');
         $url = $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/css/settings.css';
         echo "<link rel='stylesheet' type='text/css' href='$url' />\n";
     }
