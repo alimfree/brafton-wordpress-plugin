@@ -1,6 +1,8 @@
 <?php 
 	require_once( sprintf( "%s/brafton_errors.php", dirname( __FILE__ ) ) );
 
+    define( "BRAFTON_OPTIONS", "brafton_options" );
+
 	/**
 	 * Singleton Class for retrieving options from the wordpress database.
 	 */
@@ -72,7 +74,7 @@
          * @param String $value
          *          
          */ 
-        function update_option($option_name, $key, $value) {
+        function update_option( $option_name, $key, $value ) {
             //first get the option as an array
             $options = get_option( $option_name );
 
@@ -83,6 +85,8 @@
                 //update the existing option
                 $options[$key] = $value;
                 update_option( $option_name , $options );
+
+                //echo "updated options are <pre>" . var_dump( $options ) . "</pre><br />";
             }
         }
 
@@ -281,7 +285,7 @@
             // Get the value of this setting
             $value = $this->get_option( 'brafton_options', $field);
             // echo a proper input type="text"
-            echo sprintf('<div class="%s"><input type="text" name="%s" id="%s" value="%s" /></div>', $args['name'], $field, $field, $value);
+            echo sprintf('<div class="%s"><input type="text" name="%s[%s]" id="%s" value="%s" /></div>', $args['name'], BRAFTON_OPTIONS, $field, $field, $value);
         } // END public function settings_field_input_text($args)
 
         public function settings_author_dropdown( $element )
@@ -289,7 +293,7 @@
             $field = $element['name'];
             $value = $this->get_option( 'brafton_options', $element['name'] ); 
             
-            $output = '<select name= "' . esc_attr( $field ) . '" >'; 
+            $output = '<select name= "' . BRAFTON_OPTIONS . '[' . esc_attr( $field ) . ']" >'; 
   
                 $options = $this->author_options(); 
             
@@ -336,15 +340,13 @@
             
                 foreach ($element['options'] as $key => $option)
                 {
-                    $output .= '<div class="radio-option ' . str_replace( '_', '-', $element['name'] ) . '"><label><input type="radio" name="'. esc_attr($element['name']) .'" value="'. esc_attr($key) . '"';
+                    $output .= '<div class="radio-option ' . str_replace( '_', '-', $element['name'] ) . '"><label><input type="radio" name="' . BRAFTON_OPTIONS . '['. esc_attr($element['name']) .']" value="'. esc_attr($key) . '"';
 
                     if ( $value == $option ){
                       $output .=   checked($key, $value, true) . ' checked' . ' /><span>' . esc_html($option) . '</span></label></div>';
                     }
                     $output .=   checked($key, $value, false) . ' /><span>' . esc_html($option) . '</span></label></div>';
-                }   
-            
-                    
+                }                                   
             echo sprintf( $output );
         }
 
@@ -352,7 +354,7 @@
         {
             $element = array_merge(array('value' => null), $element);
             
-            $output = '<select name="'. esc_attr($element['name']) .'"' . (isset($element['class']) ? ' class="'. esc_attr($element['class']) .'"' : '') . '>';
+            $output = '<select name="' . BRAFTON_OPTIONS . '['. esc_attr($element['name']) .']"' . (isset($element['class']) ? ' class="'. esc_attr($element['class']) .'"' : '') . '>';
             
             foreach ( (array) $element['options'] as $key => $option) 
             {
