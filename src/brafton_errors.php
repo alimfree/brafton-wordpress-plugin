@@ -17,7 +17,6 @@
  * @param Array $report 
  */
 function brafton_log( $report ) {
-
     $brafton_default_report = array(
                         'option' => 'BRAFTON_ERROR_LOG', //save report objects under this option name in wp
                         'notice' => '',  //Don't display an admin notice

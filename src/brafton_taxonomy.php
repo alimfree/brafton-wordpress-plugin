@@ -9,8 +9,12 @@
  */
 	
 	class Brafton_Taxonomy {
-	
+		
+		public $brafton_options;
 
+		function __construct( $brafton_options){
+			$this->braftion_options = $brafton_options;
+		}
 		/**
 		 * Adds given tags, categories, or custom taxonomies to wordpress database.   
 		 * @param String $taxonomy
@@ -69,8 +73,12 @@
 		public function get_custom_terms(  $taxonomy )
 		{
 			$option = 'brafton_custom_' . $taxonomy;
-			$custom_terms = get_option( $option );
 			
+			if ( $option == 'brafton_custom_category')
+				$custom_terms = $this->brafton_options->options['brafton_custom_category'];
+			if ( $option == 'brafton_custom_post_tag' )
+				$custom_terms = $brafton_options->options['brafton_custom_post_tag']; 
+
 			if( $custom_terms == '' )
 				return false;				
 

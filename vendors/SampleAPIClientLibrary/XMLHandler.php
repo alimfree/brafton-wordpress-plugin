@@ -36,7 +36,7 @@ class XMLHandler {
 	    $feed_string = curl_exec($ch);
 	    $error = curl_error( $ch );
 
-	    if( is_wp_error( $post_id) )
+	    if( $error )
 				brafton_log( array( 'message' => 'Failed to execute external web rquest: ' . $url . '. cURL returned error: ' . $error ) );
 		else
 			brafton_log( array( 'message' => 'Successfully executed external web request: ' . $url ) );
@@ -54,7 +54,7 @@ class XMLHandler {
 	    echo '<pr>' . var_dump( $result ) . '</pr><br />'; 
 
 	    $error = $result->get_error_message();
-	    if( is_wp_error( $post_id) )
+	    if( $error )
 			brafton_log( array( 'message' => 'Failed to execute external web rquest: ' . $url . '. WP_HTTP returned error: ' . $error ) );
 		else
 			brafton_log( array( 'message' => 'Successfully executed external web request: ' . $url ) );

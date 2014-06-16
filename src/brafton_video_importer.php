@@ -16,19 +16,23 @@ include_once 'brafton_errors.php';
 class Brafton_Video_Importer 
 {
 	public $brafton_video;
-	public $brafton_images;
+	public $brafton_image;
+	public $brafton_options;
 
 	//Initialize 
 	function __construct ( 
 					Brafton_Image_Handler $brafton_image = Null, 
 					Brafton_Taxonomy $brafton_cats, 
-					Brafton_Video_Helper $brafton_video)
+					Brafton_Video_Helper $brafton_video, 
+					Brafton_Options $brafton_options )
 	{
-		if( 'on' == get_option(BRAFTON_ENABLE_IMAGES) )
+
+		$this->brafton_options = $brafton_options;
+
+		if( $this->brafton_options->options['brafton_enable_images'] == "on" )
 		{	//grab image data for previously imported images
-			$this->brafton_images = get_option('brafton_images');
 			//and load the image class.
-			$this->brafton_image_handler = $brafton_image;
+			$this->brafton_image = $brafton_image;
 		}
 		$this->brafton_cats = $brafton_cats;
 		$this->brafton_video = $brafton_video; 
@@ -47,7 +51,7 @@ class Brafton_Video_Importer
 
 			$brafton_id = $video->id;
 			$post_exists = $this->brafton_video->exists( $brafton_id );
-			if( $post_exists == false || get_option( 'braftonxml_overwrite' ) == 'on' )
+			if( $post_exists == false || $this->brafton_options->options['brafton_overwrite'] == 'on' )
 			{
 				$attribute = $this->brafton_video->adfero_client->Articles()->Get( $brafton_id );
 				
@@ -59,7 +63,7 @@ class Brafton_Video_Importer
 				$post_date = $this->brafton_video->format_post_date( $attribute->fields['date'] );
 				$post_content = $attribute->fields['content'];
 
-				$post_status = get_option( 'braftonxml_sched_status', "draft" );
+				$post_status = $this->brafton_options->options['brafton_post_status'];
 
 				$this->brafton_video->get_video_output( $brafton_id, $presplash );
 
@@ -81,7 +85,7 @@ class Brafton_Video_Importer
 				$scale_axis = 500;
 				$scale = 500;
 				//update post to include thumbnail image
-				if ( get_option( 'brafton_enable_images' ) == "on" )
+				if ( $this->brafton_options->options['brafton_enable_images'] == "on" )
 					$this->brafton_image->insert_image( $photos, $post_id, $video = true, $scale_axis, $scale, $brafton_id );	
 			}
 		}
