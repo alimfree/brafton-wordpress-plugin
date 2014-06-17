@@ -128,7 +128,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                     } 
                 //If api key isn't set - do nothing
                 if( !$brafton_options->options['brafton_api_key'] ) {
-                    brafton_log( array( 'message' => " Brafton Api key is not set.") )
+                    brafton_log( array( 'message' => " Brafton Api key is not set.") );
                     return;
                 }
                 //if brafton error reporting is enabled - log importing.
@@ -170,7 +170,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                 $brafton_options = Brafton_options::get_instance();
 
                 if( $brafton_options->options['brafton_enable_video'] === 'off' ) {
-                    brafton_log( array( 'message' => 'Video importing is disabled') )
+                    brafton_log( array( 'message' => 'Video importing is disabled') );
                     return;
                 }
                     brafton_log( array( 'message' => 'Starting to import videos.' ) );
