@@ -32,7 +32,7 @@
                                         "brafton_custom_taxonomy" => "off", 
                                         "brafton_overwrite" =>"off", 
                                         "brafton_purge" => "none", 
-                                        "brafton_enable_errors" => 'OFF',
+                                        "brafton_enable_errors" => 'Off',
                                         "brafton_import_trigger_count" => 0,
                                         "brafton_player_css" => "",
                                         "brafton_video_player" => "",
@@ -40,8 +40,8 @@
                                         "brafton_video_secret" => "",
                                         "brafton_video_feed_num" => "",
                                         "brafton_post_author" => "",
-                                        "brafton_tags" => "",
-                                        "brafton_categories" => "", 
+                                        "brafton_enable_tags" => "",
+                                        "brafton_enable_categories" => "", 
                                         "brafton_custom_post_tag" => "", 
                                         "brafton_custom_category" => "",
                                         "brafton_error_log" => ""
@@ -52,7 +52,11 @@
 			foreach( $options as $key => $value )
 			{
                 if( !$key ) continue;
-				if( $key == 'brafton_error_log' ){
+                //Initialize brafton_error_log if one doesn't exist
+				if( $key == 'brafton_error_log' && 
+                    !isset( $brafton_options['brafton_error_log'] ) 
+                    )
+                {
 					brafton_initialize_log( 'brafton_error_log' );
                     continue;
                 }    
@@ -242,6 +246,26 @@
 
     		return $output; 	
     	}
+
+        public function article_list(){
+            $product = $this->brafton_get_product(); 
+            $api_key = $this->options['brafton_api_key'];
+            switch( $product )
+            {
+                case 'Brafton' : 
+                    $url = 'http://brafton.com'; 
+                    break; 
+                case 'ContentLEAD': 
+                    $url = 'http://contentlead.com';
+                    break; 
+                case 'Castleford': 
+                    $url = 'http://castleford.com.au';
+                    break; 
+            }
+            $output = sprintf('<a href="%s/%snews">%s %s</a>', $url, $api_key, $product, $api_key  ); 
+
+            return $output;   
+        }
     	
     	/**
          * Renders an upload field

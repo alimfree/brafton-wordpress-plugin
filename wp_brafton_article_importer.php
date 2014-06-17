@@ -119,13 +119,13 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
             //Wait until settings are saved before attempting to import articles
             if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true || isset( $_POST['option_page'] ) && $_POST['option_page'] == 'brafton_archives' )
             {
-
+                //Grab saved options.
                 $brafton_options = Brafton_options::get_instance();
-
+                //If article importing is disabled - do nothing
                 if( $brafton_options->options['brafton_import_articles'] === 'off' ) return; 
-
+                //If api key isn't set - do nothing
                 if( !$brafton_options->options['brafton_api_key'] ) return;
-                
+                //if brafton error reporting is enabled - log importing.
                 brafton_log( array( 'message' => 'Starting to import articles.' ) );
                 //We need curl to upload via archives.
                 if ( !function_exists( 'curl_init' ) && $_POST['option_page'] == 'brafton_archives' )
@@ -188,7 +188,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         #run duplicate killer if version is not appropriate
     }
 
-    //Add video player scripts and css to <head>
+    //Add video player scripts and css to site <head>
     function brafton_enqueue_video_scripts() {
 
         $brafton_options = Brafton_options::get_instance(); 

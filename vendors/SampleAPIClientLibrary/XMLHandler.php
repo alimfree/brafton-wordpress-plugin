@@ -13,6 +13,7 @@ class XMLHandler {
 	private $doc;
 
   	static $ch;
+  	public $count = 0;
 	
 
 		/**
@@ -20,56 +21,53 @@ class XMLHandler {
 	 * @return XMLHandler
 	 */
 	function __construct($url){
-	 if(!preg_match('/^http:\/\//', $url)){
-      $url = 'file://' . $url;
-    }
-	$this->doc = new DOMDocument();
-  
-  	//we need curl to execute temp file requests on archive upload. 
-  	if( function_exists('curl_init') ){
-  		if(!isset($ch)){
-	      $ch = curl_init();
+		$this->count++;
+
+		if(!preg_match('/^http:\/\//', $url)){
+	      $url = 'file://' . $url;
 	    }
-	    curl_setopt ($ch, CURLOPT_URL, $url);
-	    curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-	    curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 60);
-	    $feed_string = curl_exec($ch);
-	    $error = curl_error( $ch );
+		$this->doc = new DOMDocument();
+	  
+	  	//we need curl to execute temp file requests on archive upload. 
+	  	if( function_exists('curl_init') ){
+	  		if(!isset($ch)){
+		      $ch = curl_init();
+		    }
+		    curl_setopt ($ch, CURLOPT_URL, $url);
+		    curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+		    curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 60);
+		    $feed_string = curl_exec($ch);
+		    $error = curl_error( $ch );
+		 
+		    if( $error )
+					brafton_log( array( 'message' => 'Failed to execute external web rquest: ' . $url . '. cURL returned error: ' . $error ) );
+			else
+				brafton_log( array( 'message' => 'Successfully executed external web request: ' . $url ) );
 
-	    if( $error )
-				brafton_log( array( 'message' => 'Failed to execute external web rquest: ' . $url . '. cURL returned error: ' . $error ) );
-		else
-			brafton_log( array( 'message' => 'Successfully executed external web request: ' . $url ) );
+	  	}
+	  	else {
+	  		//load wp_http class   
+			if( !class_exists( 'WP_Http' ) )
+			  	include_once( ABSPATH . WPINC . '/class-http.php' );
 
-  	}
-  	else {
-  		//load wp_http class   
-		if( !class_exists( 'WP_Http' ) )
-		  	include_once( ABSPATH . WPINC . '/class-http.php' );
+		    $request = new WP_Http; 
+		    $result = $request->request( $url );
 
-	    $request = new WP_Http; 
-	    $result = $request->request( $url );
+		    $error = $result->get_error_message();
+		    if( $error )
+				brafton_log( array( 'message' => 'Failed to execute external web rquest: ' . $url . '. WP_HTTP returned error: ' . $error ) );
+			else
+				brafton_log( array( 'message' => 'Successfully executed external web request: ' . $url ) );
 
-	    echo "requesting :" . $url . "<br />";
-	    echo '<pr>' . var_dump( $result ) . '</pr><br />'; 
+		    $feed_string = $result['body'];
 
-	    $error = $result->get_error_message();
-	    if( $error )
-			brafton_log( array( 'message' => 'Failed to execute external web rquest: ' . $url . '. WP_HTTP returned error: ' . $error ) );
-		else
-			brafton_log( array( 'message' => 'Successfully executed external web request: ' . $url ) );
-
-	    $feed_string = $result['body'];
-
-  	}  
-    
-
+	  	}  
     
 		if(!$this->doc->loadXML($feed_string)) {
-			echo $url."<br>";
 			throw new XMLLoadException($url);
+			echo 'doc isnot xml file';
 		}
-
+		
 	}
   
   /*
@@ -98,6 +96,14 @@ class XMLHandler {
 	 * @return String
 	 */
 	function getHrefValue($element){
+		if( $element == "news" && $this->count == 1 && $this->doc->getElementsByTagName($element)->length == 0  ) {
+			brafton_log( array( 'message' => "Your brafton feed doesn't appear to have news articles. Make sure your Api key and product are valid" ) );
+			$log = get_option('brafton_error_log' );
+			echo "Something went wrong. Try enabling brafton errors.";
+			exit;
+		}
+
+
 		return $this->doc->getElementsByTagName($element)->item(0)->getAttribute('href');
 	}
 
