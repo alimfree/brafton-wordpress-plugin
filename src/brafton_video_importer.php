@@ -68,7 +68,7 @@ class Brafton_Video_Importer
 				$this->brafton_video->get_video_output( $brafton_id, $presplash );
 
 				$categories = $this->brafton_video->adfero_client->Categories();
-				$post_category = $this->brafton_cats->get_terms( $categories, 'category', true );
+				$post_category = $this->brafton_cats->get_terms( $categories, 'category', true, $brafton_id );
 				$video_article = compact( 
 					'post_author', 
 					'post_date', 

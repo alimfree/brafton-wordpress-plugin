@@ -290,9 +290,9 @@ EOT;
 		}
 
 		if( is_wp_error( $post_id) )
-			brafton_log( array( 'message' => 'Failed to import article with brafton_id: ' . $brafton_id . ' titled: ' . $video_article_array['post_title'] . '. WP returned error: ' . $post_id->get_error_message() ) );
+			brafton_log( array( 'message' => 'Failed to import video with brafton_id: ' . $brafton_id . ' titled: ' . $video_article_array['post_title'] . ". WP could't resolve this error: " . $post_id->get_error_message() ) );
 		else
-			brafton_log( array( 'message' => 'Successfully imported article with brafton_id: ' . $brafton_id . ' titled: ' . $video_article_array['post_title'] ) );
+			brafton_log( array( 'message' => 'Successfully imported video with brafton_id: ' . $brafton_id . ' titled: ' . $video_article_array['post_title'] ) );
 
 		return $post_id;
 					
