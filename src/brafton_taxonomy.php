@@ -46,7 +46,7 @@
 			 
 			$custom_terms = $this->get_custom_terms( $taxonomy );
 			if( $custom_terms == false ) {
-				brafton_log( array( 'message' => ' Custom ' . $taxonomy ' is not set. ') );
+				brafton_log( array( 'message' => ' Custom ' . $taxonomy . ' is not set. ') );
 				return $term_array;
 			}
 			$include_custom = array_merge( $term_array, $custom_terms );
