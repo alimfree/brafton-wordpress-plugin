@@ -88,6 +88,10 @@ class Brafton_Video_Importer
 				if ( $this->brafton_options->options['brafton_enable_images'] == "on" )
 					$this->brafton_image->insert_image( $photos, $post_id, $video = true, $scale_axis, $scale, $brafton_id );	
 			}
+			else{
+				 	brafton_log( array( 'message' => 'Video already exists and overwrite is disabled. Video Title: ' . get_the_title( $post_exists ) . " Post ID: " . $post_exists ) );
+
+			}
 		}
 	}
 }

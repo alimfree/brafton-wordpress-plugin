@@ -16,24 +16,30 @@
  * 
  * @param Array $report 
  */
+
+define("BRAFTON_ERROR_LOG", "brafton_error_log");
 function brafton_log( $report ) {
+    //Store all reports in brafton_error_log by default
     $brafton_default_report = array(
-                        'option' => 'BRAFTON_ERROR_LOG', //save report objects under this option name in wp
-                        'notice' => '',  //Don't display an admin notice
-                        'priority' => 0, //Don't log report if brafton error reporting is not enabled
-                        'message' => '' //empty message string
+                        'option' => BRAFTON_ERROR_LOG, //option name errors are stored in wp
+                        'notice' => '',  //admin notice message
+                        'priority' => 0, //0 - log only when brafton errors enabled; 1- log regardless if errors are enabled
+                        'message' => '',  //log entry message.
                     );
-    // Parse incoming $args into an array and merge it with $defaults
+
+
+    // Parse and merge given $report with $defaults
     $report = wp_parse_args($report, $brafton_default_report);
 	//retrieve log from wp options table.
-	$log =  get_option( $report['option'] );
+	$log =  get_option( BRAFTON_ERROR_LOG, $report );
+    $brafton_options = Brafton_Options::get_instance();
 	// $report expected to be an array or an object. 
 	if ( is_array( $report ) || is_object( $report ) ) {
         switch( $report['priority'] ){
             // store messages indefinately or until log limit is reached if brafton error reporting is enabled
             case 0: 
                 //if brafton error reporting is enabled or priority is 1
-                if ( get_option('BRAFTON_ENABLE_ERRORS') == 'on' )
+                if ( $brafton_options->options['brafton_enable_errors'] == 'on' )
                     add_brafton_log_entry( $log, $report );
                 break;
             //store messages indefinately or until log option limit is reached regardless of brafton error reporting.
@@ -49,22 +55,19 @@ function brafton_log( $report ) {
 
 /**
  * Not intended to be used directly. Exists to avoid repetitive code and 
- * excessively nested if statements in brafton_log function.
+ * excessive nested if statements in brafton_log function.
  * @param Array $log
  * @param Array $report 
  */
 function add_brafton_log_entry($log, $report) {
     $report['message'] = date("m/d/Y h:i:s A") . " - " . $report['message'] . "\n";
-    echo 'brafton error reporting is enabled';
-    //log report capacity has no limit or defined limit hasn't been reached
     if( $log['limit'] == NULL || $log['limit'] != $log['count'] )
     {
-        echo 'no limit on log report capacity';
-            //push new message to front of old log array.
-            array_unshift( $log['entries'], $report );
-            $log['count']++;
-            //update the log option in wp database  
-            update_option( $report['option'], $log ); 
+        //push new message to front of old log array.
+        array_unshift( $log['entries'], $report );
+        $log['count']++;
+        //update the log option in wp database  
+        update_option( $report['option'], $log ); 
     }
      //log report capacity has been reached
     else{
@@ -81,7 +84,7 @@ function add_brafton_log_entry($log, $report) {
 }
 
 /**
- * Initializes a new log object. Can also be used to update an existing log. 
+ * Initializes a new log object. Can also be used to overwrite an existing log. 
  * 
  * @param String $option
  * @param Array $log
@@ -92,8 +95,8 @@ function brafton_initialize_log($option, $log = NULL ){
 
     $brafton_default_log = array(
                             'count' => 0, //number of reports stored. Empty initially.
-                            'limit' => NULL, //Place no hard limits on number of reports to store in database
-                            'priority' => 0, //Don't log errors if brafton error reporting is not enabled
+                            'limit' => NULL, //ingeger -limit log entries capacity
+                            'priority' => 0, //0 - log entries only when brafton errors enabled; 1 -log entries always
                             'entries' => array() //array of report objects
                         );
     //parse $log and merge into default log array.
@@ -103,7 +106,7 @@ function brafton_initialize_log($option, $log = NULL ){
 }
 
 /**
- * Displays admin notices for reports with notice key set.
+ * Display admin notices for all log entries with notice key set.
  */
  function brafton_admin_notice() {
      #todo

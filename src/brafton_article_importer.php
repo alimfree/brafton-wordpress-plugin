@@ -55,8 +55,9 @@ if ( !class_exists( 'Article_Importer' ) )
 		public function import_articles(){
 			//Retrieve articles from feed
 			$article_array = $this->brafton_article->get_articles();
-
-			//var_dump( $article_array );
+			var_dump( $article_array );
+			if ( empty( $article_array) )
+				brafton_log( array( 'message'=>  "No articles found on the feed. Check to see if any exist: " . $this->brafton_options->article_list() ) );
 			//Retrieve article import log
 			foreach( $article_array as $a ){
 				echo '<pre>' . var_dump( $a ) . '</pre>'; 
@@ -72,8 +73,11 @@ if ( !class_exists( 'Article_Importer' ) )
 					$photos = $a->getPhotos(); 
 					$post_excerpt = $a->getExtract(); 
 					$keywords = $a->getKeywords();
-					$cats = $a->getCategories(); 
-					$tags = $a->getTags();
+
+					if( $brafton_options['brafton_enable_categories'] == "on" )
+						$cats = $a->getCategories(); 
+					if( $brafton_options['brafton_enable_tags'] == "on" )
+						$tags = $a->getTags();
 
 					//Get more video article meta data
 					$post_author = $this->brafton_options->options['brafton_post_author']; 
@@ -108,7 +112,11 @@ if ( !class_exists( 'Article_Importer' ) )
 					//update post to include thumbnail image
 					if ( $this->brafton_options->options['brafton_enable_images'] == "on" )
 						$this->brafton_image->insert_image( $photos, $post_id );	
-				} 
+				}
+				else{
+				 	//article already exsts:
+				 	brafton_log( array( 'message' => 'Article already exists and overwrite is disabled. Article Title: ' . get_the_title( $post_exists ) . " Post ID: " . $post_exists ) );
+				 } 
 			}
 		}
 	}
