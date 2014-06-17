@@ -95,7 +95,7 @@ function brafton_initialize_log($option, $log = NULL ){
 
     $brafton_default_log = array(
                             'count' => 0, //number of reports stored. Empty initially.
-                            'limit' => NULL, //ingeger -limit log entries capacity
+                            'limit' => 2000, //ingeger -limit log entries capacity
                             'priority' => 0, //0 - log entries only when brafton errors enabled; 1 -log entries always
                             'entries' => array() //array of report objects
                         );

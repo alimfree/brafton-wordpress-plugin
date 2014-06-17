@@ -54,7 +54,7 @@ class Brafton_Video_Helper
 		$video_settings = array(
 				'video_secret' => $this->brafton_options->options['brafton_video_secret'],
 				'video_public' => $this->brafton_options->options['brafton_video_public'], 
-				'feed_num' => $this->brafton_options->options['braftonx_video_feed_num']
+				'feed_num' => $this->brafton_options->options['brafton_video_feed_num']
 			);
 
 		return $video_settings; 
@@ -70,7 +70,7 @@ class Brafton_Video_Helper
 
 		$video_articles = $this->adfero_client->Articles();
 		$feed_num = $this->brafton_options->options['brafton_video_feed_num']; 
-		$video_article_list = $video_articles->ListForFeed($feedList->items[ $feed_num ]->id, 'live', 0, 100);		
+		$video_article_list = $video_articles->ListForFeed( $feedList->items[ $feed_num ]->id, 'live', 0, 100 );		
 		return $video_article_list;
 	}
 

@@ -56,7 +56,7 @@
 			if ( $images_array == false ) return;
 
 
-			if( $this->brafton->options['brafton_overwrite'] == 'on' )
+			if( $this->brafton_options->options['brafton_overwrite'] == 'on' )
 				$attachment_id = $this->update_image( $images_array, $post_id ); 
 			
 			else
@@ -107,22 +107,18 @@
 
 			$thisPhotos = $photos->ListForArticle($brafton_id, 0, 100);
 			//If Video doesn't include an image.
-			if ( ! isset( $thisPhotos->items[0] ) ) return false;
+			if ( ! isset( $thisPhotos->items[0] ) ) {
+				brafton_log( array( 'message' => "This video article doesn't include an image. Brafton_id: " . $brafton_id ) );
+				return false;
+			}
 
 			$image_id = $photos->Get( $thisPhotos->items[0]->id )->sourcePhotoId;
 			$image_url = $photoClient->Photos()->GetScaleLocationUrl( $image_id, $scale_axis, $scale )->locationUri;
-			
-			echo "Image url before strtok is " . $image_url . "<br />"; 
 
 			$image_url = strtok( $image_url, '?' );
 			$image_caption = $photos->Get($thisPhotos->items[0]->id)->fields['caption'];
 
-			echo "Image url is " . $image_url . "<br />"; 
-
-			echo "Image caption is " . $image_caption . "<br />"; 
-
 			$image_id = $thisPhotos->items[0]->id;
-			echo "Image id is " . $image_id . "<br />"; 
 
 			$images_array = compact( 'image_id', 'image_caption', 'image_url' );
 
@@ -148,9 +144,11 @@
 							 )
 					);
 			}
-			$orig_filename = $this->get_image_file_name( $images_array[ 'image_url' ] ); 
+
+			$orig_filename = $this->get_image_file_name( $images_array['image_url'] ); 
+
 			// If post already has a thumbnail or feed does not have an updated image - Move on to the next article in the loop.
-		    if (has_post_thumbnail( $post_id ) ){
+		    if ( has_post_thumbnail( $post_id ) ){
 		     return;
 		    }
 
@@ -175,7 +173,6 @@
 
 		    // validate and store the image.  
 		    $attachment_id = media_handle_sideload( $file_array, $post_id, $attachment );
-		    echo 'image id and attachement id ' .  $images_array['image_id'] .  ' : ' .  $attachment_id . "<br />";
 		    add_post_meta( $post_id, '_thumbnail_id', $attachment_id );
 		    add_post_meta( $post_id, 'image_id', $images_array['image_id'] );
 			return $attachment_id; 
@@ -188,7 +185,7 @@
    		 */
 		public function get_image_file_name( $original_image_url )
 		{
-			$domain = $this->brafton_options->options{'brafton_domain'};
+			$domain = $this->brafton_options->options['brafton_domain'];
 			$domain = str_replace( 'api', 'http://pictures', $domain );
 			$image_file_name = str_replace( $domain , "" , $original_image_url);
 

@@ -34,7 +34,6 @@
                                         "brafton_purge" => "none", 
                                         "brafton_enable_errors" => 'Off',
                                         "brafton_import_trigger_count" => 0,
-                                        "brafton_player_css" => "",
                                         "brafton_video_player" => "",
                                         "brafton_video_public" => "",
                                         "brafton_video_secret" => "",
@@ -220,11 +219,37 @@
     	}
 
         /**
-         * Purges Options
+         * Purges Brafton Articles
          */
-        public function purge_options()
+        public function purge_articles()
         {
-        	#todo 
+
+            brafton_log( array( 'message' => "Purge posts is enabled. Starting to delete all articles." ) );
+
+            $args = array( 'posts_per_page' => -1,
+                    'meta_query' => array( 
+                        array( 
+                            'key' => 'brafton_id' 
+                        ) 
+                    ) 
+            );
+
+            $query = new WP_Query( $args );
+
+
+            if( $query->have_posts() ) : while( $query->have_posts() ) : $query->the_post();
+
+                $attachment_id = get_post_thumbnail_id( get_the_ID() );
+                wp_delete_post( $attachment_id );
+                wp_delete_post( get_the_ID(), true );
+                brafton_log( array( 'message' => "Deleting article titled " . get_the_title( get_the_ID() ) . " and it's associated image." ) );
+
+            endwhile;
+            endif;  
+            brafton_log( array( 'message' => "Article Purge complete. Deleted " . $query->found_posts . " posts." ) );
+
+            wp_reset_postdata();
+
         }
 
     	public function link_to_product()
