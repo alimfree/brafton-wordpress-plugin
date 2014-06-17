@@ -43,9 +43,6 @@ class Brafton_Video_Importer
 	{
 		$video_articles = $this->brafton_video->get_video_articles();
 
-		
-		#var_dump( $video_articles );
-
 		foreach( $video_articles->items as $video )
 		{
 

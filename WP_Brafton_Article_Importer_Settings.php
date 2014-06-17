@@ -241,20 +241,6 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
         public function settings_section_brafton_developer()
         {
             add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_parent_categories', 
-                'Hierarchical Categories ', 
-                array( &$this->brafton_options, 'render_radio' ), 
-                'WP_Brafton_Article_Importer', 
-                'brafton_developer_section',
-                array(
-                    'name' => 'brafton_parent_categories', 
-                    'options' => array( 'on' => ' On', 
-                                        'off'=> ' Off' 
-                        ),
-                    'default' => 'off'
-                )
-            );
-            add_settings_field(
                 'WP_Brafton_Article_Importer_brafton_custom_taxonomy', 
                 'Custom Taxonomy ', 
                 array( &$this->brafton_options, 'render_radio' ), 
@@ -371,8 +357,8 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'brafton_advanced_section',
                 array(
                     'name' => 'brafton_enable_categories', 
-                    'options' => array('categories' => ' Brafton Categories',
-                                       'no_categories' => ' None' ), 
+                    'options' => array('on' => ' Brafton Categories',
+                                       'off' => ' None' ), 
                     'default' => 'on'
                 )
             );
