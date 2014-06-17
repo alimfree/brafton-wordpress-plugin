@@ -82,7 +82,7 @@
 			if ( $option == 'brafton_custom_category')
 				$custom_terms = $this->brafton_options->options['brafton_custom_category'];
 			if ( $option == 'brafton_custom_post_tag' )
-				$custom_terms = $brafton_options->options['brafton_custom_post_tag']; 
+				$custom_terms = $this->brafton_options->options['brafton_custom_post_tag']; 
 
 			if( $custom_terms == '' )
 				return false;				

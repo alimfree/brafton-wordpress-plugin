@@ -157,7 +157,6 @@
 			// Download file to temp location and setup a fake $_FILE handler
 		    // with a new name based on the slug
 
-		    var_dump( $images_array['image_url'] );
 		    $tmp_name = download_url( $images_array['image_url'] );
 		    $file_array['name'] = $orig_filename;  // new filename based on slug
 		    $file_array['tmp_name'] = $tmp_name;

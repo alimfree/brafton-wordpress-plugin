@@ -55,12 +55,10 @@ if ( !class_exists( 'Article_Importer' ) )
 		public function import_articles(){
 			//Retrieve articles from feed
 			$article_array = $this->brafton_article->get_articles();
-			var_dump( $article_array );
 			if ( empty( $article_array) )
 				brafton_log( array( 'message'=>  "No articles found on the feed. Check to see if any exist: " . $this->brafton_options->article_list() ) );
 			//Retrieve article import log
 			foreach( $article_array as $a ){
-				echo '<pre>' . var_dump( $a ) . '</pre>'; 
 				//Get article meta data from feed
 				$brafton_id = $a->getID(); 
 				$post_exists = $this->brafton_article->exists( $brafton_id );
@@ -74,9 +72,9 @@ if ( !class_exists( 'Article_Importer' ) )
 					$post_excerpt = $a->getExtract(); 
 					$keywords = $a->getKeywords();
 
-					if( $brafton_options['brafton_enable_categories'] == "on" )
+					if( $this->brafton_options->options['brafton_enable_categories'] == "on" )
 						$cats = $a->getCategories(); 
-					if( $brafton_options['brafton_enable_tags'] == "on" )
+					if( $this->brafton_options->options['brafton_enable_tags'] == "on" )
 						$tags = $a->getTags();
 
 					//Get more video article meta data
@@ -114,8 +112,8 @@ if ( !class_exists( 'Article_Importer' ) )
 						$this->brafton_image->insert_image( $photos, $post_id );	
 				}
 				else{
-				 	//article already exsts:
-				 	brafton_log( array( 'message' => 'Article already exists and overwrite is disabled. Article Title: ' . get_the_title( $post_exists ) . " Post ID: " . $post_exists ) );
+
+				 	brafton_log( array( 'message' => 'Article already exists and overwrite is disabled. Check the ' . get_post_type( $post_exists ) . " post type in your wp_posts table. Article Title: " . get_the_title( $post_exists ) . " Post ID: " . $post_exists ) );
 				 } 
 			}
 		}

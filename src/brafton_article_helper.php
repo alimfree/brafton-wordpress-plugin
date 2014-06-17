@@ -111,7 +111,7 @@
 		 */
 		public function get_publish_date($article_array) {
 			
-			switch (  $this->brafton_options->options['brafton_post_date']  )
+			switch (  $this->brafton_options->options['brafton_post_publish_date']  )
 			{
 				case 'modified':
 					$date = $article_array->getLastModifiedDate();
