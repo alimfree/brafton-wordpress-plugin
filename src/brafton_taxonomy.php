@@ -23,7 +23,7 @@
 		 * @return $term_id[int] 
 		 * 
 		 */
-		public function get_terms( $terms, $taxonomy, $video = null )
+		public function get_terms( $terms, $taxonomy, $video = null, $brafton_id = null )
 		{
 			$term_array = array(); 
 			if( isset( $terms ) ){ 
@@ -41,10 +41,14 @@
 						$term_array[] = $term_id;
 					}
 			}
+			else
+				brafton_log( array( 'message' => 'No ' . $taxonomy .' found for this article on the feed. Brafton ID: ' . $brafton_id ) );
 			 
 			$custom_terms = $this->get_custom_terms( $taxonomy );
-			if( $custom_terms == false ) return $term_array;
-
+			if( $custom_terms == false ) {
+				brafton_log( array( 'message' => ' Custom ' . $taxonomy ' is not set. ') );
+				return $term_array;
+			}
 			$include_custom = array_merge( $term_array, $custom_terms );
 			return $include_custom;	
 		}
@@ -74,6 +78,7 @@
 		{
 			$option = 'brafton_custom_' . $taxonomy;
 			
+
 			if ( $option == 'brafton_custom_category')
 				$custom_terms = $this->brafton_options->options['brafton_custom_category'];
 			if ( $option == 'brafton_custom_post_tag' )

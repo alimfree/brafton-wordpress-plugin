@@ -122,9 +122,15 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                 //Grab saved options.
                 $brafton_options = Brafton_options::get_instance();
                 //If article importing is disabled - do nothing
-                if( $brafton_options->options['brafton_import_articles'] === 'off' ) return; 
+                if( $brafton_options->options['brafton_import_articles'] === 'off' ) {
+                        brafton_log( array( 'message' => "Article importing is disabled." ) );
+                    return;
+                    } 
                 //If api key isn't set - do nothing
-                if( !$brafton_options->options['brafton_api_key'] ) return;
+                if( !$brafton_options->options['brafton_api_key'] ) {
+                    brafton_log( array( 'message' => " Brafton Api key is not set.") )
+                    return;
+                }
                 //if brafton error reporting is enabled - log importing.
                 brafton_log( array( 'message' => 'Starting to import articles.' ) );
                 //We need curl to upload via archives.
@@ -148,7 +154,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                     $brafton_options
                     );
                 $brafton_article_importer->import_articles();
-                $brafton_options->update_option( "brafton_options", "brafton_sched_trigger_count", $brafton_options->get_option( "brafton_options", "braftonxml_sched_triggercount") + 1, 0);
+                $brafton_options->update_option( "brafton_options", "brafton_import_trigger_count", $brafton_options->get_option( "brafton_options", "braftonxml_sched_triggercount") + 1, 0);
             }
         }
         
@@ -163,7 +169,10 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
             {
                 $brafton_options = Brafton_options::get_instance();
 
-                if( $brafton_options->options['brafton_enable_video'] === 'off' ) return;
+                if( $brafton_options->options['brafton_enable_video'] === 'off' ) {
+                    brafton_log( array( 'message' => 'Video importing is disabled') )
+                    return;
+                }
                     brafton_log( array( 'message' => 'Starting to import videos.' ) );
                     $brafton_cats = new Brafton_Taxonomy( $brafton_options );
                     $brafton_tags = new Brafton_Taxonomy( $brafton_options );
@@ -198,7 +207,6 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
             case $player = "atlantis":
                 wp_enqueue_script( 'jquery' );
                 wp_enqueue_script( 'atlantisjs', 'http://p.ninjacdn.co.uk/atlantisjs/v0.11.7/atlantis.js', array( 'jquery' ) );
-
 
                 if( $brafton->options->options['brafton_player_css'] == 'on' )
                     wp_enqueue_style( 'atlantis', 'http://p.ninjacdn.co.uk/atlantisjs/v0.11.7/atlantisjs.css' );

@@ -80,16 +80,16 @@
 			$image_url = null;
 			$image_caption = null;
 			if ( !empty( $photos ) )
+			{
+				//Large photo
+				$image = $photos[0]->getLarge();// uses XMLHandler and Photo returns PhotoInstance
+				if ( !empty( $image ) )
 				{
-					//Large photo
-					$image = $photos[0]->getLarge();// uses XMLHandler and Photo returns PhotoInstance
-					if ( !empty( $image ) )
-					{
-						$image_url = $image->getUrl(); //necessary web request returns string
-						$image_caption = $photos[0]->getCaption();
-						$image_id = $photos[0]->getId(); //necessary 
-					}
+					$image_url = $image->getUrl(); //necessary web request returns string
+					$image_caption = $photos[0]->getCaption();
+					$image_id = $photos[0]->getId(); //necessary 
 				}
+			}
 
 				$images_array = compact( 'image_id', 'image_caption', 'image_url' );
 				return $images_array; 

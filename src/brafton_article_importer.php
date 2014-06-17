@@ -85,10 +85,10 @@ if ( !class_exists( 'Article_Importer' ) )
 					$post_status = $this->brafton_options->options['brafton_post_status'];
 
 					//prepare article tag id array
-					$input_tags = $this->brafton_tags->get_terms( $tags, 'post_tag' );
+					$input_tags = $this->brafton_tags->get_terms( $tags, 'post_tag', null, $brafton_id );
 
 					//prepare video article category id array
-					$post_category = $this->brafton_cats->get_terms( $cats, 'category' );  
+					$post_category = $this->brafton_cats->get_terms( $cats, 'category', null, $brafton_id );  
 
 					//prepare single article meta data array
 					$article = compact(
