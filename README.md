@@ -6,17 +6,15 @@ An Opinionated version of Brafton's WordPress Importer.
 
 todo: 
 
-priority
-test everything add log statements.
-auto updater
-save all option settings in single db field. 
-make sure video categories work.
-make sure article and video posts have author 
+priority items
+	Test all features and add log statements.
+	add github auto updater
+	make sure video categories work.
+	test cron task.
+	clean up unnecesary files.
+	clean up syntax
+	make sure duplicate images use the same file path
+	add custom post type slug setting.
+	add update_plugin function to remove old plugin options. 
 
-clean up unnecesary files.
-clean up syntax
-purge options
-purge articles.
-add subcategory feature
-
-single options field needs to be updated to accomodate multisite.
+	Test on different wp versions and mult-isite, and sites with old versions of the importer.

@@ -28,12 +28,8 @@ if ( !class_exists( 'Article_Importer' ) )
 						Brafton_Options $brafton_options )
 		{
 			$this->brafton_options = $brafton_options;
-
-			if( $this->brafton_options->options['brafton_enable_images'] === "on")
-			{	
-				//and load the image class.
-				$this->brafton_image_handler = $brafton_image;
-			}
+			//and load the image class.
+			$this->brafton_image_handler = $brafton_image;
 			$this->brafton_cats = $brafton_cats;
 			$this->brafton_tags = $brafton_tags; 
 			$this->brafton_article = $brafton_article; 
@@ -68,25 +64,29 @@ if ( !class_exists( 'Article_Importer' ) )
 					$post_date = $this->brafton_article->get_publish_date( $a ); 
 					$post_title = $a->getHeadline();
 					$post_content = $a->getText(); 
-					$photos = $a->getPhotos(); 
+					
+	
 					$post_excerpt = $a->getExtract(); 
 					$keywords = $a->getKeywords();
-
-					if( $this->brafton_options->options['brafton_enable_categories'] == "on" )
+					
+					//prepare video article category id array
+					if( $this->brafton_options->options['brafton_enable_categories'] == "on" ){ 
 						$cats = $a->getCategories(); 
-					if( $this->brafton_options->options['brafton_enable_tags'] == "on" )
+						$post_category = $this->brafton_cats->get_terms( $cats, 'category', null, $brafton_id );  
+
+					}
+					//prepare article tag id array
+					if( $this->brafton_options->options['brafton_enable_tags'] == "on" ){
 						$tags = $a->getTags();
+						$input_tags = $this->brafton_tags->get_terms( $tags, 'post_tag', null, $brafton_id );
+					}
 
 					//Get more video article meta data
 					$post_author = $this->brafton_options->options['brafton_post_author']; 
 
 					$post_status = $this->brafton_options->options['brafton_post_status'];
 
-					//prepare article tag id array
-					$input_tags = $this->brafton_tags->get_terms( $tags, 'post_tag', null, $brafton_id );
 
-					//prepare video article category id array
-					$post_category = $this->brafton_cats->get_terms( $cats, 'category', null, $brafton_id );  
 
 					//prepare single article meta data array
 					$article = compact(
@@ -108,8 +108,10 @@ if ( !class_exists( 'Article_Importer' ) )
 					$post_id = $this->brafton_article->insert_article( $article );
 					
 					//update post to include thumbnail image
-					if ( $this->brafton_options->options['brafton_enable_images'] == "on" )
+					if ( $this->brafton_options->options['brafton_enable_images'] == "on" ){ 
+						$photos = $a->getPhotos(); 
 						$this->brafton_image->insert_image( $photos, $post_id );	
+					}
 				}
 				else{
 

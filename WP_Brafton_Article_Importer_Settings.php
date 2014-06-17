@@ -191,7 +191,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
                 'brafton_video_section',
                 array(
                     'name' => 'feed-number',
-                    'field' => 'brafton_video_feed_num'
+                    'field' => 'brafton_video_feed_num', 
                 )
             );
             add_settings_field(
@@ -325,7 +325,7 @@ if(!class_exists('WP_Brafton_Article_Importer_Settings' ))
         {
             add_settings_field(
                 'WP_Brafton_Article_Importer_brafton_enable_images', 
-                'Photos', 
+                'Images', 
                 array( &$this->brafton_options, 'render_radio' ), 
                 'WP_Brafton_Article_Importer', 
                 'brafton_advanced_section', 

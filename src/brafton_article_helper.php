@@ -96,16 +96,6 @@
 		}
 
 		/**
-		 * Retrieve post author from brafton settings
-		 * @return String $post_author
-		 */
-		public function get_post_author()
-		{
-			$post_author = apply_filters('braftonxml_author', braftonxml_default_author );
-			return $post_author; 
-		}
-
-		/**
 		 * //Article publish date
 		 * @return String $post_date
 		 */
