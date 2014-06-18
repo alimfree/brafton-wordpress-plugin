@@ -946,7 +946,7 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
 
                 // Render the settings template
 
-                include( sprintf( "%s/vendors/src/templates/archives.php", dirname( __FILE__ ) ) );
+                include( sprintf( "%s/src/templates/archives.php", dirname( __FILE__ ) ) );
 
        }
 
