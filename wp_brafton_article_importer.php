@@ -7,7 +7,7 @@ Author: Ali
 Author URL: http://www.brafton.com
 */
 
-if( !class_exists('WP_Brafton_Article_Importer' ) )
+if( !class_exists( 'WP_Brafton_Article_Importer' ) )
 {
     if ( !defined( 'BRAFTON_PLUGIN_VERSION_KEY' ) )
                 define( 'BRAFTON_PLUGIN_VERSION_KEY', 'brafton_importer_version' );
@@ -65,7 +65,7 @@ if( !class_exists('WP_Brafton_Article_Importer' ) )
         {
             $brafton_options = Brafton_options::get_instance();
             //remove scheduled hook.
-            braftonxml_clear_all_crons('brafton_import_trigger_hook');
+            braftonxml_clear_all_crons( 'brafton_import_trigger_hook' );
 
             if( $brafton_options->options['brafton_purge'] == 'posts' )
             {
@@ -124,13 +124,13 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         function braftonxml_clear_all_crons($hook)
         {
             $crons = _get_cron_array();
-            if (empty($crons))
+            if ( empty( $crons ) )
                 return;
 
-            foreach ($crons as $timestamp => $cron)
-                if (!empty($cron[$hook]))
+            foreach ( $crons as $timestamp => $cron )
+                if ( !empty( $cron[$hook] ) )
                     unset($crons[$timestamp][$hook]);
-            _set_cron_array($crons);
+            _set_cron_array( $crons );
         }
 
         /**
@@ -149,7 +149,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                     } 
                 //If api key isn't set - do nothing
                 if( !$brafton_options->options['brafton_api_key'] ) {
-                    brafton_log( array( 'message' => " Brafton Api key is not set.") );
+                    brafton_log( array( 'message' => " Brafton Api key is not set." ) );
                     return;
                 }
                 //if brafton error reporting is enabled - log importing.
@@ -209,7 +209,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                     $brafton_options->update_option( "brafton_options", "brafton_import_trigger_count", $brafton_options->get_option( "brafton_options", "braftonxml_sched_triggercount") + 1, 0);
                     
                     //Schedule event.
-                    braftonxml_clear_all_crons('brafton_import_trigger_hook');
+                    braftonxml_clear_all_crons( 'brafton_import_trigger_hook' );
 
                     wp_schedule_event(time() + 3600, "hourly", "brafton_import_trigger_hook" );
                     //braftonxml_sched_trigger_schedule( );
@@ -247,7 +247,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
     add_action("init", "clear_crons_left");
     function clear_crons_left()
     {
-        wp_clear_scheduled_hook("brafton_import_trigger_hook");
+        wp_clear_scheduled_hook( "brafton_import_trigger_hook" );
     }
 
     /**  
@@ -262,19 +262,19 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
 
         // HACK: posts are duplicated due to a lack of cron lock resolution (see http://core.trac.wordpress.org/ticket/19700)
         // this is fixed in wp versions >= 3.4.
-        $wpVersion = get_bloginfo('version');
+        $wpVersion = get_bloginfo( 'version' );
 
         brafton_log( array( 'message' => "Import successfully triggered by wp cron." ) );
-        if ( version_compare($wpVersion, '3.4', '<') )
+        if ( version_compare( $wpVersion, '3.4', '<') )
             duplicateKiller();
     }
 
   //Load the admin page Stylesheet. 
     function wp_brafton_article_importer_settings_style() {
-        $siteurl = get_option('siteurl');
+        $siteurl = get_option( 'siteurl' );
         $url = $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/css/settings.css';
         echo "<link rel='stylesheet' type='text/css' href='$url' />\n";
     }
-    add_action('admin_head', 'wp_brafton_article_importer_settings_style');
+    add_action( 'admin_head', 'wp_brafton_article_importer_settings_style' );
 
 }

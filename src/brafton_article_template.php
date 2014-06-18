@@ -6,11 +6,14 @@ if(!class_exists('Brafton_Article_Template'))
 	 */
 	class Brafton_Article_Template
 	{
+
 		const POST_TYPE	= "brafton-article";
 		private $_meta	= array(
 			'brafton_id',
 			'photo_id',
 		);
+
+        public $brafton_options;
 		
     	/**
     	 * The Constructor
@@ -37,7 +40,10 @@ if(!class_exists('Brafton_Article_Template'))
     	 * Create the post type
     	 */
     	public function create_brafton_post_type()
-    	{  
+    	{         
+            $post_slug = $this->brafton_options->options['brafton_custom_post_slug'];
+            if( !$post_slug )
+                $post_slug = 'blog'; 
 
      		register_post_type(self::POST_TYPE,
     			array(
@@ -48,12 +54,16 @@ if(!class_exists('Brafton_Article_Template'))
     				'public' => true,
     				'has_archive' => true,
                     'taxonomies' => array('category'),
+                    'rewrite'            => array( 'slug' => $post_slug ),
     				'description' => __("This is a sample post type meant only to illustrate a preferred structure of plugin development"),
     				'supports' => array(
     					   'title', 'author' , 'editor', 'excerpt', 'thumbnail', 'revisions', 'post_formats',
     				),
     			)
     		);
+
+            add_action( 'brafton_rewrite_hook', 'brafton_flush_rewrites' );
+            
     	}
 	
     	/**
@@ -105,6 +115,19 @@ if(!class_exists('Brafton_Article_Template'))
                 'side'
     	    );					
     	} // END public function add_meta_boxes()
+
+        public function brafton_rewrite_hook(){
+            do_action('brafton_rewrite_hook');
+        }
+        /**
+         *  Flush Rewrites urls when custom post slug is specified. 
+         */
+        public function brafton_flush_rewrites(){
+            if( $this->brafton_options->options['brafton_custom_post_slug'] ){ 
+                echo "custom post slug is entered.";
+                flush_rewrite_rules();
+            }
+        }
 
 		/**
 		 * called off of the add meta box
