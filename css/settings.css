@@ -126,11 +126,6 @@ td .radio-option.brafton-errors:nth-of-type(1):hover:after {
 	margin: 1em 0;
 }
 
-<<<<<<< HEAD
-.admin h3 {
-color: red;
-=======
 .wrap h3, .wrap table {
 /*display: none;*/
->>>>>>> tabs
 }
