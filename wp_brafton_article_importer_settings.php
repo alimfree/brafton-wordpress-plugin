@@ -409,7 +409,7 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                                         'none' => ' None'
 
                                         ), 
-
+                    'default' =>    'none'
                 )
 
             );
