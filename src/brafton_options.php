@@ -72,7 +72,7 @@
 
                                         "brafton_import_trigger_count" => 0,
 
-                                        "brafton_video_player" => "",
+                                        "brafton_video_player" => "none",
 
                                         "brafton_video_public" => "",
 
