@@ -35,6 +35,7 @@
 						if( isset( $video ) ){
 							$t_id = $t->ListForArticle($brafton_id, 0, 100)->items[0]->id;
 							$term_name = $t->Get( $t->id );	
+							echo "term_name is " . $term_name; 
 						}
 						else
 							$term_name = $t->getName(); 
