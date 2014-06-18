@@ -233,9 +233,10 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
             case $player = "atlantis":
                 wp_enqueue_script( 'jquery' );
                 wp_enqueue_script( 'atlantisjs', 'http://p.ninjacdn.co.uk/atlantisjs/v0.11.7/atlantis.js', array( 'jquery' ) );
-
+                wp_enqueu_script( 'videojs', '//vjs.zencdn.net/4.3/video.js', array( 'jquery' ) );
                 if( $brafton_options->options['brafton_player_css'] == 'on' )
                     wp_enqueue_style( 'atlantis', 'http://p.ninjacdn.co.uk/atlantisjs/v0.11.7/atlantisjs.css' );
+                    wp_enqueue_style( 'videocss', '//vjs.zencdn.net/4.3/video-js.css' );
                 break;
         }
 
