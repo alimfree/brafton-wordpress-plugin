@@ -402,7 +402,7 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
 
                     'name' => 'brafton_video_player',
 
-                    'options' => array( 'atlantis' => ' AtlantisJS' 
+                    'options' => array( 'atlantis' => ' AtlantisJS',
                                         'none' => ' None'
 
                                         ), 
