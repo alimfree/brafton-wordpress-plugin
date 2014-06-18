@@ -61,7 +61,7 @@ function brafton_log( $report ) {
  */
 function add_brafton_log_entry($log, $report) {
     $report['message'] = date("m/d/Y h:i:s A") . " - " . $report['message'] . "\n";
-    if( $log['limit'] == NULL || $log['limit'] < $log['count'] )
+    if( $log['limit'] == NULL || $log['limit'] >= $log['count'] )
     {
         //push new message to front of old log array.
         array_unshift( $log['entries'], $report );
