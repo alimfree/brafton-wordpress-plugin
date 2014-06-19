@@ -82,7 +82,7 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                     'name' => 'brafton_import_articles',
                     'options' => array( 'off' => ' Off',
                                         'on' => ' On' ), 
-                    'default' => 'on'
+                    'default' => 'off'
                 )
             );
             add_settings_field(
@@ -228,6 +228,90 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
             );
         }
         /**
+         * Register advanced section fields 
+         */
+        public function settings_section_brafton_advanced()
+        {
+            add_settings_field(
+                'WP_Brafton_Article_Importer_brafton_enable_images', 
+                'Images', 
+                array( &$this->brafton_options, 'render_radio' ), 
+                'WP_Brafton_Article_Importer', 
+                'brafton_advanced_section', 
+                array(
+                    'name' => 'brafton_enable_images', 
+                    'options' => array( 'off' => ' Off',
+                                        'on' => ' On' ), 
+                    'default' => 'on'
+                    )
+                );
+            add_settings_field(
+                'WP_Brafton_Article_Importer_brafton_enable_categories', 
+                'Categories', 
+                array( &$this->brafton_options, 'render_radio' ), 
+                'WP_Brafton_Article_Importer', 
+                'brafton_advanced_section',
+                array(
+                    'name' => 'brafton_enable_categories', 
+                    'options' => array('on' => ' Brafton Categories',
+                                       'off' => ' None' ), 
+                    'default' => 'on'
+                )
+            );
+            add_settings_field(
+                'WP_Brafton_Article_Importer_brafton_enable_tags', 
+                'Tags', 
+                array( &$this->brafton_options, 'render_radio' ), 
+                'WP_Brafton_Article_Importer', 
+                'brafton_advanced_section',
+                array(
+                    'name' => 'brafton_enable_tags', 
+                    'options' => array('tags' => ' Brafton Tags as Tags',
+                                       'keywords' => ' Brafton Keywords as Tags',
+                                       'categories' => ' Brafton Categories as Tags', 
+                                       'none' => ' None' ), 
+                    'default' => 'none'
+                )
+            );
+            add_settings_field(
+                'WP_Brafton_Article_Importer_brafton_custom_category', 
+                'Custom Categories', 
+                array( &$this->brafton_options, 'settings_field_input_text' ), 
+                'WP_Brafton_Article_Importer', 
+                'brafton_advanced_section',
+                array(
+                    'name' => 'custom_categories',
+                    'field' => 'brafton_custom_category'
+                )
+            );
+            add_settings_field(
+                'WP_Brafton_Article_Importer_brafton_custom_post_tag', 
+                'Custom Tags', 
+                array( &$this->brafton_options, 'settings_field_input_text' ), 
+                'WP_Brafton_Article_Importer', 
+                'brafton_advanced_section',
+                array(
+                    'name' => 'custom_tags',
+                    'field' => 'brafton_custom_post_tag'
+                )
+            );
+            add_settings_field(
+                'WP_Brafton_Article_Importer_brafton_post_publish_date', 
+                'Post Date: ', 
+                array( &$this->brafton_options, 'render_radio' ), 
+                'WP_Brafton_Article_Importer', 
+                'brafton_advanced_section',
+                 array(
+                    'name' => 'brafton_post_publish_date', 
+                    'options' => array('published' => ' Published Date',
+                                       'modified' => ' Last Modified Date',
+                                       'created' => ' Created Date'
+                                       ),
+                    'default' => 'published'
+                )
+            );
+        }
+        /**
          * Register developer section fields 
          */
         public function settings_section_brafton_developer()
@@ -244,6 +328,30 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                                         'off'=> ' Off' 
                         ),
                     'default' => 'off'
+                )
+            );
+            add_settings_field(
+                'WP_Brafton_Article_Importer_brafton_custom_post_type', 
+                'Custom Post Type', 
+                array( &$this->brafton_options, 'render_radio' ), 
+                'WP_Brafton_Article_Importer', 
+                'brafton_developer_section', 
+                array(
+                    'name' => 'brafton_custom_post_type', 
+                    'options' => array( 'off' => ' Off',
+                                        'on' => ' On' ), 
+                    'default' => 'off'
+                    )
+                );
+            add_settings_field(
+                'WP_Brafton_Article_Importer_brafton_custom_post_slug', 
+                'Custom Post Slug', 
+                array( &$this->brafton_options, 'settings_field_input_text' ),  
+                'WP_Brafton_Article_Importer', 
+                'brafton_developer_section',
+                array(
+                    'name' => 'post-slug',
+                    'field' => 'brafton_custom_post_slug'
                 )
             );
             add_settings_field(
@@ -285,114 +393,6 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                     'options' => array('on' => ' On',
                                        'off' => ' Off' ), 
                     'default' => 'off'
-                )
-            );
-            add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_custom_category', 
-                'Custom Categories', 
-                array( &$this->brafton_options, 'settings_field_input_text' ), 
-                'WP_Brafton_Article_Importer', 
-                'brafton_developer_section',
-                array(
-                    'name' => 'custom_categories',
-                    'field' => 'brafton_custom_category'
-                )
-            );
-            add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_custom_post_tag', 
-                'Custom Tags', 
-                array( &$this->brafton_options, 'settings_field_input_text' ), 
-                'WP_Brafton_Article_Importer', 
-                'brafton_developer_section',
-                array(
-                    'name' => 'custom_tags',
-                    'field' => 'brafton_custom_post_tag'
-                )
-            );
-        }
-        /**
-         * Register advanced section fields 
-         */
-        public function settings_section_brafton_advanced()
-        {
-            add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_enable_images', 
-                'Images', 
-                array( &$this->brafton_options, 'render_radio' ), 
-                'WP_Brafton_Article_Importer', 
-                'brafton_advanced_section', 
-                array(
-                    'name' => 'brafton_enable_images', 
-                    'options' => array( 'off' => ' Off',
-                                        'on' => ' On' ), 
-                    'default' => 'on'
-                    )
-                );
-            add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_custom_post_type', 
-                'Custom Post Type', 
-                array( &$this->brafton_options, 'render_radio' ), 
-                'WP_Brafton_Article_Importer', 
-                'brafton_advanced_section', 
-                array(
-                    'name' => 'brafton_custom_post_type', 
-                    'options' => array( 'off' => ' Off',
-                                        'on' => ' On' ), 
-                    'default' => 'off'
-                    )
-                );
-            add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_custom_post_slug', 
-                'Custom Post Slug', 
-                array( &$this->brafton_options, 'settings_field_input_text' ),  
-                'WP_Brafton_Article_Importer', 
-                'brafton_advanced_section',
-                array(
-                    'name' => 'post-slug',
-                    'field' => 'brafton_custom_post_slug'
-                )
-            );
-            add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_enable_categories', 
-                'Categories', 
-                array( &$this->brafton_options, 'render_radio' ), 
-                'WP_Brafton_Article_Importer', 
-                'brafton_advanced_section',
-                array(
-                    'name' => 'brafton_enable_categories', 
-                    'options' => array('on' => ' Brafton Categories',
-                                       'off' => ' None' ), 
-                    'default' => 'on'
-                )
-            );
-            add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_enable_tags', 
-                'Tags', 
-                array( &$this->brafton_options, 'render_radio' ), 
-                'WP_Brafton_Article_Importer', 
-                'brafton_advanced_section',
-                array(
-                    'name' => 'brafton_enable_tags', 
-                    'options' => array('tags' => ' Brafton Tags as Tags',
-                                       'keywords' => ' Brafton Keywords as Tags',
-                                       'categories' => ' Brafton Categories as Tags', 
-                                       'none' => ' None' ), 
-                    'default' => 'none'
-                )
-            );
-            add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_post_publish_date', 
-                'Post Date: ', 
-                array( &$this->brafton_options, 'render_radio' ), 
-                'WP_Brafton_Article_Importer', 
-                'brafton_advanced_section',
-                 array(
-                    'name' => 'brafton_post_publish_date', 
-                    'options' => array('published' => ' Published Date',
-                                       'modified' => ' Last Modified Date',
-                                       'created' => ' Created Date'
-                                       ),
-                    'default' => 'published'
                 )
             );
         }
