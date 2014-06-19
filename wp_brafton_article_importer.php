@@ -2,7 +2,7 @@
 /*
 Plugin Name: Brafton Importer
 Plugin URI: http://www.brafton.com/support/wordpress
-version: 1.3.5
+version: 1.3.4
 Author: Brafton Inc
 Author URL: http://www.brafton.com
 */
@@ -71,9 +71,6 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
             }
             // Do nothing
         } // END public static function deactivate
-
-        
-        }
     } // END class WP_Brafton_Article_Importer
 } // END if(!class_exists('WP_Brafton_Article_Importer'))
 if( class_exists( 'WP_Brafton_Article_Importer' ) )
@@ -125,6 +122,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                 );
                 new WP_GitHub_Updater($config);
             }
+        }
         /**
          * Run the article importer
          */
