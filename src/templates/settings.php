@@ -5,8 +5,6 @@
     require_once( sprintf(realpath(dirname(__FILE__) . '/..') .'/brafton_options.php'));
 
     $brafton_options = Brafton_options::get_instance(); 
-            $crons = _get_cron_array();
-            var_dump( $crons );
  ?>
 
 

@@ -233,7 +233,6 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
     {
         run_article_import();
         run_video_import();
-        $wpVersion = get_bloginfo( 'version' );
         brafton_log( array( 'message' => "Import successfully triggered by wp cron." ) );
 
         brafton_schedule_import();
@@ -245,10 +244,10 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
     }
 
     function brafton_schedule_import(){
-        //Use wp_next_scheduled to check if the event is already scheduled
+        //Use wp_next_scheduled to check if import is already scheduled
         $timestamp = wp_next_scheduled( "brafton_import_trigger_hook" );
 
-        //If $timestamp == false schedule daily backups since it hasn't been done previously
+        //If $timestamp == false schedule hourly imports since it hasn't been done previously
         if( $timestamp == false  ){
            //Schedule the event for right now, then hourly until importing is disabled.
            wp_schedule_event( time() + 3600, "hourly", "brafton_import_trigger_hook" );
