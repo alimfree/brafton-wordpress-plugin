@@ -103,10 +103,9 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         add_action( 'load-brafton_page_brafton_archives', 'run_article_import' );
         //add_action( 'load-brafton_page_brafton_archives', 'run_video_import' );
         add_action( 'admin_init', 'update_plugin');
-        public function update_plugin(){
-            
+        function update_plugin(){
             include_once( "/vendors/updater.php" );
-            if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
+            if ( is_admin() ) { // note the use of is_admin() to double check that this is happening in the admin
                 $config = array(
                     'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
                     'proper_folder_name' => 'Brafton-Importer', // this is the name of the folder your plugin lives in
