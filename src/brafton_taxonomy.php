@@ -23,27 +23,22 @@
 		 * @return $term_id[int] 
 		 * 
 		 */
-		public function get_terms( $terms, $taxonomy, $video = null, $brafton_id = null )
+		public function get_terms( $terms = null, $taxonomy, $video = null, $brafton_id = null, $client = null )
 		{
 			$term_array = array(); 
 
-			if( isset( $terms ) ){ 
+			if( isset( $video ) ){
+				$term_array = $this->insert_video_terms( $client, $brafton_id );
+			}
+
+			if( $terms ){ 
 				brafton_log( array( 'message' => "Preparing to insert items in the following taxonomy " . $taxonomy . " items: " . var_export( $terms, true ) ) );
-
 				foreach( $terms as $t )
-					{
-						if( isset( $video ) ){
-							$t_id = $t->ListForArticle($brafton_id, 0, 100)->items[0]->id;
-							$term_name = $t->Get( $t->id );	
-							echo "term_name is " . $term_name; 
-						}
-						else
-							$term_name = $t->getName(); 
-
-						$term_id = $this->insert_term( $term_name, $taxonomy );
-
-						$term_array[] = $term_id;
-					}
+				{	
+					$term_name = $t->getName(); 
+					$term_id = $this->insert_term( $term_name, $taxonomy );
+					$term_array[] = $term_id;
+				}
 			}
 			else
 				brafton_log( array( 'message' => 'No ' . $taxonomy .' found for this article on the feed. Brafton ID: ' . $brafton_id ) );
@@ -103,6 +98,22 @@
 				$term_array[] = $term_id;
 			} 
 			return $term_array;
+		}
+
+		/**
+		 * Insert Video Terms
+		 */ 
+		private function insert_video_terms( $categories, $brafton_id ){
+			
+			if ( isset($categories->ListForArticle($brafton_id, 0, 100)->items[0]->id ) )
+			{
+				$cat_id = $categories->ListForArticle( $brafton_id, 0, 100 )->items[0]->id;
+				$category = $categories->Get( $cat_id );
+				$post_category = array(
+					wp_create_category( $category->name )
+				);
+				return $post_category;
+			}
 		}
 
 		/**
