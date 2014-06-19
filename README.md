@@ -1,6 +1,6 @@
 WP_Brafton_Article_Importer
 ==================
-~Current Version:1.3.5~
+~Current Version:1.3.4~
 An Opinionated version of Brafton's WordPress Importer.
 
 
