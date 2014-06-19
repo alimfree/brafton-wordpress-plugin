@@ -72,25 +72,7 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
             // Do nothing
         } // END public static function deactivate
 
-        public function update_plugin(){
-            
-            include_once( "/vendors/updater.php" );
-            if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
-                $config = array(
-                    'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
-                    'proper_folder_name' => 'Brafton-Importer', // this is the name of the folder your plugin lives in
-                    'api_url' => 'https://api.github.com/repos/alimfree/brafton_wordpress_plugin', // the github API url of your github repo
-                    'raw_url' => 'https://raw.github.com/username/brafton_wordpress_plugin/1.3.5', // the github raw url of your github repo
-                    'github_url' => 'https://github.com/alimfree/brafton_wordpress_plugin', // the github url of your github repo
-                    'zip_url' => 'https://github.com/alimfree/brafton_wordpress_plugin/zipball/1.3.5', // the zip url of the github repo
-                    'sslverify' => true, // wether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
-                    'requires' => '3.0', // which version of WordPress does your plugin require?
-                    'tested' => '3.3', // which version of WordPress is your plugin tested up to?
-                    'readme' => 'README.md', // which file to use as the readme for the version number
-                    'access_token' => '', // Access private repositories by authorizing under Appearance > Github Updates when this example plugin is installed
-                );
-                new WP_GitHub_Updater($config);
-            }
+        
         }
     } // END class WP_Brafton_Article_Importer
 } // END if(!class_exists('WP_Brafton_Article_Importer'))
@@ -123,7 +105,26 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         //Run video and article importers when archives form is saved
         add_action( 'load-brafton_page_brafton_archives', 'run_article_import' );
         //add_action( 'load-brafton_page_brafton_archives', 'run_video_import' );
-
+        add_action( 'admin_init', 'update_plugin');
+        public function update_plugin(){
+            
+            include_once( "/vendors/updater.php" );
+            if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
+                $config = array(
+                    'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
+                    'proper_folder_name' => 'Brafton-Importer', // this is the name of the folder your plugin lives in
+                    'api_url' => 'https://api.github.com/repos/alimfree/brafton_wordpress_plugin', // the github API url of your github repo
+                    'raw_url' => 'https://raw.github.com/username/brafton_wordpress_plugin/1.3.5', // the github raw url of your github repo
+                    'github_url' => 'https://github.com/alimfree/brafton_wordpress_plugin', // the github url of your github repo
+                    'zip_url' => 'https://github.com/alimfree/brafton_wordpress_plugin/zipball/1.3.5', // the zip url of the github repo
+                    'sslverify' => true, // wether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
+                    'requires' => '3.0', // which version of WordPress does your plugin require?
+                    'tested' => '3.3', // which version of WordPress is your plugin tested up to?
+                    'readme' => 'README.md', // which file to use as the readme for the version number
+                    'access_token' => '', // Access private repositories by authorizing under Appearance > Github Updates when this example plugin is installed
+                );
+                new WP_GitHub_Updater($config);
+            }
         /**
          * Run the article importer
          */
