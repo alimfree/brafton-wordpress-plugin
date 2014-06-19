@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 906161bf7fa48de4ff6e1f87edd01c527ddb2dd5
 .wp-admin #wpfooter {
 	display: none;
 }
@@ -127,12 +130,9 @@ td .radio-option.brafton-errors:nth-of-type(1):hover:after {
 	margin: 1em 0;
 }
 
-<<<<<<< HEAD
-.admin h3 {
-color: red;
-=======
 .wrap h3, .wrap table {
 /*display: none;*/
+<<<<<<< HEAD
 >>>>>>> tabs
 =======
 .wp-admin #wpfooter {
@@ -266,4 +266,6 @@ td .radio-option.brafton-errors:nth-of-type(1):hover:after {
 .wrap h3, .wrap table {
 /*display: none;*/
 >>>>>>> 1.3.5
+=======
+>>>>>>> 906161bf7fa48de4ff6e1f87edd01c527ddb2dd5
 }
