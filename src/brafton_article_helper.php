@@ -76,7 +76,7 @@
 
 			if ( isset( $_FILES['brafton-archive']['tmp_name'] ) ) //todo add archive file upload settings
 			{
-				echo "Archive Option Selected<br/>";
+				brafton_log( array( 'message' => "Archive option selected. Importing articles from xml archive file." ) );
 				$articles = NewsItem::getNewsList( $_FILES['brafton-archive']['tmp_name'], "html" );
 			} 
 			else 

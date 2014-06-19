@@ -1,21 +1,10 @@
 <?php
-	// Initialize Settings
+    // Initialize Settings
     require_once( sprintf(realpath(dirname(__FILE__) . '/..') .'/brafton_options.php'));
     $brafton_options = Brafton_options::get_instance(); 
  ?>
 
 <div class="wrap">
-<<<<<<< HEAD
-    <div class="importer-dashboard">
-        <h2> <?php echo $brafton_options->get_product(); ?>  Importer</h2>
-        <p>Welcome to your content Dashboard</p>
-
-
-                    <?php do_settings_sections('WP_Brafton_Article_Importer'); ?>
-        
-        
-        <?php @submit_button(); ?>
-=======
     <div class="brafton-options">
     <h2> <?php echo $brafton_options->brafton_get_product(); ?>  Importer</h2>
 
@@ -45,10 +34,6 @@
             echo '<div class="footer">Thank you for Partnering with ' . $brafton_options->link_to_product() .' </div>';
         ?>
     </form>
-<<<<<<< HEAD
-   
->>>>>>> tabs
-=======
 
     <form method="post" action="" enctype="multipart/form-data">
         
@@ -58,7 +43,6 @@
             </div>
     </form>
 
->>>>>>> 1.3.5
     </div><!--- .brafton-options -->
 </div><!-- .wrap -->
  
