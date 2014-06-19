@@ -102,16 +102,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         //Run video and article importers when archives form is saved
         add_action( 'load-brafton_page_brafton_archives', 'run_article_import' );
         //add_action( 'load-brafton_page_brafton_archives', 'run_video_import' );
-        function brafton_import_clear_crons($hook)
-        {
-            $crons = _get_cron_array();
-            if ( empty( $crons ) )
-                return;
-            foreach ( $crons as $timestamp => $cron )
-                if ( !empty( $cron[$hook] ) )
-                    unset($crons[$timestamp][$hook]);
-            _set_cron_array( $crons );
-        }
+
         /**
          * Run the article importer
          */
@@ -217,6 +208,17 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         }
     }
     add_action( 'wp_enqueue_scripts', 'brafton_enqueue_video_scripts' );
+    function brafton_import_clear_crons($hook)
+    {
+        $crons = _get_cron_array();
+        if ( empty( $crons ) )
+            return;
+        foreach ( $crons as $timestamp => $cron )
+            if ( !empty( $cron[$hook] ) )
+                unset($crons[$timestamp][$hook]);
+        _set_cron_array( $crons );
+    }
+
     /**
      * Unschedule automated hourly imports. 
      */
@@ -224,6 +226,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
     function clear_crons_left()
     {
         wp_clear_scheduled_hook( "brafton_import_trigger_hook" );
+        brafton_log( array( 'message' => "Brafton hourly imports successfully removed from wp crons list") );
     }
     /**  
      * This is the scheduling hook for our plugin that is triggered by cron
