@@ -12,13 +12,15 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
                 define( 'BRAFTON_PLUGIN_VERSION_KEY', 'brafton_importer_version' );
     if ( !defined( 'MYPLUGIN_VERSION_NUM' ) )
                 define( 'BRAFTON_PLUGIN_VERSION_NUM', '1.0.0' );
-    include_once 'src/brafton_article_helper.php';
-    include_once 'src/brafton_taxonomy.php';
-    include_once 'src/brafton_image_handler.php';
-    include_once 'src/brafton_article_importer.php';
-    include_once 'src/brafton_errors.php';
-    include_once 'src/brafton_video_helper.php';
-    include_once 'src/brafton_video_importer.php';
+    include_once( plugin_dir_path( __FILE__ ) .'/src/brafton_article_helper.php' );
+    include_once( plugin_dir_path( __FILE__ ) . '/src/brafton_taxonomy.php' );
+    include_once( plugin_dir_path( __FILE__ ) . '/src/brafton_image_handler.php' );
+    include_once( plugin_dir_path( __FILE__ ) . '/src/brafton_article_importer.php' );
+    include_once( plugin_dir_path( __FILE__ ) . '/src/brafton_errors.php' );
+    include_once( plugin_dir_path( __FILE__ ) . '/src/brafton_video_helper.php' );
+    include_once( plugin_dir_path( __FILE__ ) . '/src/brafton_video_importer.php' );
+    include_once( plugin_dir_path( __FILE__ ) . '/vendors/updater.php' );
+
     class WP_Brafton_Article_Importer
     {   
         public $brafton_options; 
@@ -104,7 +106,6 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         //add_action( 'load-brafton_page_brafton_archives', 'run_video_import' );
         add_action( 'admin_init', 'update_plugin');
         function update_plugin(){
-            include_once( "/vendors/updater.php" );
             if ( is_admin() ) { // note the use of is_admin() to double check that this is happening in the admin
                 $config = array(
                     'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
