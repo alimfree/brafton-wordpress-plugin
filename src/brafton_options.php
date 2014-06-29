@@ -44,7 +44,7 @@
                                         "brafton_enable_categories" => "", 
                                         "brafton_custom_post_tag" => "", 
                                         "brafton_custom_category" => "",
-                                        "enable-analytics-dashboard" => "",
+                                        //"enable-analytics-dashboard" => "",
                                         "brafton_error_log" => ""
                                     );
             $brafton_options =  get_option( 'brafton_options' );

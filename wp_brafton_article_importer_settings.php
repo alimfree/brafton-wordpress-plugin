@@ -58,12 +58,12 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                 array( &$this, 'settings_section_brafton_developer' ), 
                 'WP_Brafton_Article_Importer'
             );
-            add_settings_section(
-                'brafton_analytics_section',
-                'Analytics Settings', 
-                array( &$this, 'settings_section_brafton_analytics' ),
-                'WP_Brafton_Article_Importer'
-            );
+            // add_settings_section(
+            //     'brafton_analytics_section',
+            //     'Analytics Settings', 
+            //     array( &$this, 'settings_section_brafton_analytics' ),
+            //     'WP_Brafton_Article_Importer'
+            // );
 
             add_settings_section(
                 'brafton_archives_section',
@@ -407,21 +407,21 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
         /**
          * Register analytics section fields 
          */
-        public function settings_section_brafton_analytics(){
-             add_settings_field(
-                'WP_Brafton_Article_Importer_enable_analytics_dashboard', 
-                'Google Analytics', 
-                array( &$this->brafton_options, 'render_radio' ), 
-                'WP_Brafton_Article_Importer', 
-                'brafton_analytics_section',
-                array(
-                    'name' => 'enable_analytics_dashboard', 
-                    'options' => array('on' => ' On',
-                                       'off' => ' Off' ), 
-                    'default' => 'off'
-                )
-            );
-        }
+        // public function settings_section_brafton_analytics(){
+        //      add_settings_field(
+        //         'WP_Brafton_Article_Importer_enable_analytics_dashboard', 
+        //         'Google Analytics', 
+        //         array( &$this->brafton_options, 'render_radio' ), 
+        //         'WP_Brafton_Article_Importer', 
+        //         'brafton_analytics_section',
+        //         array(
+        //             'name' => 'enable_analytics_dashboard', 
+        //             'options' => array('on' => ' On',
+        //                                'off' => ' Off' ), 
+        //             'default' => 'off'
+        //         )
+        //     );
+        // }
         /**
          * Register archive page fields 
          */
