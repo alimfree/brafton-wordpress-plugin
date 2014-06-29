@@ -81,6 +81,10 @@ if (! class_exists ( 'GADASH_Widgets' )) {
 						'GADASH_Settings',
 						'tracking_settings' 
 				) );
+				add_submenu_page ( 'WP_Brafton_Article_Importer', __( "Brafton Analytics",'ga-dash' ), __ ( "Analytics",'ga-dash' ), 'manage_options', 'brafton_analytics', array (
+						$this,
+						'gadash_dashboard_widgets' 
+				) );
 			}
 		}
 		
@@ -93,7 +97,8 @@ if (! class_exists ( 'GADASH_Widgets' )) {
 					'toplevel_page_gadash_settings',
 					'google-analytics_page_gadash_backend_settings',
 					'google-analytics_page_gadash_frontend_settings',
-					'google-analytics_page_gadash_tracking_settings' 
+					'google-analytics_page_gadash_tracking_settings', 
+					'brafton_page_brafton_analytics' 
 			);
 			
 			if (! in_array ( $hook, $valid_hooks ) and 'index.php' != $hook)

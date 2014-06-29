@@ -8,6 +8,10 @@
  * 
  */
 
+//Get current User
+
+
+
 /**
  * Use of this method assumes the existance of a log object stored in a wp options field 
  * Initialize a new log object with brafton_initialize_log()
@@ -17,11 +21,10 @@
  * @param Array $report 
  */
 
-define("BRAFTON_ERROR_LOG", "brafton_error_log");
 function brafton_log( $report ) {
     //Store all reports in brafton_error_log by default
     $brafton_default_report = array(
-                        'option' => BRAFTON_ERROR_LOG, //option name errors are stored in wp
+                        'option' => 'brafton_error_log', //option name errors are stored in wp
                         'notice' => '',  //admin notice message
                         'priority' => 0, //0 - log only when brafton errors enabled; 1- log regardless if errors are enabled
                         'message' => '',  //log entry message.
@@ -31,7 +34,7 @@ function brafton_log( $report ) {
     // Parse and merge given $report with $defaults
     $report = wp_parse_args($report, $brafton_default_report);
 	//retrieve log from wp options table.
-	$log =  get_option( BRAFTON_ERROR_LOG, $report );
+	$log =  get_option( 'brafton_error_log', $report );
     $brafton_options = Brafton_Options::get_instance();
 	// $report expected to be an array or an object. 
 	if ( is_array( $report ) || is_object( $report ) ) {
@@ -106,10 +109,70 @@ function brafton_initialize_log($option, $log = NULL ){
 }
 
 /**
- * Display admin notices for all log entries with notice key set.
+ * Display notice in admin area. 
  */
- function brafton_admin_notice() {
-     #todo
+ add_action( 'admin_notices', 'brafton_admin_notice' );
+ /**
+  * Displays admin notices
+  */
+function brafton_admin_notice( $messages ) {
+    $notices = array();
+    //We need curl to upload via archives.
+    if ( !function_exists( 'curl_init' ) && isset( $_GET['page'] ) && $_GET['page'] == 'brafton_archives' )
+        $notices[] = array( 
+                        'message' => "<strong>Brafton plugin's import feature requires <b>cURL</b> to import articles.</strong> Please ensure <b>cURL</b> is installed and enabled on your server.", 
+                        'class' => 'error', 
+                        'ignore' => false 
+                    );
+
+    //We need DOMDocument to parse XML feed.
+    if ( !class_exists( 'DOMDocument' ) )
+       $notices[] =  array( 
+                        'message' => "<strong>Brafton plugin requires <b>DOM XML</b> to import articles.</strong> Please ensure DOM XML is installed and enabled on your server.", 
+                        'class' => 'error', 
+                        'ignore' => false 
+                    );
+
+    if( isset( $_GET['page'] ) && $_GET['page'] == 'brafton_archives' ) { 
+        $notices[] = array( 
+                        'message' => "<strong>hey this works.</strong>", 
+                        'class' => 'error', 
+                        'ignore' => false 
+                    );
+
+    //"<strong>hey this works.</strong>";
+
+        //if( ini_get('safe_mode') ){
+            $php_execution_limit  = ini_get('max_execution_time'); 
+            $notices[] = array( 
+                            'message' => sprintf( "<strong>Brafton article import runs can exceed your php execution limit - %s seconds.</strong>. Please disable PHP safe mode or raise your servers max execution time limit.", $php_execution_limit ), 
+                            'class' => 'error', 
+                            'ignore' => true
+                        );
+
+        //}
+    }     
+
+    global $current_user;
+    $user_id = $current_user->ID;
+    foreach( $notices as $n )
+    {
+        if( $n['ignore'] ) {
+           if( ! get_user_meta($user_id, 'example_ignore_notice') )
+            echo sprintf(  '<div id="brafton_error" class="%s"><p>%s</p></div>', $n['class'], $n['message'] );
+        }
+        else 
+            echo sprintf( '<div id="brafton_error" class="%s"><p>%s</p></div>', $n['class'], $n['message'] );
+    }
 }
 
+add_action('admin_init', 'brafton_nag_ignore');
+function brafton_nag_ignore() {
+    global $current_user;
+    $user_id = $current_user->ID;
+    /* If user clicks to ignore the notice, add that to their user meta */
+    if ( isset($_GET['example_nag_ignore']) && '0' == $_GET['example_nag_ignore'] ) {
+         add_user_meta($user_id, 'example_ignore_notice', 'true', true);
+    }
+}
 ?>

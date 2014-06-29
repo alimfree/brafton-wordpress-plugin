@@ -477,7 +477,7 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
            add_submenu_page( 
                 'WP_Brafton_Article_Importer', 
                 'Archival Upload', 
-                'Archives', 
+                'Import', 
                 'edit_files', 
                 'brafton_archives', 
                 array( &$this, 'brafton_archives_page' ) 
