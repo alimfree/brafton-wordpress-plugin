@@ -127,7 +127,7 @@ if (! class_exists ( 'GADASH_Widgets' )) {
 			*/
 			include_once ($GADASH_Config->plugin_path . '/tools/tools.php');
 			$tools = new GADASH_Tools ();
-						
+			
 			if ($tools->check_roles($GADASH_Config->options ['ga_dash_access_back'])) {
 				wp_add_dashboard_widget ( 'ga-dash-widget', __ ( "Google Analytics Dashboard", 'ga-dash' ), array (
 						$this,
@@ -137,6 +137,8 @@ if (! class_exists ( 'GADASH_Widgets' )) {
 		}
 		function gadash_dashboard_widgets() {
 			global $GADASH_Config;
+			
+
 			
 			/*
 			 * Include GAPI
