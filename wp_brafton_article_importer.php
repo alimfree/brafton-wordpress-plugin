@@ -40,7 +40,86 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
             require_once( sprintf( "%s/src/brafton_article_template.php", dirname( __FILE__ ) ) );
             if( $brafton_options->options['brafton_custom_post_type'] === "on" )
                 $Brafton_Article_Template = new Brafton_Article_Template( $brafton_options );
+
+
+            $this->brafton_setup_recommended_plugins();
+            
+            
+            add_action( 'tgmpa_register', 'brafton_setup_recommended_plugins' );
         } // END public function __construct
+        
+        public function brafton_setup_recommended_plugins(){
+            require_once plugin_dir_path( __FILE__ ) . '/vendors/tgm-activation.php';
+
+            $plugins = array(
+                array(
+                    'name'      => 'Brafton Analytics Dashboard', // The plugin name
+                    'slug'      => 'analytics-dashboard', // The plugin slug (typically the folder name)
+                    'source'    => plugin_dir_path( __FILE__ ) . '/vendors/plugins/analytics-dashboard.zip', // The plugin source
+                    'required'  => false, // If false, the plugin is only 'recommended' instead of required
+                    'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
+
+                ),
+                
+                array(
+                    'name' => 'WordPress SEO',
+                    'slug' => 'wordpress-seo',
+                    'required' => false,            
+                ),
+                
+                array( 
+                    'name' => 'Github Updater',
+                    'slug' => 'github-updater-master', 
+                    'source' => 'https://github.com/afragen/github-updater/archive/master.zip',
+                    'required' => true,
+                    'force_activation' => true, 
+                ),
+
+                array(
+                    'name' => 'Google Analytics for WordPress',
+                    'slug' => 'google-analytics-for-wordpress',
+                    'required' => false,    
+                ),
+                
+                array(
+                    'name'   => 'Contact Form 7',
+                    'slug'   => 'contact-form-7',
+                    'required' => false,
+                )        
+            );
+
+            $config = array(
+                'id'           => 'brafton_tgmpa',                 // Unique ID for hashing notices for multiple instances of TGMPA.
+                'default_path' => '',                      // Default absolute path to pre-packaged plugins.
+                'menu'         => 'tgmpa-install-plugins', // Menu slug.
+                'has_notices'  => true,                    // Show admin notices or not.
+                'dismissable'  => false,                    // If false, a user cannot dismiss the nag message.
+                'dismiss_msg'  => 'Brafton recommended plugins not installed.',                      // If 'dismissable' is false, this message will be output at top of nag.
+                'is_automatic' => true,                   // Automatically activate plugins after installation or not.
+                'message'      => 'Brafton Inc. recommends the following wp plugins.',                      // Message to output right before the plugins table.
+                'strings'      => array(
+                    'notice_can_install_required'    => _n_noop( 'Brafton plugin requires the following plugin: %1$s.', 'Brafton plugin requires the following plugins: %1$s.', 'tgmpa' ),
+                    'notice_can_install_recommended' => _n_noop( 'Brafton Inc. recommends the following plugin: %1$s.', 'Brafton Inc. recommends the following plugins: %1$s.', 'tgmpa' ),
+                    'notice_cannot_install'           => _n_noop( 'Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed.', 'Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed.', 'tgmpa' ), // %1$s = plugin name(s).
+                    'notice_can_activate_required'    => _n_noop( 'The following required plugin is currently inactive: %1$s.', 'The following required plugins are currently inactive: %1$s.', 'tgmpa' ), // %1$s = plugin name(s).
+                    'notice_can_activate_recommended' => _n_noop( 'The following recommended plugin is currently inactive: %1$s.', 'The following recommended plugins are currently inactive: %1$s.', 'tgmpa' ), // %1$s = plugin name(s).
+                    'notice_cannot_activate'          => _n_noop( 'Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated.', 'Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated.', 'tgmpa' ), // %1$s = plugin name(s).
+                    'notice_ask_to_update'            => _n_noop( 'The following plugin needs to be updated to its latest version to ensure maximum compatibility with the Brafton Plugin: %1$s.', 'The following plugins need to be updated to their latest version to ensure maximum compatibility with the Brafton Plugin: %1$s.', 'tgmpa' ), // %1$s = plugin name(s).
+                    'notice_cannot_update'            => _n_noop( 'Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated.', 'Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated.', 'tgmpa' ), // %1$s = plugin name(s).
+                    'install_link'                    => _n_noop( 'Begin installing plugin', 'Begin installing plugins', 'tgmpa' ),
+                    'activate_link'                   => _n_noop( 'Begin activating plugin', 'Begin activating plugins', 'tgmpa' ),
+                    'return'                          => __( 'Return to Required Plugins Installer', 'tgmpa' ),
+                    'plugin_activated'                => __( 'Plugin activated successfully.', 'tgmpa' ),
+                    'complete'                        => __( 'All plugins installed and activated successfully. %s', 'tgmpa' ), // %s = dashboard link.
+                    'nag_type'                        => 'updated' // Determines admin notice type - can only be 'updated', 'update-nag' or 'error'.
+                )
+            );
+
+            tgmpa( $plugins, $config );
+            
+        }
+
+
         /**
          * Activate the plugin
          */
@@ -88,10 +167,11 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
     // Add a link to the settings page onto the plugin page
     if( isset( $WP_Brafton_Article_Importer ) )
     {
+       
         // Add the settings link to the plugins page
         function plugin_settings_link( $links )
         { 
-            $settings_link = '<a href="options-general.php?page=WP_Brafton_Article_Importer">Settings</a>'; 
+            $settings_link = '<a href="options-general.php?page=brafton_importer_options">Settings</a>'; 
             array_unshift( $links, $settings_link ); 
             return $links; 
         }
@@ -99,12 +179,12 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         add_filter( "plugin_action_links_$plugin", 'plugin_settings_link' );
         
         //Manually run importer when settings are saved.
-        add_action( 'load-toplevel_page_WP_Brafton_Article_Importer', 'run_article_import' );
-        add_action( 'load-toplevel_page_WP_Brafton_Article_Importer', 'run_video_import' );
+        add_action( 'load-toplevel_page_brafton_importer_options', 'run_article_import' );
+        add_action( 'load-toplevel_page_brafton_importer_options', 'run_video_import' );
         //Run video and article importers when archives form is saved
         add_action( 'load-brafton_page_brafton_archives', 'run_article_import' );
         //add_action( 'load-brafton_page_brafton_archives', 'run_video_import' );
-        add_action( 'admin_init', 'update_plugin');
+        add_action( 'init', 'update_plugin');
         function update_plugin(){
             if ( is_admin() ) { // note the use of is_admin() to double check that this is happening in the admin
                 $config = array(
@@ -197,18 +277,12 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                     $brafton_video_importer->import_videos();
                     $brafton_options->update_option( "brafton_options", "brafton_import_trigger_count", $brafton_options->get_option( "brafton_options", "brafton_import_trigger_count") + 1, 0);
                     
-                    //Schedule event.
-                    brafton_import_clear_crons( 'brafton_import_trigger_hook' );
-                    wp_schedule_event(time() + 3600, "hourly", "brafton_import_trigger_hook" );
                     //Schedule importer.
                     brafton_schedule_import();
             }
         }
         
         #run duplicate killer if version is not appropriate
-    }
-    function brafton_update_plugin(){
-        #todo;
     }
     //Add video player scripts and css to site <head>. Executive decision - only support Atlantis.js 
     //Include Video Js for legacy clients with videojs embed codes.
