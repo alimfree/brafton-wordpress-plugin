@@ -58,13 +58,6 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                 array( &$this, 'settings_section_brafton_developer' ), 
                 'WP_Brafton_Article_Importer'
             );
-            // add_settings_section(
-            //     'brafton_analytics_section',
-            //     'Analytics Settings', 
-            //     array( &$this, 'settings_section_brafton_analytics' ),
-            //     'WP_Brafton_Article_Importer'
-            // );
-
             add_settings_section(
                 'brafton_archives_section',
                 'Archives', 
@@ -405,24 +398,6 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
         }
 
         /**
-         * Register analytics section fields 
-         */
-        // public function settings_section_brafton_analytics(){
-        //      add_settings_field(
-        //         'WP_Brafton_Article_Importer_enable_analytics_dashboard', 
-        //         'Google Analytics', 
-        //         array( &$this->brafton_options, 'render_radio' ), 
-        //         'WP_Brafton_Article_Importer', 
-        //         'brafton_analytics_section',
-        //         array(
-        //             'name' => 'enable_analytics_dashboard', 
-        //             'options' => array('on' => ' On',
-        //                                'off' => ' Off' ), 
-        //             'default' => 'off'
-        //         )
-        //     );
-        // }
-        /**
          * Register archive page fields 
          */
         public function settings_section_brafton_archives(){
@@ -466,14 +441,14 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                 'WP_Brafton_Article_Importer', 
                 array( &$this, 'plugin_settings_page' )
                 );
-             add_submenu_page(
-                'WP_Brafton_Article_Importer', 
-                'Brafton Dashboard', 
-                'Reports', 
-                'manage_options', 
-                'brafton_dashboard', 
-                array( &$this, 'plugin_dashboard_page' )
-                );
+             // add_submenu_page(
+             //    'WP_Brafton_Article_Importer', 
+             //    'Brafton Dashboard', 
+             //    'Reports', 
+             //    'manage_options', 
+             //    'brafton_dashboard', 
+             //    array( &$this, 'plugin_dashboard_page' )
+             //    );
            add_submenu_page( 
                 'WP_Brafton_Article_Importer', 
                 'Archival Upload', 
@@ -502,14 +477,14 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
          /**
         * Brafton dashboard callback. Renders page.
         */
-        public function plugin_dashboard_page(){
-            if( !current_user_can( 'manage_options' ) ){
-                wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
-            }
+        // public function plugin_dashboard_page(){
+        //     if( !current_user_can( 'manage_options' ) ){
+        //         wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+        //     }
 
-            //Render the dashboard page. 
-             include(sprintf("%s../src/templates/dashboard.php", dirname(__FILE__)));
-        }
+        //     //Render the dashboard page. 
+        //      include(sprintf("%s../src/templates/dashboard.php", dirname(__FILE__)));
+        // }
         /**
          * Brafton Menu Callback
          */     

@@ -44,7 +44,6 @@
                                         "brafton_enable_categories" => "", 
                                         "brafton_custom_post_tag" => "", 
                                         "brafton_custom_category" => "",
-                                        //"enable-analytics-dashboard" => "",
                                         "brafton_error_log" => ""
                                     );
             $brafton_options =  get_option( 'brafton_options' );
@@ -318,11 +317,66 @@
                 'brafton-video-section' => 'Video Settings', 
                 'brafton-advanced-section' => 'Advanced Settings', 
                 'brafton-developer-section' => 'Developer Settings',
-                'brafton-analytics-section' => 'Analytics Settings'
                 ); 
             return $sections;
         }
-                    /**
+
+        /**
+         * There are no hooks to modify the output of do_settings_sections()
+         * 
+         * Writing custom versions of do_settings_sections to avoid overwriting wp_core. 
+         * Couldn't figure out how to have tabbed nav through settings api while using
+         * single field to store database options. 
+         * 
+         * Need to Revise later. 
+         * @source http://www.smashingmagazine.com/2011/10/20/create-tabs-wordpress-settings-pages/
+         * @source http://wordpress.stackexchange.com/questions/33629/change-the-display-of-settings-api-do-settings-sections
+         */ 
+        function brafton_do_settings_sections($page) {
+            global $wp_settings_sections, $wp_settings_fields;
+            if ( !isset($wp_settings_sections) || !isset($wp_settings_sections[$page]) )
+                return;
+            $count = 0;
+            foreach( (array) $wp_settings_sections[$page] as $section ) {
+                $count++;
+                echo sprintf('<div class="%s>">', 'tab-pane-' . $count );
+                echo "<h3>{$section['title']}</h3>\n";
+                call_user_func($section['callback'], $section);
+                if ( !isset($wp_settings_fields) ||
+                     !isset($wp_settings_fields[$page]) ||
+                     !isset($wp_settings_fields[$page][$section['id']]) )
+                        continue;
+                echo '<div class="settings-form-wrapper">';
+                $this->brafton_do_settings_fields($page, $section['id']);
+                echo '</div>';
+                echo '</div>';
+            }
+        }
+
+        /**
+         * See brafton_do_settings_sections
+         */
+        function brafton_do_settings_fields($page, $section) {
+            global $wp_settings_fields;
+
+            if ( !isset($wp_settings_fields) ||
+                 !isset($wp_settings_fields[$page]) ||
+                 !isset($wp_settings_fields[$page][$section]) )
+                return;
+
+            foreach ( (array) $wp_settings_fields[$page][$section] as $field ) {
+                echo '<div class="settings-form-row">';
+                if ( !empty($field['args']['label_for']) )
+                    echo '<p><label for="' . $field['args']['label_for'] . '">' .
+                        $field['title'] . '</label><br />';
+                else
+                    echo '<p>' . $field['title'] . '<br />';
+                call_user_func($field['callback'], $field['args']);
+                echo '</p></div>';
+            }
+        }
+
+        /**
          * This function provides text inputs for settings fields
          */
         public function settings_field_input_text($args)
