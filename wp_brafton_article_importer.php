@@ -105,10 +105,10 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         add_action( 'load-toplevel_page_brafton_importer_options', 'run_video_import' );
         //Run video and article importers when archives form is saved
         add_action( 'load-brafton_page_brafton_archives', 'brafton_run_hourly_import' );
+        require_once plugin_dir_path( __FILE__ ) . '/vendors/tgm-activation.php';
 
         add_action( 'tgmpa_register', 'brafton_setup_recommended_plugins' );
         function brafton_setup_recommended_plugins(){
-            require_once plugin_dir_path( __FILE__ ) . '/vendors/tgm-activation.php';
 
             $plugins = array(
                 array(
