@@ -169,6 +169,16 @@
         }
 
         /**
+         * Retrieves api feed url.
+         */
+        function get_feed_url(){
+            $product = $this->options['brafton_domain'];
+            $key = $this->options['brafton_api_key'];
+
+            $feed_url = "http://" . $product . $key . '/news';
+            return $feed_url;
+        }
+        /**
          *  
          *  Retrieves an array of author ids with user level greater than 0 from WordPress Database. 
          *  @uses http://codex.wordpress.org/Function_Reference/get_users

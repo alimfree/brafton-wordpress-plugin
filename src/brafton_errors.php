@@ -118,8 +118,8 @@ function brafton_admin_notice( $messages ) {
     $brafton_options = Brafton_Options::get_instance();
     $product = $brafton_options->brafton_get_product();
     $notices = array();
+    $feed_url = $brafton_options->get_feed_url();
    
-
     //We need DOMDocument to parse XML feed.
     if ( !class_exists( 'DOMDocument' ) )
        $notices[] =  array( 
@@ -128,21 +128,37 @@ function brafton_admin_notice( $messages ) {
                         'ignore' => true 
                     );
 
+    //Article importer is disabled.
+    if( $brafton_options->options['brafton_api_key'] === "" && $brafton_options->options['brafton_import_articles'] === 'off' )
+        $notices[] = array(
+                    'message' => sprintf( '%s article importing is disabled. Enable article importing in <a href="%s">%s settings</a> before uploading an xml archive file.', $product,  menu_page_url( 'WP_Brafton_Article_Importer', true ), $product ) , 
+                    'class' => 'error', 
+                    'ignore' => true
+                );
+
+    //Video importer is disabled.
+    if( $brafton_options->options['brafton_video_secret'] === ""  && $brafton_options->options['brafton_enable_video'] === "off" )
+        $notices[] = array(
+                    'message' => sprintf( "%s video importing is disabled.", $product ), 
+                    'class' => 'error', 
+                    'ignore' => true
+                );   
+
+    //Overwrite is enabled.
+    if( $brafton_options->options['brafton_overwrite'] === "on" && ! $brafton_options->options['brafton_api_key'] === "" )
+        $notices[] = array(
+                    'message' => sprintf( 'Overwrite is enabled. Articles still on your <a href="%s">%s feed</a> will be updated to reflect feed content.', $feed_url, $product ), 
+                    'class' => 'update-nag', 
+                    'ignore' => true
+                );
+
     //Brafton settings page notice
     if( isset( $_GET['page'] ) && $_GET['page'] == 'WP_Brafton_Article_Importer' ) { 
-        //Article importer is disabled.
-        if( $brafton_options->options['brafton_api_key'] === ""  && $brafton_options->options['brafton_import_articles'] === 'off' )
+        //Error Logging is enabled.
+        if( $brafton_options->options['brafton_enable_errors'] === "on" )
             $notices[] = array(
-                        'message' => sprintf( "%s article importing is disabled.", $product ), 
-                        'class' => 'error', 
-                        'ignore' => true
-                    );
-
-        //Video importer is disabled.
-        if( $brafton_options->options['brafton_video_secret'] === ""   && $brafton_options->options['brafton_enable_video'] === "off")
-            $notices[] = array(
-                        'message' => sprintf( "%s video importing is disabled.", $product ), 
-                        'class' => 'error', 
+                        'message' => sprintf( "%s error reporting is enabled.", $product ), 
+                        'class' => 'updated', 
                         'ignore' => true
                     );
     }    
@@ -167,22 +183,6 @@ function brafton_admin_notice( $messages ) {
                         );
 
         //}
-
-         //Article importer is disabled.
-        if( $brafton_options->options['brafton_api_key'] === "" && $brafton_options->options['brafton_import_articles'] === 'off' )
-            $notices[] = array(
-                        'message' => sprintf( '%s article importing is disabled. Enable article importing in <a href="%s">%s settings</a> before uploading an xml archive file.', $product,  menu_page_url( 'WP_Brafton_Article_Importer', true ), $product ) , 
-                        'class' => 'error', 
-                        'ignore' => true
-                    );
-
-        //Video importer is disabled.
-        if( $brafton_options->options['brafton_video_secret'] === ""  && $brafton_options->options['brafton_enable_video'] === "off")
-            $notices[] = array(
-                        'message' => sprintf( "%s video importing is disabled.", $product ), 
-                        'class' => 'error', 
-                        'ignore' => true
-                    );        
     }
    
     foreach( $notices as $n )
