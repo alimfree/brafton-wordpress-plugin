@@ -193,7 +193,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                     return;
                     } 
                 //If api key isn't set - do nothing
-                if( !$brafton_options->options['brafton_api_key'] ) {
+                if( $brafton_options->options['brafton_api_key'] === ""  ) {
                     brafton_log( array( 'message' => " Brafton Api key is not set." ) );
                     return;
                 }

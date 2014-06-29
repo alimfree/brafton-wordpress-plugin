@@ -8,10 +8,6 @@
  * 
  */
 
-//Get current User
-
-
-
 /**
  * Use of this method assumes the existance of a log object stored in a wp options field 
  * Initialize a new log object with brafton_initialize_log()
@@ -116,50 +112,88 @@ function brafton_initialize_log($option, $log = NULL ){
   * Displays admin notices
   */
 function brafton_admin_notice( $messages ) {
+
+    global $current_user;
+    $user_id = $current_user->ID;
+    $brafton_options = Brafton_Options::get_instance();
+    $product = $brafton_options->brafton_get_product();
     $notices = array();
-    //We need curl to upload via archives.
-    if ( !function_exists( 'curl_init' ) && isset( $_GET['page'] ) && $_GET['page'] == 'brafton_archives' )
-        $notices[] = array( 
-                        'message' => "<strong>Brafton plugin's import feature requires <b>cURL</b> to import articles.</strong> Please ensure <b>cURL</b> is installed and enabled on your server.", 
-                        'class' => 'error', 
-                        'ignore' => false 
-                    );
+   
 
     //We need DOMDocument to parse XML feed.
     if ( !class_exists( 'DOMDocument' ) )
        $notices[] =  array( 
-                        'message' => "<strong>Brafton plugin requires <b>DOM XML</b> to import articles.</strong> Please ensure DOM XML is installed and enabled on your server.", 
+                        'message' => sprintf( "%s plugin requires <strong>DOM XML</strong> to import articles. Please ensure DOM XML is installed and enabled on your server.", $product ), 
                         'class' => 'error', 
-                        'ignore' => false 
+                        'ignore' => true 
                     );
 
+    //Brafton settings page notice
+    if( isset( $_GET['page'] ) && $_GET['page'] == 'WP_Brafton_Article_Importer' ) { 
+        //Article importer is disabled.
+        if( $brafton_options->options['brafton_api_key'] === ""  && $brafton_options->options['brafton_import_articles'] === 'off' )
+            $notices[] = array(
+                        'message' => sprintf( "%s article importing is disabled.", $product ), 
+                        'class' => 'error', 
+                        'ignore' => true
+                    );
+
+        //Video importer is disabled.
+        if( $brafton_options->options['brafton_video_secret'] === ""   && $brafton_options->options['brafton_enable_video'] === "off")
+            $notices[] = array(
+                        'message' => sprintf( "%s video importing is disabled.", $product ), 
+                        'class' => 'error', 
+                        'ignore' => true
+                    );
+    }    
+
+    //Brafton import page notices.
     if( isset( $_GET['page'] ) && $_GET['page'] == 'brafton_archives' ) { 
-        $notices[] = array( 
-                        'message' => "<strong>hey this works.</strong>", 
-                        'class' => 'error', 
-                        'ignore' => false 
-                    );
+         //We need curl to upload via archives.
+        if ( !function_exists( 'curl_init' ) )
+            $notices[] = array( 
+                            'message' => sprintf( "%s plugin's import feature requires <strong>cURL</strong> to import articles. Please ensure <b>cURL</b> is installed and enabled on your server.", $product ), 
+                            'class' => 'error', 
+                            'ignore' => true 
+                        );
 
-    //"<strong>hey this works.</strong>";
-
+        //We need to raise limit when php safe mode is disabled. Article imports take that long!
         //if( ini_get('safe_mode') ){
             $php_execution_limit  = ini_get('max_execution_time'); 
             $notices[] = array( 
-                            'message' => sprintf( "<strong>Brafton article import runs can exceed your php execution limit - %s seconds.</strong>. Please disable PHP safe mode or raise your servers max execution time limit.", $php_execution_limit ), 
+                            'message' => sprintf( "%s article imports can exceed your <strong>php execution limit</strong> %s seconds</strong>. Please disable PHP safe mode or raise your servers max execution time limit.", $product, $php_execution_limit ), 
                             'class' => 'error', 
-                            'ignore' => true
+                            'ignore' => false // currently can ignore only one message in notices array. Need to add new meta_keys for usermeta table.
                         );
 
         //}
-    }     
 
-    global $current_user;
-    $user_id = $current_user->ID;
+         //Article importer is disabled.
+        if( $brafton_options->options['brafton_api_key'] === "" && $brafton_options->options['brafton_import_articles'] === 'off' )
+            $notices[] = array(
+                        'message' => sprintf( '%s article importing is disabled. Enable article importing in <a href="%s">%s settings</a> before uploading an xml archive file.', $product,  menu_page_url( 'WP_Brafton_Article_Importer', true ), $product ) , 
+                        'class' => 'error', 
+                        'ignore' => true
+                    );
+
+        //Video importer is disabled.
+        if( $brafton_options->options['brafton_video_secret'] === ""  && $brafton_options->options['brafton_enable_video'] === "off")
+            $notices[] = array(
+                        'message' => sprintf( "%s video importing is disabled.", $product ), 
+                        'class' => 'error', 
+                        'ignore' => true
+                    );        
+    }
+   
     foreach( $notices as $n )
     {
-        if( $n['ignore'] ) {
-           if( ! get_user_meta($user_id, 'example_ignore_notice') )
-            echo sprintf(  '<div id="brafton_error" class="%s"><p>%s</p></div>', $n['class'], $n['message'] );
+        if( ! $n['ignore'] ) {
+            if ( ! get_user_meta($user_id, 'brafton_ignore_notice') ) {
+                echo sprintf( '<div id="brafton-error" class="%s"><p>%s', $n['class'], $n['message']);
+                printf(__(  ' <a href="%1$s">Hide Notice</a>'), '?brafton_nag_ignore=0');
+                echo "</p></div>";
+            //echo printf(  '<div id="brafton_error" class="%s"><p>%s  | <a href="%1$s">Hide Notice</a> </p></div>', $n['class'], $n['message'], '?brafton_nag_ignore=0' );
+            }
         }
         else 
             echo sprintf( '<div id="brafton_error" class="%s"><p>%s</p></div>', $n['class'], $n['message'] );
@@ -167,12 +201,17 @@ function brafton_admin_notice( $messages ) {
 }
 
 add_action('admin_init', 'brafton_nag_ignore');
+/**
+ * Helper method for hiding PHP Safe Mode notification.
+ */
 function brafton_nag_ignore() {
     global $current_user;
     $user_id = $current_user->ID;
     /* If user clicks to ignore the notice, add that to their user meta */
-    if ( isset($_GET['example_nag_ignore']) && '0' == $_GET['example_nag_ignore'] ) {
-         add_user_meta($user_id, 'example_ignore_notice', 'true', true);
+    if ( isset($_GET['brafton_nag_ignore']) && '0' == $_GET['brafton_nag_ignore'] ) {
+         add_user_meta($user_id, 'brafton_ignore_notice', 'true', true);
+         //Redirect to previous page.
+         header('Location: ' . $_SERVER['HTTP_REFERER']);
     }
 }
 ?>
