@@ -417,7 +417,10 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
          * add js to admin head for jQuery Tabs 
          */
         public function scripts() {
-            wp_print_scripts( 'jquery-ui-tabs' );
+            wp_enqueue_script( 'braftonjs', plugin_dir_url( __FILE__ ) . 'js/brafton.js', array( 'jquery' ) );
+            wp_enqueue_script( 'admin-tab', plugin_dir_url( __FILE__ ) . 'js/admin-tab.js', array( 'jquery' ) );
+            
+            //wp_print_scripts( 'jquery-ui-tabs' );
         }
        
         /**

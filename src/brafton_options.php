@@ -339,7 +339,7 @@
             $count = 0;
             foreach( (array) $wp_settings_sections[$page] as $section ) {
                 $count++;
-                echo sprintf('<div class="%s>">', 'tab-pane-' . $count );
+                echo sprintf('<div class="%s">', 'tab-pane');
                 echo "<h3>{$section['title']}</h3>\n";
                 call_user_func($section['callback'], $section);
                 if ( !isset($wp_settings_fields) ||

@@ -114,7 +114,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                 array(
                     'name'      => 'Brafton Analytics Dashboard', // The plugin name
                     'slug'      => 'brafton-analytics-dashboard', // The plugin slug (typically the folder name)
-                    'source'    => plugin_dir_path( __FILE__ ) . 'vendors/plugins/brafton-analytics-dashboard.zip', // The plugin source
+                    'source'    => plugin_dir_path( __FILE__ ) . 'vendors/recommended-plugins/brafton-analytics-dashboard.zip', // The plugin source
                     'required'  => false, // If false, the plugin is only 'recommended' instead of required
                     'force_activation' => false, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
 

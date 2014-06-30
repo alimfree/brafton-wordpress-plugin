@@ -16,12 +16,9 @@
                 <?php 
                 
                $sections = $brafton_options->get_sections(); 
-                foreach ( $sections as $section_slug => $section ) {
-                    if( $section == 'Article Settings')
-                        echo '<a class="nav-tab nav-tab-active" href="#' . $section_slug . '">' . $section . '</a>'; 
-                    else
+                foreach ( $sections as $section_slug => $section ) 
                         echo '<a class="nav-tab" href="#' . $section_slug . '">' . $section . '</a>'; 
-                }
+                
             ?>
             </h2><!-- end .ul-tabs-nav -->
                 <?php $brafton_options->brafton_do_settings_sections( $_GET['page'] ); ?>
@@ -34,5 +31,3 @@
     </form>
     </div><!--- .brafton-options -->
 </div><!-- .wrap -->
- 
-

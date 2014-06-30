@@ -137,3 +137,7 @@ td .radio-option.brafton-errors:nth-of-type(1):hover:after {
 #robotsmessage { 
 	display: none;
 }
+
+.tab-pane  { display: none; }
+
+.tab-pane-active { display: block; }
