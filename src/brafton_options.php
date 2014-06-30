@@ -26,7 +26,8 @@
                                         "brafton_enable_script" => "off", 
                                         "brafton_player_css" => "off", 
                                         "brafton_enable_images" => "on", 
-                                        "brafton_custom_post_type" => "on", 
+                                        "brafton_video_post_type" => "",
+                                        "brafton_article_post_type" => "", 
                                         "brafton_post_publish_date" => "published", 
                                         "brafton_parent_categories" => "off", 
                                         "brafton_custom_taxonomy" => "off", 
@@ -42,7 +43,6 @@
                                         "brafton_post_author" => "",
                                         "brafton_enable_tags" => "",
                                         "brafton_enable_categories" => "", 
-                                        "brafton_custom_post_tag" => "", 
                                         "brafton_custom_category" => "",
                                         "brafton_error_log" => ""
                                     );
@@ -201,13 +201,18 @@
             return $users; 
         }
         
-        //Helper method for default post status.
-        public function brafton_get_post_type(){
+          /**
+         * Helper method for default post status.
+         * Retrieves brafton article post_type name from brafton options
+         * 
+         * @return $article_post_type
+         */
+        public function brafton_get_post_type( $option ){
 
-            if( $this->options['brafton_custom_post_type'] == 'on')
-                $post_type = 'brafton_article'; 
+            if( $option != "")
+                $post_type = $option; 
             else
-                $post_type = 'post';
+               return false;
 
             return $post_type;
         }

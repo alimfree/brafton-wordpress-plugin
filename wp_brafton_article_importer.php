@@ -23,6 +23,8 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
     class WP_Brafton_Article_Importer
     {   
         public $brafton_options; 
+
+        public $test;
         /**
          * Construct the plugin object
          */
@@ -37,8 +39,18 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
             
             // Register custom post types
             require_once( sprintf( "%s/src/brafton_article_template.php", dirname( __FILE__ ) ) );
-            if( $brafton_options->options['brafton_custom_post_type'] === "on" )
-                $Brafton_Article_Template = new Brafton_Article_Template( $brafton_options );
+            $article_post_type = $brafton_options->options['brafton_article_post_type'];
+            $article_post_type_name = $brafton_options->brafton_get_post_type( $article_post_type );
+            $this->test = $article_post_type_name ;
+             var_dump( $this->test );
+            if( $article_post_type )
+                $Brafton_Article_Template = new Brafton_Article_Template( $brafton_options, $article_post_type_name );
+
+            $video_post_type = $brafton_options->options['brafton_video_post_type'];
+            $video_post_type_name = $brafton_options->brafton_get_post_type( $video_post_type );
+            if( $video_post_type )
+                $brafton_Video_Template = new Brafton_Article_Template( $brafton_options, $video_post_type_name );
+
 
         } // END public function __construct
         

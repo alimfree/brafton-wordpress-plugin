@@ -331,29 +331,27 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                 )
             );
             add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_custom_post_type', 
-                'Custom Post Type', 
-                array( &$this->brafton_options, 'render_radio' ), 
+                'WP_Brafton_Article_Importer_brafton_article_post_type', 
+                'Custom Article Post Type', 
+                array( &$this->brafton_options, 'settings_field_input_text' ), 
                 'WP_Brafton_Article_Importer', 
                 'brafton_developer_section', 
                 array(
-                    'name' => 'brafton_custom_post_type', 
-                    'options' => array( 'off' => ' Off',
-                                        'on' => ' On' ), 
-                    'default' => 'off'
+                    'name' => 'brafton_post-slug', 
+                    'field' => 'brafton_article_post_type',
                     )
                 );
-            add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_custom_post_slug', 
-                'Custom Post Slug', 
-                array( &$this->brafton_options, 'settings_field_input_text' ),  
+               add_settings_field(
+                'WP_Brafton_Article_Importer_brafton_video_post_type', 
+                'Custom Video Post Type', 
+                array( &$this->brafton_options, 'settings_field_input_text' ), 
                 'WP_Brafton_Article_Importer', 
-                'brafton_developer_section',
+                'brafton_developer_section', 
                 array(
-                    'name' => 'post-slug',
-                    'field' => 'brafton_custom_post_slug'
-                )
-            );
+                    'name' => 'brafton_post-slug', 
+                    'field' => 'brafton_video_post_type',
+                    )
+                );
             add_settings_field(
                 'WP_Brafton_Article_Importer_brafton_overwrite', 
                 'Overwrite', 

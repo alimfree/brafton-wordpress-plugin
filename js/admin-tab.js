@@ -7,11 +7,8 @@ jQuery( document ).ready( function() {
 
 	jQuery( '.nav-tab' ).click( function( event ){ 
 		event.preventDefault();
-    		console.log( "before click" );
     	if( !jQuery(this).hasClass( ("nav-tab-active") ) ) {
-    		console.log( "fail" );
 	       var pane = get_tab_panel_selector( this );
-	       console.log( pane );
 
 	       jQuery( '.nav-tab' ).not(this).removeClass( "nav-tab-active" );
 	       jQuery( '.tab-pane' ).not( pane ).removeClass( "tab-pane-active" );
@@ -28,10 +25,8 @@ jQuery( document ).ready( function() {
 	 */
 	function get_tab_panel_selector( selected_nav_tab ){
 		var  index = jQuery( ".nav-tab").index( selected_nav_tab );
-		console.log( index );
 	    index++;
 	    var pane = '.tab-pane:nth-of-type('+index+')';
-	    console.log( pane );
 	    return pane;
 	}
 } );
