@@ -60,12 +60,10 @@ class Brafton_Video_Helper
 
 		$this->brafton_options = $brafton_options;
 
-		if( $this->brafton_options->options['brafton_custom_post_type'] == 'on')
-
-			$this->post_type = 'brafton_article'; 
-
+		$post_type = $this->brafton_options->options['brafton_video_post_type']; 
+		if( $this->brafton_options->options['brafton_video_post_type'] != "" )
+			$this->post_type = $post_type; 
 		else
-
 			$this->post_type = 'post';
 
 

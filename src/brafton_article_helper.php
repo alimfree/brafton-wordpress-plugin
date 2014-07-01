@@ -5,9 +5,14 @@
 
 		public $brafton_options;
 		// Require Client Libraries 
-		function __construct( Brafton_Options $brafton_options, $post_type ){
+		function __construct( Brafton_Options $brafton_options ){
 			$this->brafton_options = $brafton_options;
-			$this->post_type = $post_type;
+			$post_type = $this->brafton_options->options['brafton_article_post_type']; 
+			if( $this->brafton_options->options['brafton_article_post_type'] != "" )
+				$this->post_type = $post_type; 
+			else
+				$this->post_type = 'post';
+
 		}
 
 		/**
