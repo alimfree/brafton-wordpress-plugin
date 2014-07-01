@@ -128,14 +128,6 @@ function brafton_admin_notice( $messages ) {
                         'ignore' => true 
                     );
 
-    //Article importer is disabled.
-    if( $brafton_options->options['brafton_api_key'] === "" && $brafton_options->options['brafton_import_articles'] === 'off' )
-        $notices[] = array(
-                    'message' => sprintf( '%s article importing is disabled. Enable article importing in <a href="%s">%s settings</a> before uploading an xml archive file.', $product,  menu_page_url( 'WP_Brafton_Article_Importer', false ), $product ) , 
-                    'class' => 'error', 
-                    'ignore' => true
-                );
-
     //Video importer is disabled.
     if( $brafton_options->options['brafton_video_secret'] === ""  && $brafton_options->options['brafton_enable_video'] === "off" )
         $notices[] = array(
@@ -161,6 +153,13 @@ function brafton_admin_notice( $messages ) {
                         'class' => 'updated', 
                         'ignore' => true
                     );
+       //Article importer is disabled.
+        if( $brafton_options->options['brafton_api_key'] === "" && $brafton_options->options['brafton_import_articles'] === 'off' )
+            $notices[] = array(
+                        'message' => sprintf( '%s article importing is disabled. Please, enable article importing to automatically publish your %s content hourly.', $product,  $product ) , 
+                        'class' => 'error', 
+                        'ignore' => true
+                    );
     }    
 
     //Brafton import page notices.
@@ -183,6 +182,14 @@ function brafton_admin_notice( $messages ) {
                         );
 
         //}
+
+        //Article importer is disabled.
+        if( $brafton_options->options['brafton_api_key'] === "" && $brafton_options->options['brafton_import_articles'] === 'off' )
+            $notices[] = array(
+                        'message' => sprintf( '%s article importing is disabled. Enable article importing in <a href="%s">%s settings</a> before uploading an xml archive file.', $product,  menu_page_url( 'WP_Brafton_Article_Importer', false ), $product ) , 
+                        'class' => 'error', 
+                        'ignore' => true
+                    );    
     }
    
     foreach( $notices as $n )
