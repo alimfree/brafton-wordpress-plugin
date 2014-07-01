@@ -6,22 +6,37 @@ if(!class_exists('Brafton_Article_Template'))
 	 */
 	class Brafton_Article_Template
 	{
+        /**
+         * Custom Post Type id. Set by 
+         */ 
+		public $post_type_id;
 
-		public $post_type_name;
-		private $_meta	= array(
-			'brafton_id',
-			'photo_id',
-		);
+        /**
+         * Singular and Plural versions of CPT Name. 
+         * 
+         * Array
+         */
+        public $product_names;
+
+        /**
+         * Custom Meta Box values.
+         * 
+         * Array 
+         */ 
+		private $_meta;
 
         public $brafton_options;
 		
     	/**
     	 * The Constructor
     	 */
-    	public function __construct( Brafton_Options $brafton_options, $post_type_option )
+    	public function __construct( Brafton_Options $brafton_options, $post_type_option, $product_names, $_meta )
     	{
                 $this->brafton_options = $brafton_options;
-                $this->post_type_name = $post_type_option;
+                $this->post_type_id = $post_type_option;
+                $this->product_names = $product_names;
+
+                $this->_meta = $_meta;
     		// register actions
     		add_action('init', array(&$this, 'init'));
     		add_action('admin_init', array(&$this, 'admin_init'));
@@ -46,23 +61,23 @@ if(!class_exists('Brafton_Article_Template'))
             // if( !$post_slug )
             //     $post_slug = 'blog'; 
 
-     		register_post_type($this->post_type_name,
+     		register_post_type($this->post_type_id,
     			array(
     				'labels' => array(
-    					'name' => $this->brafton_options->brafton_get_product() . ' Articles',
-    					'singular_name' => __(ucwords(str_replace("_", " ", $this->post_type_name)))
+    					'name' => $this->brafton_options->brafton_get_product() . " " . $this->product_names['plural'],
+    					'singular_name' => __(ucwords(str_replace("_", " ", $this->post_type_id)))
     				),
     				'public' => true,
     				'has_archive' => true,
                     'taxonomies' => array('category'),
-                    'rewrite'            => array( 'slug' => $this->post_type_name ),
+                    'rewrite'            => array( 'slug' => $this->post_type_id ),
     				'description' => __("This is a sample post type meant only to illustrate a preferred structure of plugin development"),
     				'supports' => array(
     					   'title', 'author' , 'editor', 'excerpt', 'thumbnail', 'revisions', 'post_formats',
     				),
     			)
     		);
-            flush_rewrite_rules();
+            //flush_rewrite_rules();
     	}
 	
     	/**
@@ -77,7 +92,7 @@ if(!class_exists('Brafton_Article_Template'))
                 return;
             }
             
-    		if( isset($_POST['post_type']) == $this->post_type_name && current_user_can('edit_post', $post_id))
+    		if( isset($_POST['post_type']) == $this->post_type_id && current_user_can('edit_post', $post_id))
     		{
     			foreach($this->_meta as $field_name)
     			{
@@ -88,7 +103,7 @@ if(!class_exists('Brafton_Article_Template'))
     		else
     		{
     			return;
-    		} // if($_POST['post_type'] == $this->post_type_name && current_user_can('edit_post', $post_id))
+    		} // if($_POST['post_type'] == $this->post_type_id && current_user_can('edit_post', $post_id))
     	} // END public function save_post($post_id)
 
     	/**
@@ -97,31 +112,62 @@ if(!class_exists('Brafton_Article_Template'))
     	public function admin_init()
     	{			
     		// Add metaboxes
-    		add_action('add_meta_boxes', array(&$this, 'add_meta_boxes'));
+            $product = $this->product_names['plural'];
+            switch( $product ){
+                case 'videos' :
+                    add_action('add_meta_boxes', array(&$this, 'add_video_meta_boxes'));
+                    break;
+                case 'articles' : 
+                    add_action('add_meta_boxes', array(&$this, 'add_article_meta_boxes'));
+
+                    break; 
+            }
+                
     	} // END public function admin_init()
 			
+        //hook into WP's add_meta_boxes action hook to print video meta boxes in admin menu.    
+        public function add_video_meta_boxes()
+        {
+            // Add this metabox to every selected post
+            add_meta_box( 
+                sprintf('WP_Brafton_Article_Importer_%s_section', $this->post_type_id),
+                sprintf('%s %s Information', ucwords( str_replace( "_", " ", $this->brafton_options->brafton_get_product() ) ), $this->product_names['singular'] ),
+                array(&$this, 'add_video_inner_meta_boxes'),
+                $this->post_type_id, 
+                'side'
+            );
+        }    
     	/**
-    	 * hook into WP's add_meta_boxes action hook
+    	 * hook into WP's add_meta_boxes action hook to display article meta boxes in video menu.
     	 */
-    	public function add_meta_boxes()
+    	public function add_article_meta_boxes()
     	{
     		// Add this metabox to every selected post
     		add_meta_box( 
-    			sprintf('WP_Brafton_Article_Importer_%s_section', $this->post_type_name),
-    			sprintf('%s Article Information', ucwords(str_replace("_", " ", $this->brafton_options->brafton_get_product() ))),
-    			array(&$this, 'add_inner_meta_boxes'),
-    			$this->post_type_name, 
+    			sprintf('WP_Brafton_Article_Importer_%s_section', $this->post_type_id),
+    			sprintf('%s %s Information', ucwords( str_replace( "_", " ", $this->brafton_options->brafton_get_product() ) ), $this->product_names['singular'] ),
+    			array(&$this, 'add_article_inner_meta_boxes'),
+    			$this->post_type_id, 
                 'side'
     	    );					
     	} // END public function add_meta_boxes()
 
+        /**
+         * called off of the add video meta box
+         */     
+        public function add_video_inner_meta_boxes( $post )
+        {
+            echo 'fail';
+            // Render the job order metabox
+            include( sprintf( "%s/templates/brafton_video_template_metabox.php", dirname( __FILE__ ), $this->post_type_id ) );    
+        }
 		/**
-		 * called off of the add meta box
+		 * called off of the add article meta box
 		 */		
-		public function add_inner_meta_boxes($post)
+		public function add_article_inner_meta_boxes( $post )
 		{		
 			// Render the job order metabox
-			include(sprintf("%s/templates/brafton_article_template_metabox.php", dirname(__FILE__), $this->post_type_name));			
+			include( sprintf( "%s/templates/brafton_article_template_metabox.php", dirname( __FILE__ ), $this->post_type_id ) );			
 		} // END public function add_inner_meta_boxes($post)
 
 	} // END class Brafton_Article

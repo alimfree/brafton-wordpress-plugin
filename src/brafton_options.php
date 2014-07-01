@@ -179,14 +179,6 @@
         }
 
         /**
-         * Flush rewrite rules. Method runs after post type is activated.
-         */
-        function brafton_flush_rewrite(){
-            flush_rewrite_rules();
-        }
-
-
-        /**
          *
          */
         /**

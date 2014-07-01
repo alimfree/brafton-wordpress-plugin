@@ -24,6 +24,8 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
     {   
         public $brafton_options; 
 
+        public $test;
+
         /**
          * Construct the plugin object
          */
@@ -41,15 +43,15 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
             $article_post_type = $brafton_options->options['brafton_article_post_type'];
             $article_post_type_name = $brafton_options->brafton_get_post_type( $article_post_type );
             if( $article_post_type ) {
-                $Brafton_Article_Template = new Brafton_Article_Template( $brafton_options, $article_post_type_name );
-                add_action( 'brafton_rewrite_hook', array( 'Brafton_Options', 'brafton_flush_rewrite' ) );                
+                $Brafton_Article_Template = new Brafton_Article_Template( $brafton_options, $article_post_type_name, array( 'singular' => 'Article', 'plural' => 'Articles' ), array( 'brafton_id', 'photo_id',) );
+                add_action( 'brafton_rewrite_hook', array( &$this, 'brafton_flush_rewrite' ) );                
             }
 
             $video_post_type = $brafton_options->options['brafton_video_post_type'];
             $video_post_type_name = $brafton_options->brafton_get_post_type( $video_post_type );
             if( $video_post_type ){
-                $brafton_Video_Template = new Brafton_Article_Template( $brafton_options, $video_post_type_name );
-                add_action( 'brafton_rewrite_hook', array( 'Brafton_Options', 'brafton_flush_rewrite' ) );                
+                $brafton_Video_Template = new Brafton_Article_Template( $brafton_options, $video_post_type_name, array( 'singular' => 'Video', 'plural' => 'Videos' ), array( 'brafton_id', 'photo_id' ) );
+                add_action( 'brafton_rewrite_hook', array( &$this, 'brafton_flush_rewrite' ) );                
             }
 
 
@@ -62,6 +64,15 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
             do_action('brafton_rewrite_hook'); 
         }
 
+        /**
+         * Flush rewrite rules. 
+         * Method runs after post type is activated.
+         */
+        function brafton_flush_rewrite(){
+            $this->test = 'in brafton flush';
+            echo $this->test;
+            flush_rewrite_rules();
+        }
 
         /**
          * Activate the plugin
