@@ -141,3 +141,5 @@ td .radio-option.brafton-errors:nth-of-type(1):hover:after {
 .tab-pane  { display: none; }
 
 .tab-pane-active { display: block; }
+
+.simplePagerNav li { display: inline; padding-right: 5px; }

@@ -1,5 +1,6 @@
 <?php
 if(!class_exists('Brafton_Article_Template'))
+    include_once 'brafton_errors.php';
 {
 	/**
 	 * A PostTypeTemplate class that provides 3 additional meta fields
@@ -40,6 +41,7 @@ if(!class_exists('Brafton_Article_Template'))
     		// register actions
     		add_action('init', array(&$this, 'init'));
     		add_action('admin_init', array(&$this, 'admin_init'));  
+            brafton_log( array( 'message' => "Successfully created " . $product_names['singular'] .  " custom post type with id: " . $this->post_type_id ) );
            
     	} // END public function __construct()
 

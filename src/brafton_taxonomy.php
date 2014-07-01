@@ -115,18 +115,5 @@
 				return $post_category;
 			}
 		}
-
-		/**
-		 *  Retrieves parent term if given term has a parent in the feed. 
-		 *  Only applies to cats not tags because tags don't support hierarchical taxonomy
-		 *  @param $term_id 
-		 *  @return $parent_term; 
-		 */
-		// function get_parent($term_array, $term_id)
-		// {
-		// 	 loop through all cats in the term_array;
-		//   if given term has a perent;
-		// 	return $parent_term;
-		// }
 	}	
 ?>

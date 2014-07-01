@@ -317,20 +317,6 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
         public function settings_section_brafton_developer()
         {
             add_settings_field(
-                'WP_Brafton_Article_Importer_brafton_custom_taxonomy', 
-                'Custom Taxonomy ', 
-                array( &$this->brafton_options, 'render_radio' ), 
-                'WP_Brafton_Article_Importer', 
-                'brafton_developer_section',
-                array(
-                    'name' => 'brafton_custom_taxonomy', 
-                    'options' => array( 'on' => ' On', 
-                                        'off'=> ' Off' 
-                        ),
-                    'default' => 'off'
-                )
-            );
-            add_settings_field(
                 'WP_Brafton_Article_Importer_brafton_article_post_type', 
                 'Custom Article Post Type', 
                 array( &$this->brafton_options, 'settings_field_input_text' ), 
@@ -374,7 +360,7 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                 array(
                     'name' => 'brafton_purge',
                     'options' => array( 'none' => ' Stop Importing Content', 
-                                        'posts' => ' Delete All ' . $this->brafton_options->brafton_get_product() . ' Articles', 
+                                        'posts' => ' Delete All ' . $this->brafton_options->brafton_get_product() . ' Content', 
                                         'all' => ' Purge this plugin entirely!'
                                         ), 
                     'default' => 'none'
@@ -415,8 +401,8 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
          * add js to admin head for jQuery Tabs 
          */
         public function scripts() {
-            wp_enqueue_script( 'braftonjs', plugin_dir_url( __FILE__ ) . 'js/brafton.js', array( 'jquery' ) );
-            wp_enqueue_script( 'admin-tab', plugin_dir_url( __FILE__ ) . 'js/admin-tab.js', array( 'jquery' ) );
+            wp_enqueue_script( 'jquery-pagination', plugin_dir_url( __FILE__ ) . 'js/jquery.quick.pagination.min.js', array( 'jquery' ) );
+            wp_enqueue_script( 'brafton-admin-js', plugin_dir_url( __FILE__ ) . 'js/brafton-admin.js', array( 'jquery', 'jquery-pagination' ) );
             
             //wp_print_scripts( 'jquery-ui-tabs' );
         }
@@ -450,42 +436,53 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
              //    'brafton_dashboard', 
              //    array( &$this, 'plugin_dashboard_page' )
              //    );
-           add_submenu_page( 
+            add_submenu_page( 
                 'WP_Brafton_Article_Importer', 
                 'Archival Upload', 
                 'Import', 
                 'edit_files', 
                 'brafton_archives', 
                 array( &$this, 'brafton_archives_page' ) 
-                );
+            );
             add_action( 'admin_print_scripts-' . $admin_page, array( &$this, 'scripts' ) );
+
+           if( $this->brafton_options->options['brafton_enable_errors'] == "on" ) { 
+                $error_page = add_submenu_page( 
+                    'WP_Brafton_Article_Importer', 
+                    'Brafton Errors', 
+                    'Error Log', 
+                    'edit_files', 
+                    'brafton_errors', 
+                    array( &$this, 'brafton_errors_page' ) 
+                );
+            add_action( 'admin_print_scripts-' . $error_page, array( &$this, 'scripts' ) );
+            }
+
         } // END public function add_menu()
        
         /**
          * Archive Menu page callback 
          */
-       public function brafton_archives_page()
-       {
+        public function brafton_archives_page()
+        {
             if( !current_user_can( 'manage_options' ) )
                 {
                     wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
                 }
         
-                // Render the settings template
-                include( sprintf( "%s/src/templates/archives.php", dirname( __FILE__ ) ) );
-       }
+            // Render the settings template
+            include( sprintf( "%s/src/templates/archives.php", dirname( __FILE__ ) ) );
+        }
        
-         /**
-        * Brafton dashboard callback. Renders page.
-        */
-        // public function plugin_dashboard_page(){
-        //     if( !current_user_can( 'manage_options' ) ){
-        //         wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
-        //     }
+        public function brafton_errors_page(){
+            if( !current_user_can( 'manage_options' ) )
+            {
+                wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+            }
 
-        //     //Render the dashboard page. 
-        //      include(sprintf("%s../src/templates/dashboard.php", dirname(__FILE__)));
-        // }
+            // Render the settings template
+            include( sprintf( "%s/src/templates/error_log.php", dirname( __FILE__ ) ) );
+        }
         /**
          * Brafton Menu Callback
          */     

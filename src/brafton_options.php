@@ -30,7 +30,6 @@
                                         "brafton_article_post_type" => "", 
                                         "brafton_post_publish_date" => "published", 
                                         "brafton_parent_categories" => "off", 
-                                        "brafton_custom_taxonomy" => "off", 
                                         "brafton_overwrite" =>"off", 
                                         "brafton_purge" => "none", 
                                         "brafton_enable_errors" => 'Off',
