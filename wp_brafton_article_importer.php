@@ -127,6 +127,8 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         add_action( 'load-brafton_page_brafton_archives', 'brafton_run_hourly_import' );
         require_once plugin_dir_path( __FILE__ ) . '/vendors/tgm-activation.php';
 
+
+        add_action( 'load-brafton_page_WP_Brafton_Article_Importer', 'brafton_admin_notice' );
         add_action( 'tgmpa_register', 'brafton_setup_recommended_plugins' );
         function brafton_setup_recommended_plugins(){
 
@@ -220,8 +222,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                 //if brafton error reporting is enabled - log importing.
                 brafton_log( array( 'message' => 'Starting to import articles.' ) );
                 
-                //Display Admin Notices.
-                brafton_admin_notice();
+                
                                 
                 $brafton_cats = new Brafton_Taxonomy( $brafton_options );
                 $brafton_tags = new Brafton_Taxonomy( $brafton_options );
