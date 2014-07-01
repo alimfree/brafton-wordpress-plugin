@@ -24,7 +24,6 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
     {   
         public $brafton_options; 
 
-        public $test;
         /**
          * Construct the plugin object
          */
@@ -41,19 +40,29 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
             require_once( sprintf( "%s/src/brafton_article_template.php", dirname( __FILE__ ) ) );
             $article_post_type = $brafton_options->options['brafton_article_post_type'];
             $article_post_type_name = $brafton_options->brafton_get_post_type( $article_post_type );
-            $this->test = $article_post_type_name ;
-             var_dump( $this->test );
-            if( $article_post_type )
+            if( $article_post_type ) {
                 $Brafton_Article_Template = new Brafton_Article_Template( $brafton_options, $article_post_type_name );
+                add_action( 'brafton_rewrite_hook', array( 'Brafton_Options', 'brafton_flush_rewrite' ) );                
+            }
 
             $video_post_type = $brafton_options->options['brafton_video_post_type'];
             $video_post_type_name = $brafton_options->brafton_get_post_type( $video_post_type );
-            if( $video_post_type )
+            if( $video_post_type ){
                 $brafton_Video_Template = new Brafton_Article_Template( $brafton_options, $video_post_type_name );
+                add_action( 'brafton_rewrite_hook', array( 'Brafton_Options', 'brafton_flush_rewrite' ) );                
+            }
 
 
         } // END public function __construct
         
+        /**
+         * Flush rewrite rules custom hook
+         */
+        function brafton_rewrite_hook(){
+            do_action('brafton_rewrite_hook'); 
+        }
+
+
         /**
          * Activate the plugin
          */

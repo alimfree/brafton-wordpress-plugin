@@ -177,6 +177,18 @@
             $feed_url = "http://" . $product . $key . '/news';
             return $feed_url;
         }
+
+        /**
+         * Flush rewrite rules. Method runs after post type is activated.
+         */
+        function brafton_flush_rewrite(){
+            flush_rewrite_rules();
+        }
+
+
+        /**
+         *
+         */
         /**
          *  
          *  Retrieves an array of author ids with user level greater than 0 from WordPress Database. 
