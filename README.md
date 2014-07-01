@@ -11,8 +11,8 @@ priority items
 	add github auto updater
 	test cron task.
 	clean up unnecesary files.
-	make sure duplicate images use the same file path
-	add custom post type slug setting.
+	//clean up syntax
 	add update_plugin function to remove old plugin options. 
 
+	purge articles method.
 	Test on different wp versions and mult-isite, and sites with old versions of the importer.
