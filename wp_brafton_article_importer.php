@@ -40,17 +40,15 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
             require_once( sprintf( "%s/src/brafton_article_template.php", dirname( __FILE__ ) ) );
             $article_post_type = $brafton_options->options['brafton_article_post_type'];
             $article_post_type_name = $brafton_options->brafton_get_post_type( $article_post_type );
-            if( $article_post_type ) {
+            if( $article_post_type )
                 $Brafton_Article_Template = new Brafton_Article_Template( $brafton_options, $article_post_type_name, array( 'singular' => 'Article', 'plural' => 'Articles' ), array( 'brafton_id', 'photo_id',) );
-                flush_rewrite_rules();
-            }
+            
 
             $video_post_type = $brafton_options->options['brafton_video_post_type'];
             $video_post_type_name = $brafton_options->brafton_get_post_type( $video_post_type );
-            if( $video_post_type ){
+            if( $video_post_type )
                 $brafton_Video_Template = new Brafton_Article_Template( $brafton_options, $video_post_type_name, array( 'singular' => 'Video', 'plural' => 'Videos' ), array( 'brafton_id', 'photo_id' ) );
-                flush_rewrite_rules();
-            }
+            
 
 
         } // END public function __construct
@@ -85,6 +83,12 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
                 delete_option( 'brafton_options' );
                 delete_option( 'brafton_error_log' );
             }
+
+            //Flush rewrite rules if custom post types are enabled.
+            if( $brafton_options->options['brafton_article_post_type'] != "" || $brafton_options->options['brafton_video_post_type'] != "" ) 
+                flush_rewrite_rules();
+
+
             // Do nothing
         } // END public static function deactivate
     } // END class WP_Brafton_Article_Importer
@@ -330,24 +334,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
     }
 
 
-    /**
-     * Flush rewrite rules. 
-     * Method runs after post type is activated and anytime settings are updated as long as custom post type option exists.
-     */
-    // function brafton_flush_rewrite(){
-    //     if( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] )
-    //     {
-    //         echo 'in brafton flush';
-
-    //         $brafton_options = Brafton_options::get_instance();
-
-    //         if( $brafton_options->options['brafton_import_articles'] != "" || $brafton_options->options['brafton_enable_video'] !=" " )
-    //           flush_rewrite_rules();
-         
-    //     }
-
-    // }
-    // add_action( 'load-toplevel_page_brafton_importer_options', 'brafton_flush_rewrite' );                
+            
 
   //Load the admin page Stylesheet. 
     function wp_brafton_article_importer_settings_style() {

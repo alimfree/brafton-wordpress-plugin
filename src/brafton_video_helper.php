@@ -185,7 +185,6 @@ class Brafton_Video_Helper
 	}	
 
 
-
 	/**
 
 	 * Helper function for get_video_output(). Returns an associative 
@@ -299,8 +298,6 @@ class Brafton_Video_Helper
 	 */
 
 	public function create_embed_code( $brafton_id, $presplash ){
-
-
 
 		$player = $this->brafton_options->options['brafton_video_player'];
 

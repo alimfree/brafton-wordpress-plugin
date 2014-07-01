@@ -24,7 +24,9 @@
     </tr>
     <tr valign="top">
         <h1>Featured Video</h1>
-        <?php echo get_post_meta( 'brafton_video_embed' ) ?>     
+        <div id="video">
+        <?php $video = @get_post_meta( $post->ID, 'video_embed_code', true ); if( $video != "" ) echo $video; ?>     
+        </div>
     </tr>
     <tr valign="top">
         <p>Please respond to approval email with any edits you make to this article. We cannot gaurantee backups of your content if it's out of sync with your feed</p>
