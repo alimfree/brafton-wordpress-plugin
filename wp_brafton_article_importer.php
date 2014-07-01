@@ -305,6 +305,8 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         }
     }
     add_action( 'wp_enqueue_scripts', 'brafton_enqueue_video_scripts' );
+    //Used to preview video in admin page.
+    add_action( 'admin_init', 'brafton_enqueue_video_scripts' );
     function brafton_import_clear_crons($hook)
     {
         $crons = _get_cron_array();
