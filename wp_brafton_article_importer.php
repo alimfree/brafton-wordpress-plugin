@@ -337,7 +337,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
     }
     require_once plugin_dir_path( __FILE__ ) . '/src/brafton_plugin_updater.php';
     if ( is_admin() ) {
-        new Brafton_Plugin_Updater( __FILE__, 'alimfree', "brafton_wp_plugin" );
+        new Brafton_Plugin_Updater( __FILE__, 'alimfree', "brafton_wordpress_plugin" );
     }
             
 
