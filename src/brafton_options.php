@@ -40,6 +40,7 @@
                                         "brafton_video_secret" => "",
                                         "brafton_video_feed_num" => "",
                                         "brafton_post_author" => "",
+                                        "enable_dynamic_authorship" => "off",
                                         "brafton_enable_tags" => "",
                                         "brafton_enable_categories" => "", 
                                         "brafton_custom_category" => "",

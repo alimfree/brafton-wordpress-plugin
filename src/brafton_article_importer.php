@@ -64,6 +64,8 @@ if ( !class_exists( 'Article_Importer' ) )
 					$post_date = $this->brafton_article->get_publish_date( $a ); 
 					$post_title = $a->getHeadline();
 					$post_content = $a->getText(); 
+					if( $this->brafton_options->options['enable_dynamic_authorship']  === 'on');
+					$by_line = $a->getByLine();
 					
 	
 					$post_excerpt = $a->getExtract(); 
@@ -83,6 +85,9 @@ if ( !class_exists( 'Article_Importer' ) )
 
 					//Get more video article meta data
 					$post_author = $this->brafton_options->options['brafton_post_author']; 
+					if( isset( $by_line ) ) {
+						$post_author = $this->brafton_article->get_blog_user_id( $by_line ); 
+					}
 
 					$post_status = $this->brafton_options->options['brafton_post_status'];
 
