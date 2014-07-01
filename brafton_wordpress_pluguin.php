@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Brafton Importer
+Plugin Name: Brafton WordPress Plugin
 Plugin URI: http://www.brafton.com/support/wordpress
 version: 1.3.5
 Author: Brafton Inc
