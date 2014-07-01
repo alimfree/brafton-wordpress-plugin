@@ -154,6 +154,12 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                     'slug' => 'google-analytics-for-wordpress',
                     'required' => false,    
                 ),
+
+                array( 
+                    'name' => 'Google Sitemap Generator',
+                    'slug' => 'google-sitemap-generator', 
+                    'required' => false,
+                ),
                 
                 array(
                     'name'   => 'Contact Form 7',

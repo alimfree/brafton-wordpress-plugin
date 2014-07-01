@@ -15,4 +15,7 @@ priority items
 	add update_plugin function to remove old plugin options. 
 
 	purge articles method.
+	tags as tags
+	authors.
 	Test on different wp versions and mult-isite, and sites with old versions of the importer.
+
