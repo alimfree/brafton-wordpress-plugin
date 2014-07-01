@@ -233,6 +233,19 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
         public function settings_section_brafton_advanced()
         {
             add_settings_field(
+                'WP_Brafton_Article_Importer_enable_dynamic_authorship', 
+                'Dynamic Authorship', 
+                array( &$this->brafton_options, 'render_radio' ), 
+                'WP_Brafton_Article_Importer', 
+                'brafton_advanced_section',
+                array(
+                    'name' => 'enable_dynamic_authorship', 
+                    'options' => array('on' => ' On',
+                                       'off' => ' Off' ), 
+                    'default' => 'off'
+                )
+            );
+            add_settings_field(
                 'WP_Brafton_Article_Importer_brafton_enable_images', 
                 'Images', 
                 array( &$this->brafton_options, 'render_radio' ), 

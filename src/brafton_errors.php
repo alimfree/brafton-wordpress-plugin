@@ -154,7 +154,7 @@ function brafton_admin_notice( $messages ) {
                         'ignore' => true
                     );
        //Article importer is disabled.
-        if( $brafton_options->options['brafton_api_key'] === "" && $brafton_options->options['brafton_import_articles'] === 'off' )
+        if( $brafton_options->options['brafton_import_articles'] === 'off' )
             $notices[] = array(
                         'message' => sprintf( '%s article importing is disabled. Please, enable article importing to automatically publish your %s content hourly.', $product,  $product ) , 
                         'class' => 'error', 
