@@ -5,6 +5,8 @@ Plugin URI: http://www.brafton.com/support/wordpress
 version: 1.3.4
 Author: Brafton Inc
 Author URL: http://www.brafton.com
+GitHub Plugin URI: https://github.com/alimfree/brafton_wordpress_plugin
+GitHub Branch:     1.3.5
 */
 if( !class_exists( 'WP_Brafton_Article_Importer' ) )
 {
@@ -126,7 +128,6 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
         //Run video and article importers when archives form is saved
         add_action( 'load-brafton_page_brafton_archives', 'brafton_run_hourly_import' );
         require_once plugin_dir_path( __FILE__ ) . '/vendors/tgm-activation.php';
-
 
         add_action( 'load-brafton_page_WP_Brafton_Article_Importer', 'brafton_admin_notice' );
         add_action( 'tgmpa_register', 'brafton_setup_recommended_plugins' );

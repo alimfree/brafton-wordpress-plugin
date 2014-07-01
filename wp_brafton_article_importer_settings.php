@@ -401,6 +401,7 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
          * add js to admin head for jQuery Tabs 
          */
         public function scripts() {
+            //Ul quick pagination http://www.sitepoint.com/jquery-quick-pagination-list-items/
             wp_enqueue_script( 'jquery-pagination', plugin_dir_url( __FILE__ ) . 'js/jquery.quick.pagination.min.js', array( 'jquery' ) );
             wp_enqueue_script( 'brafton-admin-js', plugin_dir_url( __FILE__ ) . 'js/brafton-admin.js', array( 'jquery', 'jquery-pagination' ) );
             
