@@ -11,7 +11,7 @@
 		<h1>Brafton Error Log</h1>
 		<ul class="brafton-errors">
 
-		<?php $count = 0; foreach( $log_entries as $entry ) : $count++; ?>
+		<?php $count = count( $log_entries ); foreach( $log_entries as $entry ) : $count--; ?>
 		 		<li ="error-<?php echo $count ?>">
 		 			<?php echo $count . ". " .  $entry['message']; ?>
 		 		</li>
