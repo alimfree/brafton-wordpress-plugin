@@ -16,4 +16,4 @@ priority items
 	tags as tags
 	Test on different wp versions and mult-isite, and sites with old versions of the importer.
 
-please work - github updater test.
+testing without wordpress root dir git repository initialized
