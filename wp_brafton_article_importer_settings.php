@@ -240,8 +240,8 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                 'brafton_advanced_section',
                 array(
                     'name' => 'enable_dynamic_authorship', 
-                    'options' => array('on' => ' On',
-                                       'off' => ' Off' ), 
+                    'options' => array( 'off' => ' Off',
+                                        'on' => ' On' ), 
                     'default' => 'off'
                 )
             );
@@ -336,7 +336,7 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                 'WP_Brafton_Article_Importer', 
                 'brafton_developer_section', 
                 array(
-                    'name' => 'brafton_post-slug', 
+                    'name' => 'brafton-post-slug', 
                     'field' => 'brafton_article_post_type',
                     )
                 );
@@ -347,7 +347,7 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                 'WP_Brafton_Article_Importer', 
                 'brafton_developer_section', 
                 array(
-                    'name' => 'brafton_post-slug', 
+                    'name' => 'brafton-post-slug', 
                     'field' => 'brafton_video_post_type',
                     )
                 );
@@ -359,8 +359,8 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                 'brafton_developer_section',
                 array(
                     'name' => 'brafton_overwrite', 
-                    'options' => array('on' => ' On',
-                                       'off' => ' Off' ), 
+                    'options' => array('off' => ' Off',
+                                       'on' => ' On' ), 
                     'default' => 'off'
                 )
             ); 
@@ -387,8 +387,9 @@ if( !class_exists('WP_Brafton_Article_Importer_Settings' ) )
                 'brafton_developer_section',
                 array(
                     'name' => 'brafton_enable_errors', 
-                    'options' => array('on' => ' On',
-                                       'off' => ' Off' ), 
+                    'options' => array( 'off' => ' Off',
+                                        'on' => ' On'
+                                        ), 
                     'default' => 'off'
                 )
             );

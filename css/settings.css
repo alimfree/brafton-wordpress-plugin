@@ -18,49 +18,37 @@
 	font-size: 12px;
 }
 
-td .radio-option.brafton-custom-post-type:nth-of-type(2):hover:after {
+.brafton-post-slug:hover:after {
 	content: " - Distingish existing content from imported content using a different post type.";
 	font-size: 11px;
 	display: inline;
 }
 
-td .radio-option.brafton-parent-categories:nth-of-type(1):hover:after {
-	content: " - maintain parent child category relationships for imported content.";
+.brafton-import-articles:nth-of-type(2):hover:after {
+	content: " - Import new articles hourly.";
 	font-size: 11px;
 	display: inline;
 }
 
-td .radio-option.brafton-custom-taxonomy:nth-of-type(1):hover:after {
-	content: " - Use a custom taxonomy for imported articles. Helps distinguish imported content from existing Content";
+.brafton-enable-video:nth-of-type(2):hover:after {
+	content: " - Import new videos hourly.";
+	font-size: 11px;
+	display: inline;
+}
+.brafton-import-articles:nth-of-type(1):hover:after {
+	content: " - Do you really want to manually approve posts? If something is broken email tech support <techsupport@brafton.com>";
 	font-size: 11px;
 	display: inline;
 }
 
-td .radio-option.brafton-import-articles:nth-of-type(2):hover:after {
-	content: " - Stop importing new articles";
+.brafton-overwrite:nth-of-type(2):hover:after {
+	content: " - Update previously imported content with feed edits. Overwrites edits made through wordpress editor.";
 	font-size: 11px;
 	display: inline;
 }
 
-td .radio-option.braftonxml-video:nth-of-type(2):hover:after {
-	content: " - Stop importing new videos";
-	font-size: 11px;
-	display: inline;
-}
-.braftonxml-sched-status:nth-of-type(2):hover:after {
-	content: " - Do you really want to manually approve posts? We will not store changes you make directly to posts which may cause discrepncies between previously imported content and your feed.";
-	font-size: 11px;
-	display: inline;
-}
-
-td .radio-option.braftonxml-overwrite:nth-of-type(1):hover:after {
-	content: " - Used to make changes to previously imported articles. Any discrepencies between imported content and feed content will be overwritten by feed content.";
-	font-size: 11px;
-	display: inline;
-}
-
-td .radio-option.brafton-errors:nth-of-type(1):hover:after {
-	content: " - Log plugin errors in database as option field named brafton-errors.";
+.brafton-enable-errors:nth-of-type(2):hover:after {
+	content: " - Log plugin errors in wp-options table as meta_key named brafton_error_log.";
 	font-size: 11px;
 	display: inline;
 }
