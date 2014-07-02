@@ -1,7 +1,4 @@
 <?php 
-
-
-
 if ( !class_exists( 'Article_Importer' ) )
 {	
 	include_once ( plugin_dir_path( __FILE__ ) . '../vendors/SampleAPIClientLibrary/ApiHandler.php');
