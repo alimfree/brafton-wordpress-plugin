@@ -5,7 +5,7 @@ Plugin URI: http://www.brafton.com/support/wordpress
 version: 1.3.5
 Description: Automates Brafton Inc,  ContentLEAD, and Castleford Media content publishing.  
 Author: Brafton Inc
-Author URL: http://www.brafton.com
+Author URI: http://www.brafton.com/support/wordpress
 GitHub Plugin URI: https://github.com/alimfree/brafton_wordpress_plugin
 GitHub Branch:     1.3.5
 */
