@@ -9,6 +9,13 @@
 #braftonxml_sched_API_KEY {
 	width: 295px;
 }
+
+.enable-dynamic-authorship:nth-of-type(2):hover:after {
+	content: " - Use post author as defined in feed bylines field. Only available for Brafton Articles.";
+	font-size: 11px;
+	display: inline;
+}
+
 .api-key:after {
 	content: " - ex: dada3480-9d3b-4989-876a-663fdbe48be8" ;
 	display: block;
