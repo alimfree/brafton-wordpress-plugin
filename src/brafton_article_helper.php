@@ -1,5 +1,6 @@
 <?php
 	include_once ( plugin_dir_path( __FILE__ ) . '../vendors/SampleAPIClientLibrary/ApiHandler.php');
+	include_once ( plugin_dir_path( __FILE__ ) . '../vendors/SampleAPIClientLibrary/marpro-utility.php');
 	class Brafton_Article_Helper {
 		public $post_type;
 
@@ -63,7 +64,7 @@
 				$article_array['edit_date']  = true; 
 			}
 
-			$post_id = wp_update_post( $article_array ); 
+			$post_id = marpro_wp_update_post( $article_array ); 
 			return $post_id;
 
 		}
@@ -208,7 +209,7 @@
 			//if article does not exist
 			if ( $post_exists  == false )
 			{	//add the article to WordPress
-				$post_id = wp_insert_post( $article_array ); 
+				$post_id = marpro_wp_insert_post( $article_array ); 
 				
 				//add custom meta field so we can find the article again later.
 				update_post_meta($post_id, 'brafton_id', $brafton_id );
