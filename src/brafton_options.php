@@ -2,6 +2,7 @@
     require_once( sprintf( "%s/brafton_errors.php", dirname( __FILE__ ) ) );
 
     define( "BRAFTON_OPTIONS", "brafton_options" );
+    define( "BRAFTON_ERROR_LOG", "brafton_error_log" );
 
     /**
      * Singleton Class for retrieving options from the wordpress database.
@@ -208,17 +209,16 @@
           /**
          * Helper method for default post status.
          * Retrieves brafton article post_type name from brafton options
+         * used by both video and article importer classes to check post type.
          * 
          * @return $article_post_type
          */
-        public function brafton_get_post_type( $option ){
+        public function brafton_get_post_type( $option_value ){
 
-            if( $option != "")
-                $post_type = $option; 
+            if( $option_value != "")
+                return $option_value; 
             else
-               return false;
-
-            return $post_type;
+               return 'post';
         }
 
         public function brafton_has_api_key(){
@@ -248,13 +248,40 @@
         {
 
         }
+        /**
+         * @usedby WP_Brafton_Article_Importer
+         * Completely removes all instances of Brafton Articles from WP. 
+         */
+        public function purge_articles()
+        {
+            $video_post_type = $this->brafton_get_post_type( $this->options['brafton_video_post_type'] );
+            $article_post_type = $this->brafton_get_post_type( $this->options['brafton_article_post_type'] );
+            $post_type = array();
+            if( isset( $video_post_type ) && $video_post_type )
+                $post_type[] = $video_post_type;
+            if( isset( $article_post_type )  && $article_post_type )
+                $post_type[] = $article_post_type;
+           
+            $post_type[] = 'post';
+            $args = array( 'post_type' => $post_type , 'meta_key' => 'brafton_id' , 'posts_per_page' => -1 );
 
+            $purge = new WP_Query( $args );
+            if( $purge->have_posts() ) : while( $purge->have_posts() ) : $purge->the_post();
+                $post_id = get_the_ID();
+                brafton_log( array( 'message' => 'Purge imported content on deactivation option seleted. Deleting post titled ' . get_the_title( $post_id ) ) );
+                wp_delete_post( $post_id, true );
+            endwhile;
+            endif;
+
+            wp_reset_postdata();
+        }
         /**
          * Purges Options
          */
         public function purge_options()
         {
-            #todo 
+            delete_option( BRAFTON_ERROR_LOG );
+            delete_option( BRAFTON_OPTIONS );
         }
 
         public function link_to_product()

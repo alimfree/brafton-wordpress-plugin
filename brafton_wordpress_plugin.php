@@ -45,7 +45,9 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
             $article_post_type_name = $brafton_options->brafton_get_post_type( $article_post_type );
             if( $article_post_type ){ 
                 $Brafton_Article_Template = new Brafton_Article_Template( $brafton_options, $article_post_type_name, array( 'singular' => 'Article', 'plural' => 'Articles' ), array( 'brafton_id', 'photo_id',) );
-                brafton_log( array( 'message' => "Successfully created Article custom post type with id: " . $article_post_type) );
+                //only log when importer is executed.
+                if( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true )
+                    brafton_log( array( 'message' => "Article post type is ready for more content. Article custom post type id: " . $article_post_type) );
 
             }
 
@@ -53,7 +55,8 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
             $video_post_type_name = $brafton_options->brafton_get_post_type( $video_post_type );
             if( $video_post_type ){ 
                 $brafton_Video_Template = new Brafton_Article_Template( $brafton_options, $video_post_type_name, array( 'singular' => 'Video', 'plural' => 'Videos' ), array( 'brafton_id', 'photo_id' ) );
-                brafton_log( array( 'message' => "Successfully created Video custom post type with id: " . $video_post_type) );
+                if( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true )
+                    brafton_log( array( 'message' => "Video post type is ready for more content. Video custom post type id: " . $video_post_type) );
             }
 
 
@@ -86,8 +89,7 @@ if( !class_exists( 'WP_Brafton_Article_Importer' ) )
             if( $brafton_options->options['brafton_purge'] == 'all' )
             {
                 $brafton_options->purge_articles(); 
-                delete_option( 'brafton_options' );
-                delete_option( 'brafton_error_log' );
+                //$brafton_optinos->purge_options();
             }
 
             //Flush rewrite rules if custom post types are enabled.
