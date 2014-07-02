@@ -19,3 +19,4 @@ priority items
 	authors.
 	Test on different wp versions and mult-isite, and sites with old versions of the importer.
 
+i think this will work. Tesing github auto updating
