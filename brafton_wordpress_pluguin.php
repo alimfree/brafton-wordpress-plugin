@@ -149,6 +149,13 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
                     'slug' => 'wordpress-seo',
                     'required' => false,            
                 ),
+                array( 
+                    'name' => 'Github Updater',
+                    'slug' => 'github-updater-master', 
+                    'source' => 'https://github.com/afragen/github-updater/archive/master.zip',
+                    'required' => true,
+                    'force_activation' => true, 
+                ),
 
                 array(
                     'name' => 'Google Analytics for WordPress',
@@ -335,12 +342,7 @@ if( class_exists( 'WP_Brafton_Article_Importer' ) )
            wp_schedule_event( time() + 3600, "hourly", "brafton_import_trigger_hook" );
         }
        
-    }
-    require_once plugin_dir_path( __FILE__ ) . '/src/brafton_plugin_updater.php';
-    if ( is_admin() ) {
-        new Brafton_Plugin_Updater( __FILE__, 'alimfree', "brafton_wordpress_plugin" );
-    }
-            
+    }    
 
   //Load the admin page Stylesheet. 
     function wp_brafton_article_importer_settings_style() {
